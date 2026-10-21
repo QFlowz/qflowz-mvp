@@ -889,21 +889,16 @@ function 거래카드(tx, 선택) {
 function 거래내역화면() {
   const f = state.app.filters;
   const all = state.app.txs;
-  const list = all.filter(t => (f.status === 'all' || 결과코드(t) === f.status) && (f.category === 'all' || t.category === f.category));
+  // 홈 화면 단순화: 대조 상태 필터는 없애고 카테고리 필터만 적용(예전 저장본의 상태 필터 값이 남아 있어도 목록이 숨지 않게)
+  const list = all.filter(t => f.category === 'all' || t.category === f.category);
   const 합계 = all.reduce((a, t) => a + Number(t.amount || 0), 0);
-  const cnt = c => all.filter(t => 결과코드(t) === c).length;
-  const 상태칩 = [['all', '전체'], ['match', '✅ 일치'], ['mismatch', '❌ 불일치'], ['need', '⚠️ 확인 필요'], ['pending', '⏳ 미대조']]
-    .map(([v, l]) => `<button type="button" class="chip" id="fs-${v}" data-act="filter" data-k="status" data-v="${v}" aria-pressed="${f.status === v}">${l}</button>`).join('');
   const cats = ['all', ...CONFIG.categories.filter(c => all.some(t => t.category === c))];
   const 카테고리칩 = cats.map(c => `<button type="button" class="chip" id="fc-${c}" data-act="filter" data-k="category" data-v="${c}" aria-pressed="${f.category === c}">${c === 'all' ? '모든 카테고리' : c}</button>`).join('');
   return `<div class="title-row"><h2>📋 거래 내역</h2><span class="small sub">동아리 명의 계좌 · 가상</span></div>
     <div class="card"><div class="metrics">
       <div class="metric"><b>${all.length}건</b><span>공개된 지출</span></div>
       <div class="metric"><b>${원(합계)}</b><span>지출 합계</span></div>
-      <div class="metric"><b>✅ ${cnt('match')} · ❌ ${cnt('mismatch')}</b><span>일치 · 불일치</span></div>
-      <div class="metric"><b>⚠️ ${cnt('need')} · ⏳ ${cnt('pending')}</b><span>확인 필요 · 미대조</span></div>
     </div></div>
-    <div class="stack" role="group" aria-label="대조 상태 필터"><div class="chips">${상태칩}</div></div>
     <div class="stack" role="group" aria-label="카테고리 필터"><div class="chips">${카테고리칩}</div></div>
     <p class="small sub">카드를 누르면 거래가 선택되고, 모든 탭에서 그 거래 기준으로 보여 줘요.</p>
     <div class="stack">${list.length ? list.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('') : '<div class="card empty"><p>조건에 맞는 거래가 없습니다.</p></div>'}</div>
