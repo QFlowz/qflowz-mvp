@@ -8,7 +8,7 @@ N열(secs)이 숫자가 아니라 글자로 들어갔으면(셀이 왼쪽 정렬
 
 ## 먼저 할 일
 
-1. 테스트 행을 뺀다. `src` 가 `claudetest` 인 행, 팀원이 시험 삼아 넣은 행은 계산에서 제외한다(수식에 `G2:G<>"claudetest"` 조건을 더하거나 별도 탭으로 옮긴다).
+1. 테스트 행을 뺀다. `src` 가 `claudetest` 인 행(배포 점검용 `vid=claude-deploy-test` 4행 포함), 팀원이 시험 삼아 넣은 행은 계산에서 제외한다(수식에 `G2:G<>"claudetest"` 조건을 더하거나 별도 탭으로 옮긴다). 2026-11-04 이전의 시험 기록은 `events_old_1104` 탭에 그대로 남겨 두었다.
 2. 동아리별로 나누려면 배포 주소에 `?src=club-이름` 을 붙여 나눠 준다(예: `…/?src=club-photo`). `src` 열에 그대로 남는다.
 3. 표본이 작으면 비율은 크게 흔들린다. 응답 30명이면 ±18%p, 100명이면 ±10%p 정도다. 비율을 보고서에 쓸 때는 "n=○○"를 같이 적는다.
 
@@ -31,8 +31,24 @@ N열(secs)이 숫자가 아니라 글자로 들어갔으면(셀이 왼쪽 정렬
 | 이동 행사 2회/년·18명 | target=`tr-insurance` 의 reward(명), withdraw(회) 중앙값 | 둘째 질문(연 몇 회)은 withdraw 열에 들어간다 |
 | 통계 활용 동의율 70% | target=`tr-data` 의 intent=yes / maybe / no 비율 | 보고서에는 yes 만이 아니라 maybe 를 따로 적는다 |
 | 방문 한 번의 체류 시간 | `session_time` 행의 secs. 같은 sid 안에서는 가장 큰 값 | `=QUERY(A:U,"select C, max(N) where D='session_time' group by C",1)` 결과의 평균·중앙값 |
-| 화면별 머문 시간 | `screen_time` 의 secs | screen별 평균·중앙값 |
+| 화면별 머문 시간 | `screen_time` 의 secs | screen별 평균·중앙값. 한 사람의 탭별 시간은 아래 "한 사람의 탭별 체류 시간" |
 | 가입(참여 정보 입력) 전환 | profile 행이 있는 vid ÷ page_view 를 남긴 전체 vid | src별로 나누면 유입 경로별 전환이 된다 |
+
+## 한 사람의 탭별 체류 시간
+
+`screen_time` 행에 방문자 코드(vid)와 화면(screen)과 머문 초(secs)가 남으므로 가능하다. 화면 이름은 `m/ledger`(부원 거래 내역), `t/perks`(총무 혜택) 처럼 역할/탭이다.
+이름은 참여 정보를 입력할 때 한 번 남는 `profile` 행(U열)에만 있으니, 이름으로 vid 를 찾은 뒤 그 vid 의 `screen_time` 을 합친다. 수식은 아직 실제 시트에서 돌려 보지 않았다.
+
+1. 새 탭을 만들어 A1 에 찾을 이름을 적는다.
+2. vid 찾기: `=INDEX(events!B2:B, MATCH(A1, events!U2:U, 0))` 를 B1 에 둔다.
+3. 탭별 합계: `=QUERY(events!A:U, "select H, sum(N), count(N) where D='screen_time' and B='"&B1&"' group by H order by sum(N) desc label sum(N) '합계(초)', count(N) '횟수'", 1)`
+4. 모든 사람을 한 표로: `=QUERY(events!A:U, "select B, sum(N) where D='screen_time' group by B pivot H", 1)` (행은 vid, 열은 화면)
+
+알아 둘 점
+- 시간은 탭이 화면에 보이는 동안만 센다. 다른 탭으로 가거나 화면이 꺼진 시간은 빠진다. 한 번에 최대 30분까지만 인정한다.
+- vid 는 브라우저마다 따로 생기므로 같은 사람이 폰과 노트북을 쓰면 vid 가 둘이다. 이름으로 합친다.
+- 이름은 새 `Code.gs` 를 배포한 뒤(2026-11-04 오후 10시 버전 2)에 입력한 사람부터만 저장된다. 그 전에 들어온 행에는 이름이 없다.
+- 이 표에는 이름이 들어가므로 보고서에는 이름을 빼고 vid 나 "참여자 A" 같은 이름표로 바꿔 옮긴다.
 
 ## 광고 클릭률을 읽을 때
 
@@ -47,17 +63,19 @@ N열(secs)이 숫자가 아니라 글자로 들어갔으면(셀이 왼쪽 정렬
 - **실제 결제·실제 쿠폰 사용·실제 광고 매출** — 목업이라 말한 의향만 있다. 의향은 실제보다 높게 나오는 경향이 있으니 모델에 넣을 때 보수적으로 깎아 쓰고, 깎은 근거를 같이 적는다.
 - **CAC 단계별 전환(40/46/36%)** — 광고 집행 전이라 비어 있다. 유입 경로(src)별 가입 전환까지만 볼 수 있다.
 
-## GA4에서 할 일(앱은 이미 보내고 있다)
+## GA4 설정(2026-11-04에 적용함, 속성: 계정 QFlowz > 속성 QFlowz, 측정 ID G-4C5DE34ELV)
 
-1. **맞춤 측정기준·측정항목 등록**(관리 > 데이터 표시 > 맞춤 정의). 등록하기 전에 쌓인 값은 보고서에서 안 보이니 수집을 시작하기 전에 한다.
-   - 이벤트 범위 측정기준: `app_role`, `app_src`, `app_screen`, `app_act`, `app_target`, `app_intent`, `app_reward`, `app_withdraw`, `app_form`, `app_tx`
+1. **맞춤 측정기준·측정항목**(관리 > 데이터 표시 > 맞춤 정의)을 만들었다. 만들기 전에 쌓인 값은 보고서에서 안 보인다.
+   - 이벤트 범위 측정기준 10개: `app_role`, `app_src`, `app_screen`, `app_act`, `app_target`, `app_intent`, `app_reward`, `app_withdraw`, `app_form`, `app_tx`
    - 이벤트 범위 측정항목: `app_seconds` (단위: 초)
-   - 이름(`app_name`)은 GA로 보내지 않으니 등록하지 않는다.
-2. **데이터 보관 기간**을 14개월로 올린다(관리 > 데이터 수집 및 수정 > 데이터 보관). 기본값은 2개월이다.
-3. **Google 신호**가 켜져 있는지 확인한다. 연령·성별 통계는 사람이 적으면 "(not set)"으로 가려지므로, 표본이 작은 동안은 시트의 grade·gender 열이 더 믿을 만하다.
-4. 첫 데이터가 들어오는지는 보고서 > 실시간에서 본다. 이벤트 이름은 `page_view`, `ui_click`, `screen_time`, `session_time`, `form_submit`, `perk_answer`, `ad_view`, `opinion_submit` 등이다.
-5. 선택: `perk_answer`, `form_submit` 을 주요 이벤트로 표시하면 전환 보고서에서 바로 비율을 볼 수 있다. BigQuery 연결은 무료 일일 내보내기로 충분하다.
-6. 팀원이 시험 삼아 쓸 때는 주소 끝에 `?notrack=1` 을 붙이면 GA와 시트 양쪽에 아무것도 보내지 않는다.
+   - 이름(`app_name`)은 GA로 보내지 않으니 등록하지 않았다.
+   - 측정기준을 만들다 이름이 붙어 잘못 생긴 `app_formapp_tx` 한 개는 곧바로 보관 처리했다(GA에서는 지울 수 없고 보관만 된다).
+2. **데이터 보관 기간**을 이벤트·사용자 모두 14개월로 바꿨다(기본값은 이벤트 2개월). 처리방침의 "최대 14개월"과 같다.
+3. **Google 신호**는 이미 켜져 있었다. 연령·성별 통계는 사람이 적으면 "(not set)"으로 가려지므로, 표본이 작은 동안은 시트의 grade·gender 열이 더 믿을 만하다.
+4. 같은 계정 `john` 아래에 `qflowz`(플러터 앱 `com.qflowz.app`)와 `Millennium Analytics` 속성이 따로 있다. 웹 시연은 계정 `QFlowz`의 속성 `QFlowz`만 쓴다.
+5. 배포된 사이트를 열자 실시간 보고서에 `page_view`, `first_visit`, `screen_time` 이 잡혔다. 이벤트 이름은 `page_view`, `ui_click`, `screen_time`, `session_time`, `form_submit`, `perk_answer`, `ad_view`, `opinion_submit` 등이다.
+6. 아직 안 한 선택 사항: `perk_answer`, `form_submit` 을 주요 이벤트로 표시하면 전환 보고서에서 바로 비율을 볼 수 있다. BigQuery 연결은 무료 일일 내보내기로 충분하다.
+7. 팀원이 시험 삼아 쓸 때는 주소 끝에 `?notrack=1` 을 붙이면 GA와 시트 양쪽에 아무것도 보내지 않는다.
 
 ## 시트 관리 주의
 
