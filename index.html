@@ -106,6 +106,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
 .notice{font-size:13px;color:var(--sub);background:var(--muted-soft);border-radius:8px;padding:8px 10px}
 .notice.strong{border-left:4px solid var(--warn);background:var(--warn-soft);color:var(--text)}
+.foot{text-align:center;margin:0}
+.linkbtn{background:none;border:0;padding:6px 8px;font-size:13px;color:var(--sub);text-decoration:underline;cursor:pointer}
+.stats-strip{flex:none;display:flex;flex-direction:column;gap:6px;padding:8px 12px;font-size:13px;color:var(--text);background:var(--muted-soft);border-bottom:1px solid var(--line)}
+.stats-strip[hidden]{display:none}
+.stats-strip .btn{height:30px;min-height:30px;padding:0 10px;font-size:13px}
 .title-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .kv{display:grid;grid-template-columns:96px 1fr;gap:4px 10px;font-size:15px}
 .kv dt{color:var(--sub);font-size:13px;padding-top:2px}
@@ -275,6 +280,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="notch" aria-hidden="true"></div>
       <div class="statusbar" aria-hidden="true"><span id="clock">--:--</span><span>📶 🔋</span></div>
       <div class="app" id="app">
+        <div class="stats-strip" id="statsStrip" role="region" aria-label="이용 통계 안내" hidden></div>
         <div class="app-main" id="appMain"></div>
         <div class="sheet-layer" id="sheetLayer" hidden></div>
         <div class="modal-layer" id="modalLayer" hidden></div>
@@ -309,6 +315,20 @@ const CONFIG = {
   storageKey: 'finpbl:v2',
   // 이용 통계(Google Analytics 4): 측정 ID(G-로 시작)를 넣으면 켜지고, 비워 두면 아무것도 전송하지 않는다
   analytics: { gaId: 'G-4C5DE34ELV' },
+  // 개인정보 처리방침 시트의 문구. contact(문의처)는 비워 두면 그 항목을 숨긴다
+  privacy: {
+    effective: '2026-11-04',
+    contact: '',
+    intro: '수업 시연용 앱이고 모든 거래는 가상 데이터예요. 이용 통계 수집에 한해 아래와 같이 처리해요.',
+    sections: [
+      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)'] },
+      { title: '수집하지 않는 정보', text: '이름, 연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요.' },
+      { title: '이용 목적', text: '수업 보고서와 서비스 개선을 위한 이용 현황 집계예요. 광고 개인화에는 쓰지 않도록 설정했어요.' },
+      { title: '처리 위탁과 국외 이전', text: '통계 처리는 Google LLC(Google Analytics)에 맡기며, 데이터는 미국 등 해외 서버에서 처리될 수 있어요.' },
+      { title: '보관 기간', text: '이용자·이벤트 단위 원본 데이터는 Google Analytics에서 최대 14개월(설정에 따라 더 짧을 수 있어요) 보관한 뒤 자동 삭제되고, 이후에는 합산된 통계만 남아요.' },
+      { title: '수집 거부', text: '아래 버튼으로 이 브라우저의 수집을 바로 끌 수 있어요. 브라우저의 쿠키 차단이나 Google Analytics 차단 확장 프로그램을 써도 수집되지 않아요.', optout: true }
+    ]
+  },
   demoPin: '1234',               // 시연용 PIN — 실제 보안 기능이 아니다
   rules: { periodDays: 7, threshold: 0.15, members: 30 }, // 15%·7일은 팀 설계 가정, 30명은 가상 행사 참여 부원 수(이의 비율의 분모)
   interviews: [
@@ -724,9 +744,11 @@ function 총무인가() { return state.app.session.role === 'treasurer' && state
 
 /* ---------- 이용 통계 (Google Analytics 4) ----------
    보내는 값은 화면 이름·버튼 이름·거래 ID·머문 시간뿐이다. 질문·답변·PIN·의견 선택 내용은 보내지 않는다(익명성).
-   CONFIG.analytics.gaId가 비어 있거나, 주소에 ?notrack=1 을 붙여 한 번 연 브라우저(만든 사람의 시험 접속)는 아무것도 보내지 않는다(?notrack=0 으로 해제).
+   CONFIG.analytics.gaId가 비어 있거나, 주소에 ?notrack=1 을 붙여 한 번 연 브라우저(만든 사람의 시험 접속), 이용자가 '수집 안 함'을 누른 브라우저는
+   아무것도 보내지 않는다(?notrack=0 또는 처리방침 시트의 '다시 수집 허용'으로 해제).
    통계는 부가 기능이므로 어떤 오류가 나도 앱 동작에 영향이 없도록 try/catch로 감싼다. */
 const 통계제외키 = 'finpbl:notrack';
+const 통계안내키 = 'finpbl:stats-notice';
 let 통계켜짐 = false, 통계화면 = '', 통계역할 = '', 통계시각 = 0, 통계누적 = 0;
 const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role };
 function 통계제외() {
@@ -776,8 +798,57 @@ function 화면기록(r) {
   통계시각 = document.hidden ? 0 : Date.now();
   track('page_view', { page_location: location.href.split('#')[0] + '#/' + 키, page_title: 키, app_screen: 키 });
 }
+function 통계거부여부() {
+  try { return localStorage.getItem(통계제외키) === '1'; } catch (e) { return false; }
+}
+// 첫 방문 안내 띠: 수집 중이고 아직 '확인'을 누르지 않은 브라우저에만 프레임 맨 위에 보인다
+function 통계띠그리기() {
+  const el = document.getElementById('statsStrip');
+  if (!el) return;
+  let 확인함 = false;
+  try { 확인함 = localStorage.getItem(통계안내키) === '1'; } catch (e) {}
+  el.hidden = !통계켜짐 || 확인함;
+  el.innerHTML = el.hidden ? '' : `<span>이용 통계(화면 이동·클릭·머문 시간)를 수집해요. 질문·답변·의견 내용은 수집하지 않아요.</span>
+    <span class="row"><button type="button" class="btn" id="strip-more" data-act="sheet" data-sheet="privacy">자세히</button>
+    <button type="button" class="btn" id="strip-off" data-act="statsoff">수집 안 함</button>
+    <button type="button" class="btn primary" id="strip-ok" data-act="statsok">확인</button></span>`;
+}
+function 통계안내확인() {
+  try { localStorage.setItem(통계안내키, '1'); } catch (e) {}
+  통계띠그리기();
+}
+function 통계거부() {
+  try { localStorage.setItem(통계제외키, '1'); } catch (e) {}
+  window['ga-disable-' + CONFIG.analytics.gaId] = true;  // 이미 불러온 gtag.js도 이후 어떤 전송도 하지 않게 막는다
+  통계켜짐 = false;
+  통계안내확인();
+  토스트('이 브라우저에서 통계 수집을 껐어요');
+  그리기();
+}
+function 통계허용() {
+  try { localStorage.removeItem(통계제외키); } catch (e) {}
+  // gtag.js를 처음부터 다시 불러와 깨끗하게 켠다. 주소의 ?notrack=1 이 남아 있으면 다시 꺼지므로 지운다
+  const u = new URL(location.href);
+  if (u.searchParams.has('notrack')) { u.searchParams.delete('notrack'); location.replace(u.href); }
+  else location.reload();
+}
+function 처리방침본문() {
+  const id = CONFIG.analytics.gaId, p = CONFIG.privacy;
+  const 상태 = !id ? '이 앱은 현재 이용 통계를 수집하지 않아요.'
+    : 통계켜짐 ? '이 브라우저에서 이용 통계를 수집하고 있어요.'
+    : 통계거부여부() ? '이 브라우저에서는 이용 통계를 수집하지 않아요.' : '이용 통계 수집이 꺼져 있어요.';
+  const 버튼 = !id ? ''
+    : 통계켜짐 ? '<button type="button" class="btn block" id="pv-off" data-act="statsoff">이 브라우저에서 수집 안 함</button>'
+    : 통계거부여부() ? '<button type="button" class="btn block" id="pv-on" data-act="statson">다시 수집 허용</button>' : '';
+  const 절 = p.sections.map((s, i) => `<h3>${i + 1}. ${esc(s.title)}</h3>
+    ${s.items ? `<ul class="small" style="margin:0;padding-left:18px">${s.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : `<p class="small">${esc(s.text)}</p>`}
+    ${s.optout ? `<div class="card stack"><p class="small"><b>${상태}</b></p>${버튼}</div>` : ''}`).join('');
+  const 문의 = p.contact ? `<h3>${p.sections.length + 1}. 문의</h3><p class="small">${esc(p.contact)}</p>` : '';
+  return `<p class="notice">${esc(p.intro)}</p>${절}${문의}<p class="small sub">시행일 ${esc(p.effective)}</p>`;
+}
 function 통계클릭(t) {
   if (!통계켜짐) return;
+  if (t.dataset.act === 'statsoff') return;  // 수집을 끄는 클릭은 보내지 않는다
   try {
     const d = t.dataset, f = 통계대상[d.act];
     track('ui_click', { app_act: d.act, app_target: (f && f(d)) || '', app_screen: 통계화면 });
@@ -914,6 +985,7 @@ function 로그인화면() {
     <p class="notice">역할별 화면을 구분하기 위한 시연용 로그인입니다. 실제 계정 인증이나 보안 기능은 없습니다.</p>
     <p class="notice">회비는 동아리 명의(고유번호증) 계좌에 있고 이 앱은 거래내역만 읽습니다. 자금을 보관·이체하지 않습니다. 시연의 모든 거래는 가상 데이터입니다.</p>
     ${통계켜짐 ? '<p class="notice">이용 통계(화면 이동·버튼 클릭·머문 시간과 Google이 추정한 연령대·성별)를 Google Analytics로 집계합니다. 질문·답변·의견 선택 내용은 수집하지 않습니다.</p>' : ''}
+    <p class="foot"><button type="button" class="linkbtn" id="login-privacy" data-act="sheet" data-sheet="privacy">개인정보 처리방침</button></p>
   </div>`;
 }
 /* ---------- 총무 PIN ---------- */
@@ -1310,6 +1382,7 @@ function 시트내용(name) {
       <button type="button" class="btn block" id="set-logs" data-act="sheet" data-sheet="logs">활동 로그</button>
       <button type="button" class="btn block" id="set-mvpsheet" data-act="sheet" data-sheet="mvp">MVP 해설·단위경제</button>
       <button type="button" class="btn block" id="set-check" data-act="sheet" data-sheet="checklist">✅ 다크패턴 점검표</button>
+      <button type="button" class="btn block" id="set-privacy" data-act="sheet" data-sheet="privacy">개인정보 처리방침</button>
       <button type="button" class="btn danger block" id="set-reset" data-act="resetask">데모 데이터 초기화</button>
       ${역할() ? '<button type="button" class="btn primary block" id="set-logout" data-act="logout">로그아웃</button>' : ''}` };
   }
@@ -1363,6 +1436,7 @@ function 시트내용(name) {
       ${state.app.feeRules.length ? `<ul style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="small sub">(총무 공개 · ${시각표시(r.at)})</span></li>`).join('')}</ul>`
         : '<div class="card empty"><p>아직 총무가 공개한 회비 운영 기준이 없습니다.</p><p class="small sub">궁금하다면 공개 Q&A에서 익명으로 물어볼 수 있어요.</p></div>'}` };
   }
+  if (name === 'privacy') return { title: '개인정보 처리방침', body: 처리방침본문() };
   return null;
 }
 function 시트그리기() {
@@ -1452,7 +1526,8 @@ function 패널그리기() {
         <li>거래 내역 → 학기 장부 내려받기</li></ol></div>
     <div class="card stack"><p class="small"><b>HMW</b> ${esc(CONFIG.app.hmw)}</p></div>
     <p class="notice strong">가상 데이터로 동작하는 교육용 시연입니다. 회비는 동아리 명의(고유번호증) 계좌에 있다고 가정하며, 실제 은행·금융 계좌와는 연결되지 않습니다.</p>
-    <button type="button" class="btn danger block" id="pn-reset" data-act="resetask">데모 데이터 초기화</button>`;
+    <button type="button" class="btn danger block" id="pn-reset" data-act="resetask">데모 데이터 초기화</button>
+    <p class="foot"><button type="button" class="linkbtn" id="pn-privacy" data-act="sheet" data-sheet="privacy">개인정보 처리방침</button></p>`;
 }
 
 /* =====================================================================
@@ -1525,6 +1600,9 @@ document.addEventListener('click', ev => {
       break;
     }
     case 'sheet': 시트열기(t.dataset.sheet, t); break;
+    case 'statsok': 통계안내확인(); break;
+    case 'statsoff': 통계거부(); break;
+    case 'statson': 통계허용(); break;
     case 'perk': 토스트('시연용 목업이라 실제 쿠폰·미션은 없어요'); break;
     case 'closesheet': 시트닫기(); break;
     case 'sheetpick': {
@@ -1862,6 +1940,7 @@ window.addEventListener('resize', () => { 프레임맞추기(); 패널그리기(
     state = res.s;
     if (res.fresh) 저장(true);
     통계시작();
+    통계띠그리기();
     프레임맞추기();
     시계();
     // 분이 바뀌는 순간에 맞춰 1분마다 갱신
