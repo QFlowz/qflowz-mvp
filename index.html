@@ -745,7 +745,8 @@ function 통계시작() {
     window.gtag = function () { window.dataLayer.push(arguments); };
     gtag('js', new Date());
     // 화면 이동은 해시 주소라 자동 page_view에 맡기지 않고 라우트를 적용할 때 직접 보낸다
-    gtag('config', id, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false, transport_type: 'beacon' });
+    // Google 신호를 켜 연령·성별 보고서를 받는다(GA 관리 화면에서도 켜야 한다). 광고 개인화는 계속 끈다
+    gtag('config', id, { send_page_view: false, allow_google_signals: true, allow_ad_personalization_signals: false, transport_type: 'beacon' });
     const s = document.createElement('script');
     s.async = true;
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
@@ -912,7 +913,7 @@ function 로그인화면() {
     </form>
     <p class="notice">역할별 화면을 구분하기 위한 시연용 로그인입니다. 실제 계정 인증이나 보안 기능은 없습니다.</p>
     <p class="notice">회비는 동아리 명의(고유번호증) 계좌에 있고 이 앱은 거래내역만 읽습니다. 자금을 보관·이체하지 않습니다. 시연의 모든 거래는 가상 데이터입니다.</p>
-    ${통계켜짐 ? '<p class="notice">이용 통계(화면 이동·버튼 클릭·머문 시간)를 Google Analytics로 익명 집계합니다. 질문·답변·의견 선택 내용은 수집하지 않습니다.</p>' : ''}
+    ${통계켜짐 ? '<p class="notice">이용 통계(화면 이동·버튼 클릭·머문 시간과 Google이 추정한 연령대·성별)를 Google Analytics로 집계합니다. 질문·답변·의견 선택 내용은 수집하지 않습니다.</p>' : ''}
   </div>`;
 }
 /* ---------- 총무 PIN ---------- */
