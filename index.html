@@ -16,7 +16,7 @@
   --bg:#f7f8fa; --card:#ffffff; --text:#202020; --sub:#4A4F55;
   --accent:#C3002F; --accent-soft:#F3E6E9; --on-accent:#ffffff;
   --warn:#f08c00; --danger:#e03131; --ok:#2f9e44; --line:#e3e6ec;
-  --mvp:#FFF8E1; --mvp-line:#f1d48a;
+  --mvp:#FFF8E1;
   --ok-soft:#e9f6ec; --warn-soft:#fff4e0; --danger-soft:#fdecec; --muted-soft:#eef0f3;
   --paper:#fffdf6; --frame:#202020;
   --shadow:0 2px 10px rgba(20,24,31,.07);
@@ -28,7 +28,7 @@
   :root{
     --bg:#15171a; --card:#1f2226; --text:#eceef1; --sub:#b4bac2;
     --accent:#e2335a; --accent-soft:#3a1f27; --on-accent:#ffffff;
-    --line:#33373d; --mvp:#3a3220; --mvp-line:#6b5a2c;
+    --line:#33373d; --mvp:#3a3220;
     --ok-soft:#1d3324; --warn-soft:#3a2c14; --danger-soft:#3d1d1e; --muted-soft:#2a2e33;
     --paper:#2a2a24; --frame:#000000;
     --shadow:0 2px 10px rgba(0,0,0,.35);
@@ -47,6 +47,8 @@ h3{font-size:16px;line-height:1.5}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* 선 아이콘(SVG): 글자 크기와 글자색을 따라간다 */
+.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
 
 /* ===== 페이지 틀: 노트북은 안내 패널 + 휴대폰 프레임 ===== */
 .page{max-width:1100px;margin:0 auto;padding:16px;height:100%;display:flex;gap:24px;align-items:center;justify-content:center}
@@ -68,7 +70,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .icon-btn{min-width:36px;height:36px;border-radius:var(--btn-r);border:1px solid var(--line);background:transparent;cursor:pointer;
   display:inline-flex;align-items:center;justify-content:center;padding:0 8px;font-size:15px}
 .hdr.treasurer .icon-btn{border-color:rgba(255,255,255,.55);color:#fff}
-.icon-btn[aria-pressed="true"]{background:var(--mvp);border-color:var(--mvp-line);color:var(--text)}
+.icon-btn[aria-pressed="true"]{background:var(--mvp);border-color:transparent;color:var(--text)}
 .txband{flex:none;display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--accent-soft);font-size:13px;border-bottom:1px solid var(--line)}
 .txband .lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .txband button{height:28px;font-size:13px;padding:0 10px;border-radius:8px;border:1px solid var(--accent);background:var(--card);color:var(--accent);cursor:pointer;font-weight:700}
@@ -80,8 +82,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .tabbar::-webkit-scrollbar{display:none}
 .tab{flex:1 0 55px;min-width:55px;min-height:58px;border:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:0;font-size:12px;white-space:nowrap;color:var(--sub);padding:4px 2px;border-top:3px solid transparent}
-.tab .ic{font-size:19px;line-height:1.2}
-.tab[aria-current="page"]{color:var(--accent);font-weight:800;border-top-color:var(--accent);background:var(--accent-soft)}
+.tab .ic{font-size:19px;line-height:1}
+.tab[aria-current="page"]{color:var(--accent);font-weight:800;border-top-color:var(--accent)}
 
 /* ===== 카드·버튼 공통 ===== */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;min-width:0}
@@ -105,7 +107,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chip{flex:none;height:32px;border-radius:16px;border:1px solid var(--line);background:var(--card);padding:0 12px;cursor:pointer;font-size:13px;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
 .notice{font-size:13px;color:var(--sub);background:var(--muted-soft);border-radius:8px;padding:8px 10px}
-.notice.strong{border-left:4px solid var(--warn);background:var(--warn-soft);color:var(--text)}
+.notice.strong{background:var(--warn-soft);color:var(--text)}
 .foot{text-align:center;margin:0}
 .linkbtn{background:none;border:0;padding:6px 8px;font-size:13px;color:var(--sub);text-decoration:underline;cursor:pointer}
 .stats-strip{flex:none;display:flex;flex-direction:column;gap:6px;padding:8px 12px;font-size:13px;color:var(--text);background:var(--muted-soft);border-bottom:1px solid var(--line)}
@@ -117,29 +119,28 @@ button,input,select,textarea{font:inherit;color:inherit}
 .kv dd{margin:0;word-break:keep-all;overflow-wrap:anywhere}
 .amount{font-size:24px;font-weight:800;letter-spacing:-.3px}
 .empty{text-align:center;padding:28px 12px}
-.empty .big{font-size:40px}
+.empty .big{font-size:40px;color:var(--sub)}
 
 /* ===== 상태 배지: 색 + 글자 + 아이콘을 함께 써서 색맹 사용자도 구분 ===== */
-.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 9px;font-size:13px;font-weight:700;border:1px solid;white-space:nowrap}
-.b-match{color:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
-.b-mismatch{color:var(--danger);background:var(--danger-soft);border-color:var(--danger)}
-.b-need{color:#b36200;background:var(--warn-soft);border-color:var(--warn)}
-.b-pending{color:var(--sub);background:var(--muted-soft);border-color:var(--line)}
-.b-done{color:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
-.b-explain{color:#b36200;background:var(--warn-soft);border-color:var(--warn)}
-.b-wait{color:var(--sub);background:var(--muted-soft);border-color:var(--line)}
+.badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:2px 9px;font-size:13px;font-weight:700;white-space:nowrap}
+.b-match{color:var(--ok);background:var(--ok-soft)}
+.b-mismatch{color:var(--danger);background:var(--danger-soft)}
+.b-need{color:#b36200;background:var(--warn-soft)}
+.b-pending{color:var(--sub);background:var(--muted-soft)}
+.b-done{color:var(--ok);background:var(--ok-soft)}
+.b-explain{color:#b36200;background:var(--warn-soft)}
+.b-wait{color:var(--sub);background:var(--muted-soft)}
 @media (prefers-color-scheme: dark){.b-need,.b-explain{color:#ffb84d}}
 
 /* ===== 거래 카드 / 영수증 카드 / 대조 결과 카드를 서로 다르게 보이게 ===== */
 .txcard{width:100%;text-align:left;cursor:pointer;display:block;background:var(--card);border:1px solid var(--line);
-  border-left:5px solid var(--accent);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow)}
-.txcard[aria-pressed="true"]{outline:2px solid var(--accent);background:var(--accent-soft)}
+  border-radius:var(--radius);padding:12px;box-shadow:var(--shadow)}
+.txcard[aria-pressed="true"]{background:var(--accent-soft);border-color:transparent}
 .txcard .top{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--sub)}
 .txcard .mid{display:flex;justify-content:space-between;gap:8px;align-items:center;margin:2px 0}
 .txcard .item{font-weight:800}
 .txcard .won{font-weight:800;white-space:nowrap}
 .txcard .why{font-size:13px;color:var(--sub);display:block}
-.sec-tx{border-left:5px solid var(--accent)}
 .sec-tx .head,.sec-rc .head,.sec-res .head{font-size:13px;font-weight:800;letter-spacing:.2px;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;align-items:center}
 .sec-tx .head{color:var(--accent)}
 .sec-rc{background:var(--paper);border:2px dashed var(--line);box-shadow:none}
@@ -147,16 +148,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .receipt .rhead{text-align:center;font-weight:800;border-bottom:1px dashed var(--line);padding-bottom:6px;margin-bottom:6px}
 .receipt .rl{display:flex;justify-content:space-between;gap:8px}
 .receipt .rtotal{border-top:1px dashed var(--line);margin-top:6px;padding-top:6px;font-weight:800}
-.sec-res{border-width:2px}
-.sec-res.r-match{background:var(--ok-soft);border-color:var(--ok)}
-.sec-res.r-mismatch{background:var(--danger-soft);border-color:var(--danger)}
-.sec-res.r-need{background:var(--warn-soft);border-color:var(--warn)}
-.sec-res.r-pending{background:var(--muted-soft);border-style:dashed}
+.sec-res{border-color:transparent}
+.sec-res.r-match{background:var(--ok-soft)}
+.sec-res.r-mismatch{background:var(--danger-soft)}
+.sec-res.r-need{background:var(--warn-soft)}
+.sec-res.r-pending{background:var(--muted-soft)}
 .cmp{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
 .cmp th,.cmp td{border:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
 .cmp thead th{background:var(--muted-soft);font-size:13px}
 .cmp th[scope=row]{width:64px;font-size:13px;color:var(--sub);font-weight:600}
 .cmp td.mark{width:34px;text-align:center}
+.mk.ok{color:var(--ok)} .mk.bad{color:var(--danger)} .mk.wait{color:var(--sub)}
 
 /* ===== 익명 확인·최종 상태 ===== */
 .vote-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -165,7 +167,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .bar{height:12px;border-radius:6px;background:var(--muted-soft);overflow:hidden;display:flex}
 .bar .ok{background:var(--ok)} .bar .ask{background:var(--warn)}
 .stat-big{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800}
-.stat-big .ic{font-size:30px}
+.stat-big .ic{font-size:30px;display:inline-flex;color:var(--sub)}
+.s-done .stat-big .ic{color:var(--ok)} .s-explain .stat-big .ic{color:var(--warn)}
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .metric{background:var(--muted-soft);border-radius:8px;padding:8px 10px}
 .metric b{display:block;font-size:20px}
@@ -203,8 +206,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hint{font-size:13px;color:var(--sub)}
 
 /* ===== MVP 설명 모드 ===== */
-.mvp-card{background:var(--mvp);border:1px solid var(--mvp-line);border-radius:var(--radius);padding:12px;font-size:14px}
-.mvp-card .tag{display:inline-block;font-size:13px;font-weight:800;background:var(--card);border:1px solid var(--mvp-line);border-radius:999px;padding:0 8px;margin:0 4px 4px 0}
+.mvp-card{background:var(--mvp);border-radius:var(--radius);padding:12px;font-size:14px}
+.mvp-card .tag{display:inline-block;font-size:13px;font-weight:800;background:var(--card);border-radius:999px;padding:0 8px;margin:0 4px 4px 0}
 .mvp-card .row{margin-top:8px}
 .mvp-card .btn{height:32px;font-size:13px}
 
@@ -216,7 +219,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .rolecards{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
 .rolecard{display:flex;gap:12px;align-items:flex-start;border:2px solid var(--line);border-radius:var(--radius);padding:12px;background:var(--card);cursor:pointer}
 .rolecard input{width:20px;height:20px;margin-top:4px;accent-color:var(--accent)}
-.rolecard:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.rolecard:has(input:checked){border-color:transparent;background:var(--accent-soft)}
 .rolecard b{display:block}
 .pin-input{letter-spacing:12px;text-align:center;font-size:24px!important}
 .shake{animation:shake .35s}
@@ -250,7 +253,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ue th{background:var(--muted-soft)}
 .journey{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
 .journey li{font-size:13px;padding:4px 8px;border-radius:6px;background:var(--muted-soft)}
-.journey li.low{background:var(--danger-soft);border-left:4px solid var(--danger);font-weight:700}
+.journey li.low{background:var(--danger-soft);font-weight:700}
 
 /* ===== 노트북 안내 패널 ===== */
 .panel .card{padding:14px}
@@ -278,7 +281,7 @@ button,input,select,textarea{font:inherit;color:inherit}
   <div class="frame-wrap" id="frameWrap">
     <div class="frame" id="frame">
       <div class="notch" aria-hidden="true"></div>
-      <div class="statusbar" aria-hidden="true"><span id="clock">--:--</span><span>📶 🔋</span></div>
+      <div class="statusbar" aria-hidden="true"><span id="clock">--:--</span><span class="row" style="gap:4px"><svg class="i" viewBox="0 0 24 24"><path d="M4 18v-2M9 18v-5M14 18v-8M19 18V6"/></svg><svg class="i" viewBox="0 0 24 24"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2"/><rect x="5" y="10" width="10" height="4" rx="1" fill="currentColor" stroke="none"/></svg></span></div>
       <div class="app" id="app">
         <div class="stats-strip" id="statsStrip" role="region" aria-label="이용 통계 안내" hidden></div>
         <div class="app-main" id="appMain"></div>
@@ -289,11 +292,11 @@ button,input,select,textarea{font:inherit;color:inherit}
     </div>
   </div>
 </div>
-<noscript><p style="padding:16px">이 시연 앱은 자바스크립트가 필요합니다.</p></noscript>
+<noscript><p style="padding:16px">이 시연 앱은 자바스크립트를 켜야 동작해요.</p></noscript>
 <script>
 'use strict';
 /* =====================================================================
-   1. CONFIG — 화면에 보이는 모든 행사·설계 데이터는 여기서만 바꾼다.
+   1. CONFIG: 화면에 보이는 모든 행사·설계 데이터는 여기서만 바꾼다.
       (발표 직전 문구 수정 시 코드 본문을 건드리지 않게 하려는 목적)
    ===================================================================== */
 const CONFIG = {
@@ -312,7 +315,7 @@ const CONFIG = {
       '화면만 보고 문제·고객·핵심 기능·UX Flow·넛지를 이해할 수 있게'
     ]
   },
-  storageKey: 'finpbl:v2',
+  storageKey: 'finpbl:v3',      // 화면 문구를 바꾸면 버전을 올려 예전 저장본의 문구가 남지 않게 한다
   // 이용 통계(Google Analytics 4): 측정 ID(G-로 시작)를 넣으면 켜지고, 비워 두면 아무것도 전송하지 않는다
   analytics: { gaId: 'G-4C5DE34ELV' },
   // 개인정보 처리방침 시트의 문구. contact(문의처)는 비워 두면 그 항목을 숨긴다
@@ -329,7 +332,7 @@ const CONFIG = {
       { title: '수집 거부', text: '아래 버튼으로 이 브라우저의 수집을 바로 끌 수 있어요. 브라우저의 쿠키 차단이나 Google Analytics 차단 확장 프로그램을 써도 수집되지 않아요.', optout: true }
     ]
   },
-  demoPin: '1234',               // 시연용 PIN — 실제 보안 기능이 아니다
+  demoPin: '1234',               // 시연용 PIN이며 실제 보안 기능이 아니다
   rules: { periodDays: 7, threshold: 0.15, members: 30 }, // 15%·7일은 팀 설계 가정, 30명은 가상 행사 참여 부원 수(이의 비율의 분모)
   interviews: [
     { id:'A1', title:'활동이 적은데도 회비를 내야 하는 부원', pain:'지출 근거를 확인할 수 없어 낸 회비만 보이고 그만큼의 가치를 판단하기 어렵다.', ui:'회비 사용 내역과 지출 사유를 한 화면에서 확인' },
@@ -350,13 +353,13 @@ const CONFIG = {
   },
   killer: {
     name: '결제 근거 카드',
-    flow: ['계좌 거래내역 → 결제 근거 카드 생성','총무가 사유·영수증 사진 첨부','AI 영수증 인식·대조(시연: 규칙 판정)','참여 부원 익명 확인(7일, 무응답 = 이의 없음)','이의 15% 미만 확인 완료 / 이상 설명 필요','공개 Q&A · 학기 장부 내려받기']
+    flow: ['계좌 거래내역으로 결제 근거 카드 생성','총무가 사유·영수증 사진 첨부','AI 영수증 인식·대조(시연: 규칙 판정)','참여 부원 익명 확인(7일, 무응답 = 이의 없음)','이의 15% 미만 확인 완료 / 이상 설명 필요','공개 Q&A · 학기 장부 내려받기']
   },
   results: {
-    match:    { icon:'✅', label:'일치',      desc:'거래 금액과 날짜가 모두 일치함' },
-    mismatch: { icon:'❌', label:'불일치',    desc:'거래 금액이 다름' },
-    need:     { icon:'⚠️', label:'확인 필요', desc:'영수증 정보가 부족하거나 날짜만 다름' },
-    pending:  { icon:'⏳', label:'미대조',    desc:'아직 모의 대조를 실행하지 않음' }
+    match:    { icon:'ok',    label:'일치',      desc:'거래 금액과 날짜가 모두 일치함' },
+    mismatch: { icon:'bad',   label:'불일치',    desc:'거래 금액이 다름' },
+    need:     { icon:'warn',  label:'확인 필요', desc:'영수증 정보가 부족하거나 날짜만 다름' },
+    pending:  { icon:'clock', label:'미대조',    desc:'아직 모의 대조를 실행하지 않음' }
   },
   categories: ['행사','간식','물품','대관','홍보','기타'],
   // 가상 거래: 실제 은행 계좌·실명·카드번호 없음. mockResult는 미리 정해 둔 모의 결과(null이면 미대조)
@@ -378,7 +381,7 @@ const CONFIG = {
       receiptNo:'', receiptDate:'', receiptAmount:0, memo:'영수증 미첨부(시연용 판독 불가 예시)', mockResult:'need' },
     { id:'TX-006', date:'2026-10-10', time:'11:00', item:'종강총회 장소 예약금', category:'행사', amount:100000,
       reason:'종강총회 장소 사전 예약금', merchant:'(가상) 어린이대공원역 파티룸', address:'서울 광진구 능동 일대 · 가상 주소',
-      receiptNo:'R-261010-02', receiptDate:'2026-10-10', receiptAmount:100000, memo:'아직 대조 전입니다. [모의 대조 실행]으로 확인해 보세요', mockResult:null }
+      receiptNo:'R-261010-02', receiptDate:'2026-10-10', receiptAmount:100000, memo:'아직 대조 전이에요. [모의 대조 실행]으로 확인해 보세요', mockResult:null }
   ],
   // 가상 집계(근거 확인 ok / 설명 요청 ask). 실제 투표자 정보는 저장하지 않는다
   seedVotes: { 'TX-001':{ok:14,ask:1}, 'TX-002':{ok:10,ask:0}, 'TX-003':{ok:6,ask:5}, 'TX-004':{ok:8,ask:2}, 'TX-005':{ok:4,ask:1}, 'TX-006':{ok:0,ask:0} },
@@ -387,13 +390,13 @@ const CONFIG = {
     { id:'Q-2', txId:'TX-003', q:'간식 영수증 금액과 거래 금액이 달라 보이는데 차이가 무엇인지 알 수 있을까요? (가상 예시 질문)', a:'', qAt:'2026-09-20T21:10', aAt:'' }
   ],
   feeRules: {
-    intro: '회비 운영 기준(납부액·면제 기준·환불 등)은 총무가 공개해야 표시됩니다. 확인되지 않은 면제 기준은 시연 데이터에도 임의로 만들지 않았습니다.',
+    intro: '회비 운영 기준(납부액·면제 기준·환불 등)은 총무가 공개해야 보여요. 확인되지 않은 면제 기준은 시연 데이터에도 임의로 만들지 않았어요.',
     items: []
   },
   // 혜택 탭 목업: 단위경제의 부가 수익원(푸드패스·비대면 일감)이 들어갈 자리. 제휴처·할인율·보상이 정해지지 않아 숫자는 ○○로 둔다
   perks: {
-    intro: '결제 근거 카드는 무료이고, 아래 혜택은 원하는 사람만 골라 씁니다. 쓰지 않아도 모든 기능을 똑같이 쓸 수 있어요.',
-    blank: '○○ 표시는 제휴처·할인율·보상이 정해지면 채울 자리입니다.',
+    intro: '결제 근거 카드는 무료이고, 아래 혜택은 원하는 사람만 골라 써요. 쓰지 않아도 모든 기능을 똑같이 쓸 수 있어요.',
+    blank: '○○ 표시는 제휴처·할인율·보상이 정해지면 채울 자리예요.',
     sections: [
       { key:'food', title:'푸드패스', desc:'동아리 회식·총회·간식 때 쓰는 제휴 식당 쿠폰', action:'쿠폰 받기',
         note:'쿠폰으로 결제한 지출도 결제 근거 카드에 그대로 남아요.',
@@ -462,19 +465,19 @@ const CONFIG = {
     ],
     summary: 'MVP는 결제 한 건마다 근거를 연결해, 부원이 총무에게 직접 따져 묻지 않고도 지출 내용을 확인할 수 있도록 돕는 서비스다.'
   },
-  // 💡 모드: 화면마다 어떤 설계 요소인지 한두 문장으로 설명
+  // MVP 설명 모드: 화면마다 어떤 설계 요소인지 한두 문장으로 설명
   mvpNotes: {
-    login:    { tags:['설계 가정','개인정보 보호'], text:'역할별 화면을 나누기 위한 시연용 로그인입니다. 이름·학번 없이 역할만 고르게 해 개인정보 수집을 최소화했습니다.' },
-    pin:      { tags:['설계 가정'], text:'총무는 결제 PIN을 한 번 더 입력해야 총무 화면으로 들어갑니다. 실제 인증이 아닌 시연용 흐름이며 성공·실패를 모두 보여 줍니다.' },
-    denied:   { tags:['개인정보 보호','설계 가정'], text:'부원이 주소를 직접 입력해 총무 화면에 들어오려 하면 이 화면으로 막습니다. 업무 화면 분리 원칙을 보여 줍니다.' },
-    ledger:   { tags:['여정지도 3~4단계','HMW'], text:"'행사 후 지출 공지 확인' 단계입니다. 각 카드에 지출 사유와 대조 상태를 함께 보여 줘 A1·A5의 '어디에 왜 썼는지 모름'을 첫 화면에서 줄입니다(넛지: 탐색 부담 줄이기)." },
-    evidence: { tags:['킬러 기능','여정지도 최저점'], text:'결제 근거 카드는 최저점(5단계 "총무에게 질문할지 고민")에서 묻지 않고도 금액·일시·사유·영수증·대조 결과를 한 카드에서 확인하게 합니다. 의견도 이 카드에서 한 번에 남길 수 있습니다.' },
-    compare:  { tags:['킬러 기능','설계 가정'], text:'실서비스에서는 총무 휴대폰 안의 AI 문자 인식이 영수증 사진을 읽어 계좌 거래와 대조합니다. 시연은 가상 데이터로 같은 규칙(금액 다름 → 불일치, 날짜만 다름 → 확인 필요)을 적용한 모의 판정입니다.' },
-    vote:     { tags:['여정지도 최저점','개인정보 보호','다크패턴 점검'], text:'관계 부담(A2·A3) 없이 익명으로 의견을 남깁니다. 참여는 선택이고, 응답 취소도 한 번에 됩니다. 집계 숫자만 보여 줍니다.' },
-    status:   { tags:['설계 가정','다크패턴 점검'], text:"7일·15% 기준은 팀의 설계 가정입니다. '설명 필요'는 추가 설명이 필요하다는 뜻일 뿐 부정행위 판정이 아닙니다." },
-    qna:      { tags:['HMW','다크패턴 점검'], text:'총무에게 1:1로 따져 묻는 대신 지출 카드에 연결된 공개 Q&A로 묻고 답합니다. 질문자 신원은 표시하지 않습니다.' },
-    perks:    { tags:['단위경제','다크패턴 점검'], text:'단위경제의 부가 수익원(푸드패스·용돈 미션)이 들어갈 자리를 보여 주는 목업입니다. 결제 근거 카드와 섞이지 않게 별도 탭으로 두었고, 쓰는 것은 선택입니다. 제휴처·할인율·보상은 정해지지 않아 ○○로 비워 두었습니다.' },
-    admin:    { tags:['킬러 기능','설계 가정'], text:'총무는 거래를 직접 만들 수 없습니다. 계좌 거래내역(CSV)을 가져오면 카드가 생기고, 총무는 사유·카테고리·영수증 사진만 붙입니다. 금액·일시·가맹점은 계좌 원본이라 고칠 수 없고, 거래는 지울 수 없습니다.' }
+    login:    { tags:['설계 가정','개인정보 보호'], text:'역할별 화면을 나누기 위한 시연용 로그인이에요. 이름·학번 없이 역할만 고르게 해서 개인정보 수집을 최소화했어요.' },
+    pin:      { tags:['설계 가정'], text:'총무는 결제 PIN을 한 번 더 입력해야 총무 화면으로 들어가요. 실제 인증이 아닌 시연용 흐름이라 성공과 실패를 모두 보여 줘요.' },
+    denied:   { tags:['개인정보 보호','설계 가정'], text:'부원이 주소를 직접 입력해 총무 화면에 들어오려 하면 이 화면으로 막아요. 업무 화면 분리 원칙을 보여 줘요.' },
+    ledger:   { tags:['여정지도 3~4단계','HMW'], text:"'행사 후 지출 공지 확인' 단계예요. 각 카드에 지출 사유와 대조 상태를 함께 보여 줘서 A1·A5의 '어디에 왜 썼는지 모름'을 첫 화면에서 줄여요(넛지: 탐색 부담 줄이기)." },
+    evidence: { tags:['킬러 기능','여정지도 최저점'], text:'결제 근거 카드는 최저점(5단계 "총무에게 질문할지 고민")에서 묻지 않고도 금액·일시·사유·영수증·대조 결과를 한 카드에서 확인하게 해요. 의견도 이 카드에서 바로 남길 수 있어요.' },
+    compare:  { tags:['킬러 기능','설계 가정'], text:'실서비스에서는 총무 휴대폰 안의 AI 문자 인식이 영수증 사진을 읽어 계좌 거래와 대조해요. 시연은 가상 데이터에 같은 규칙(금액이 다르면 불일치, 날짜만 다르면 확인 필요)을 적용한 모의 판정이에요.' },
+    vote:     { tags:['여정지도 최저점','개인정보 보호','다크패턴 점검'], text:'관계 부담(A2·A3) 없이 익명으로 의견을 남겨요. 참여는 선택이고, 응답 취소도 한 번에 돼요. 집계 숫자만 보여 줘요.' },
+    status:   { tags:['설계 가정','다크패턴 점검'], text:"7일·15% 기준은 팀의 설계 가정이에요. '설명 필요'는 추가 설명이 필요하다는 뜻일 뿐 부정행위 판정이 아니에요." },
+    qna:      { tags:['HMW','다크패턴 점검'], text:'총무에게 1:1로 따져 묻는 대신 지출 카드에 연결된 공개 Q&A로 묻고 답해요. 질문자 신원은 표시하지 않아요.' },
+    perks:    { tags:['단위경제','다크패턴 점검'], text:'단위경제의 부가 수익원(푸드패스·용돈 미션)이 들어갈 자리를 보여 주는 목업이에요. 결제 근거 카드와 섞이지 않게 별도 탭으로 두었고, 쓰는 것은 선택이에요. 제휴처·할인율·보상은 정해지지 않아 ○○로 비워 두었어요.' },
+    admin:    { tags:['킬러 기능','설계 가정'], text:'총무는 거래를 직접 만들 수 없어요. 계좌 거래내역(CSV)을 가져오면 카드가 생기고, 총무는 사유·카테고리·영수증 사진만 붙여요. 금액·일시·가맹점은 계좌 원본이라 고칠 수 없고, 거래는 지울 수 없어요.' }
   },
   checkpoints: [
     { key:'killer', label:'킬러 기능', desc:'결제 근거 카드 한 장에 금액·일시·사유·영수증·대조 결과', page:'evidence' },
@@ -484,19 +487,19 @@ const CONFIG = {
     { key:'dark',   label:'다크패턴 점검', desc:'점검표 A·B·C 직접 체크', sheet:'checklist' }
   ],
   tabs: [
-    { page:'ledger',   icon:'📋', label:'거래 내역' },
-    { page:'evidence', icon:'🧾', label:'결제 근거' },
-    { page:'compare',  icon:'🔍', label:'모의 대조' },
-    { page:'vote',     icon:'🙈', label:'익명 확인' },
-    { page:'status',   icon:'📌', label:'최종 상태' },
-    { page:'qna',      icon:'💬', label:'공개 Q&A' },
-    { page:'perks',    icon:'🎁', label:'혜택' },
-    { page:'admin',    icon:'🛠️', label:'총무 관리', treasurerOnly:true }
+    { page:'ledger',   icon:'list', label:'거래 내역' },
+    { page:'evidence', icon:'receipt', label:'결제 근거' },
+    { page:'compare',  icon:'search', label:'모의 대조' },
+    { page:'vote',     icon:'vote', label:'익명 확인' },
+    { page:'status',   icon:'flag', label:'최종 상태' },
+    { page:'qna',      icon:'message', label:'공개 Q&A' },
+    { page:'perks',    icon:'gift', label:'혜택' },
+    { page:'admin',    icon:'briefcase', label:'총무 관리', treasurerOnly:true }
   ]
 };
 
 /* =====================================================================
-   2. 상태 — 화면은 항상 이 state 하나만 보고 그린다
+   2. 상태: 화면은 항상 이 state 하나만 보고 그린다
    ===================================================================== */
 // ■4 지정 최상위 키를 그대로 둔다(과제 공통 저장 형식 호환). 이 앱의 실제 데이터는 app 아래에 모았다.
 function 기본상태만들기() {
@@ -536,7 +539,7 @@ let 대기선택tx = null;      // 거래 선택 시트에서 고른 거래를 �
 let pin실패횟수 = 0;
 
 /* =====================================================================
-   3. 저장 / 복원 — 실패해도 절대 흰 화면이 되지 않도록 모두 try/catch
+   3. 저장 / 복원: 실패해도 흰 화면이 되지 않도록 모두 try/catch
    ===================================================================== */
 let 토스트타이머 = null, 저장타이머 = null;
 function 토스트(msg) {
@@ -552,10 +555,10 @@ function 저장(조용히) {
     state.app.lastSaved = new Date().toISOString();
     // '__'로 시작하는 값은 화면 임시 상태(오류 문구 등)라 저장하지 않는다
     localStorage.setItem(CONFIG.storageKey, JSON.stringify(state, (k, v) => (k.startsWith('__') ? undefined : v)));
-    if (!조용히) 토스트('저장됨 ✓');
+    if (!조용히) 토스트('저장했어요');
     return true;
   } catch (e) {
-    토스트('⚠️ 저장 실패: 이 탭을 닫으면 사라집니다');
+    토스트('저장하지 못했어요. 이 탭을 닫으면 입력한 내용이 사라져요');
     return false;
   }
 }
@@ -592,7 +595,7 @@ function 로그(action, tx) {
 }
 
 /* =====================================================================
-   4. 도메인 규칙 — 대조·판정 계산 (화면과 분리해 규칙을 한곳에서 설명)
+   4. 도메인 규칙: 대조·판정 계산 (화면과 분리해 규칙을 한곳에서 설명)
    ===================================================================== */
 // 규칙 기반 모의 비교: 실제 OCR·은행 연동이 아니라 입력된 가상 값끼리 비교만 한다
 function 규칙대조(tx) {
@@ -601,13 +604,13 @@ function 규칙대조(tx) {
   if (!tx.receiptDate) 부족.push('영수증 날짜');
   if (!(Number(tx.receiptAmount) > 0)) 부족.push('영수증 금액');
   if (!tx.reason || !tx.reason.trim()) 부족.push('지출 사유');
-  if (부족.length) return { code: 'need', detail: 부족.join('·') + ' 정보가 없어 비교할 수 없습니다(판독 불가).' };
+  if (부족.length) return { code: 'need', detail: 부족.join('·') + ' 정보가 없어 비교할 수 없어요(판독 불가).' };
   if (Number(tx.amount) !== Number(tx.receiptAmount)) {
     const diff = Math.abs(tx.amount - tx.receiptAmount);
-    return { code: 'mismatch', detail: `거래 금액 ${원(tx.amount)}과 영수증 금액 ${원(tx.receiptAmount)}이 ${원(diff)} 다릅니다.` };
+    return { code: 'mismatch', detail: `거래 금액 ${원(tx.amount)}과 영수증 금액 ${원(tx.receiptAmount)}이 ${원(diff)} 달라요.` };
   }
-  if (tx.date !== tx.receiptDate) return { code: 'need', detail: `금액은 같지만 거래일(${tx.date})과 영수증 날짜(${tx.receiptDate})가 다릅니다.` };
-  return { code: 'match', detail: '거래 금액과 날짜가 영수증과 모두 같습니다.' };
+  if (tx.date !== tx.receiptDate) return { code: 'need', detail: `금액은 같지만 거래일(${tx.date})과 영수증 날짜(${tx.receiptDate})가 달라요.` };
+  return { code: 'match', detail: '거래 금액과 날짜가 영수증과 모두 같아요.' };
 }
 function 결과코드(tx) { return tx && tx.result ? tx.result.code : 'pending'; }
 // 집계 = 가상 기본 집계 + 이 브라우저에서 내가 고른 응답(1표). 개인 식별 정보는 없다
@@ -636,7 +639,7 @@ function 다음거래ID() {
   return 'TX-' + String(Math.max(0, ...nums) + 1).padStart(3, '0');
 }
 
-// 계좌 CSV 가져오기·학기 장부 내보내기·영수증 사진 축소 — 화면과 분리한 데이터 처리
+// 계좌 CSV 가져오기·학기 장부 내보내기·영수증 사진 축소: 화면과 분리한 데이터 처리
 function CSV행나누기(line) {
   const out = []; let cur = '', q = false;
   for (let i = 0; i < line.length; i++) {
@@ -648,7 +651,7 @@ function CSV행나누기(line) {
 }
 function CSV가져오기(text) {
   const lines = String(text).replace(/^﻿/, '').split(/\r?\n/).filter(l => l.trim());
-  if (!lines.length) { 토스트('빈 파일입니다'); return; }
+  if (!lines.length) { 토스트('빈 파일이에요'); return; }
   let rows = lines.map(CSV행나누기);
   if (/거래일|date/i.test(rows[0][0])) rows = rows.slice(1);
   let 추가 = 0, 건너뜀 = 0;
@@ -670,7 +673,7 @@ function 파일받기(name, text) {
     const blob = new Blob(['﻿' + text], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-  } catch (e) { 토스트('내려받기를 지원하지 않는 환경입니다'); }
+  } catch (e) { 토스트('이 환경에서는 내려받기를 할 수 없어요'); }
 }
 function CSV칸(v) { const t = String(v == null ? '' : v); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }
 function 장부내보내기() {
@@ -687,17 +690,43 @@ function 사진줄이기(file, cb) {
       const k = Math.min(1, 640 / Math.max(img.width, img.height)); const c = document.createElement('canvas');
       c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); cb(c.toDataURL('image/jpeg', 0.6)); };
-    img.onerror = () => 토스트('이미지를 읽지 못했습니다'); img.src = fr.result; };
+    img.onerror = () => 토스트('이미지를 읽지 못했어요'); img.src = fr.result; };
   fr.readAsDataURL(file);
 }
 
 /* =====================================================================
-   5. 공통 헬퍼 — 반복 UI와 이스케이프
+   5. 공통 헬퍼: 반복 UI와 이스케이프
    ===================================================================== */
 function esc(v) {
   return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 function 원(n) { return '₩' + Number(n || 0).toLocaleString('ko-KR'); }
+// 화면 아이콘: 이모지 대신 선 아이콘(SVG)을 쓴다. 글자색을 따라가서 다크 모드와 총무 헤더에서도 맞는 색이 된다
+const 아이콘모양 = {
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  receipt: '<path d="M5 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v17l-3.5-2-3.5 2-3.5-2L5 21z"/><path d="M9 8h6M9 12h6"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  vote: '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+  flag: '<path d="M5 21V4h11l-2 4 2 4H5"/>',
+  message: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/>',
+  gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8c-1.5-3-5-3-5-1s3 1 5 1zm0 0c1.5-3 5-3 5-1s-3 1-5 1z"/>',
+  briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>',
+  sliders: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+  ok: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+  bad: '<circle cx="12" cy="12" r="9"/><path d="m15 9-6 6M9 9l6 6"/>',
+  warn: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  check: '<path d="m5 12 5 5 9-10"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+  next: '<path d="m9 6 6 6-6 6"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  ban: '<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>'
+};
+function 아이콘(name) {
+  return `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${아이콘모양[name] || ''}</svg>`;
+}
 function 날짜표시(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function 시각표시(iso) {
   if (!iso) return '-';
@@ -707,14 +736,14 @@ function 시각표시(iso) {
 }
 function 대조배지(code) {
   const r = CONFIG.results[code] || CONFIG.results.pending;
-  return `<span class="badge b-${code}">${r.icon} ${r.label}</span>`;
+  return `<span class="badge b-${code}">${아이콘(r.icon)}${r.label}</span>`;
 }
 function 상태배지(code, total) {
-  if (code === 'explain') return `<span class="badge b-explain">💬 설명 필요</span>`;
-  return `<span class="badge b-done">☑️ 확인 완료${total === 0 ? '(응답 없음)' : ''}</span>`;
+  if (code === 'explain') return `<span class="badge b-explain">${아이콘('message')}설명 필요</span>`;
+  return `<span class="badge b-done">${아이콘('ok')}확인 완료${total === 0 ? '(응답 없음)' : ''}</span>`;
 }
 function 다음버튼(items) {
-  return `<div class="next">${items.map(i => `<button type="button" class="btn ${i.primary ? 'primary' : ''} block tall" ${i.attrs}>${esc(i.label)}</button>`).join('')}</div>`;
+  return `<div class="next">${items.map(i => `<button type="button" class="btn ${i.primary ? 'primary' : ''} block tall" ${i.attrs}>${esc(i.label)}${i.next ? 아이콘('next') : ''}</button>`).join('')}</div>`;
 }
 function 이동속성(page) { return `data-act="go" data-page="${page}"`; }
 function 필드(id, label, input, err, hint) {
@@ -728,15 +757,15 @@ function MVP카드(key) {
   const n = CONFIG.mvpNotes[key];
   if (!n) return '';
   return `<section class="mvp-card" aria-label="MVP 설명">
-    <div>💡 ${n.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
+    <div>${n.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
     <p>${esc(n.text)}</p>
     <div class="row"><button type="button" class="btn" id="mvp-open-${key}" data-act="sheet" data-sheet="mvp">MVP 해설·단위경제</button>
-    <button type="button" class="btn" id="mvp-check-${key}" data-act="sheet" data-sheet="checklist">✅ 다크패턴 점검표</button></div>
+    <button type="button" class="btn" id="mvp-check-${key}" data-act="sheet" data-sheet="checklist">다크패턴 점검표</button></div>
   </section>`;
 }
 function 빈선택(제목) {
-  return `<div class="card empty"><div class="big">👆</div><h3>먼저 거래를 선택해 주세요</h3>
-    <p class="sub small">${esc(제목)}은(는) 선택한 거래 기준으로 보여 줍니다.</p>
+  return `<div class="card empty"><div class="big">${아이콘('receipt')}</div><h3>먼저 거래를 선택해 주세요</h3>
+    <p class="sub small">${esc(제목)}은(는) 선택한 거래 기준으로 보여 줘요.</p>
     <div class="next"><button type="button" class="btn primary block tall" id="pick-${esc(제목)}" data-act="sheet" data-sheet="select">거래 선택하기</button></div></div>`;
 }
 function 역할() { return state.app.session.role; }
@@ -856,7 +885,7 @@ function 통계클릭(t) {
 }
 
 /* =====================================================================
-   6. 라우팅 — URL 해시로 화면·시트·선택 거래를 기록 (뒤로 가기·새로고침 대응)
+   6. 라우팅: URL 해시로 화면·시트·선택 거래를 기록 (뒤로 가기·새로고침 대응)
    ===================================================================== */
 function 해시해석() {
   const h = (location.hash || '').replace(/^#\/?/, '');
@@ -885,7 +914,7 @@ function 이동(r, opt) {
 function 영역() { return 역할() === 'treasurer' ? 't' : 'm'; }
 function 탭이동(page) { 이동({ area: 영역(), page, tx: state.app.selectedTx || '' }); }
 
-// 권한 검사: 로그인 전 → 로그인, 부원이 총무 영역 → 권한 없음, 총무인데 PIN 미인증 → PIN
+// 권한 검사: 로그인 전이면 로그인, 부원이 총무 영역에 오면 권한 없음, PIN을 거치지 않은 총무는 PIN 화면으로
 function 라우트적용() {
   let r = 해시해석();
   const s = state.app.session;
@@ -950,9 +979,9 @@ function 앱화면() {
   const 총무 = 역할() === 'treasurer';
   const tx = 선택거래();
   const header = `<header class="hdr ${총무 ? 'treasurer' : ''}">
-    <div class="role">${총무 ? '👑 총무 모드' : '👤 부원 모드'}<small>QFlowz · 시연용 로그인</small></div>
-    <button type="button" class="icon-btn" id="hdr-mvp" data-act="mvp" aria-pressed="${state.mvpMode}" aria-label="MVP 설명 모드 ${state.mvpMode ? '끄기' : '켜기'}" title="MVP 설명 모드">💡</button>
-    <button type="button" class="icon-btn" id="hdr-set" data-act="sheet" data-sheet="settings" aria-label="설정 열기" title="설정">⚙️</button>
+    <div class="role">${아이콘(총무 ? 'crown' : 'user')} ${총무 ? '총무 모드' : '부원 모드'}<small>QFlowz · 시연용 로그인</small></div>
+    <button type="button" class="icon-btn" id="hdr-mvp" data-act="mvp" aria-pressed="${state.mvpMode}" aria-label="MVP 설명 모드 ${state.mvpMode ? '끄기' : '켜기'}" title="MVP 설명 모드">${아이콘('info')}</button>
+    <button type="button" class="icon-btn" id="hdr-set" data-act="sheet" data-sheet="settings" aria-label="설정 열기" title="설정">${아이콘('sliders')}</button>
     <button type="button" class="icon-btn" id="hdr-out" data-act="logout" title="로그아웃">로그아웃</button>
   </header>
   <div class="txband" aria-live="polite"><span class="lbl">${tx ? `선택한 거래: <b>${esc(tx.id)}</b> · ${esc(항목명(tx))}` : '선택한 거래 없음'}</span>
@@ -960,7 +989,7 @@ function 앱화면() {
   const 화면들 = { ledger: 거래내역화면, evidence: 결제근거화면, compare: 모의대조화면, vote: 익명확인화면, status: 최종상태화면, qna: 공개QA화면, perks: 혜택화면, admin: 총무관리화면 };
   const body = (화면들[현재.page] || 거래내역화면)();
   const tabs = CONFIG.tabs.filter(t => !t.treasurerOnly || 총무)   // 부원 화면에는 총무 탭을 아예 그리지 않는다
-    .map(t => `<button type="button" class="tab" id="tab-${t.page}" data-act="go" data-page="${t.page}" ${현재.page === t.page ? 'aria-current="page"' : ''}><span class="ic" aria-hidden="true">${t.icon}</span>${t.label}</button>`).join('');
+    .map(t => `<button type="button" class="tab" id="tab-${t.page}" data-act="go" data-page="${t.page}" ${현재.page === t.page ? 'aria-current="page"' : ''}><span class="ic">${아이콘(t.icon)}</span>${t.label}</button>`).join('');
   return `${header}<main class="content" id="content" tabindex="-1">${MVP카드(현재.page)}${body}</main>
     <nav class="tabbar" aria-label="${총무 ? '총무' : '부원'} 하단 탭">${tabs}</nav>`;
 }
@@ -970,21 +999,19 @@ function 로그인화면() {
   const pre = state.app.session.pending === 'treasurer' ? 'treasurer' : 'member';
   return `<div class="center content" id="content">
     ${MVP카드('login')}
-    <div class="brand"><div class="logo" aria-hidden="true">🧾</div><h1>${esc(CONFIG.app.name)}</h1>
+    <div class="brand"><div class="logo">${아이콘('receipt')}</div><h1>${esc(CONFIG.app.name)}</h1>
       <p class="sub small">${esc(CONFIG.app.title)}</p></div>
     <p class="small sub" style="text-align:center">총무에게 따져 묻지 않아도, 회비가 어디에 왜 쓰였는지 결제 근거 카드로 확인해요.</p>
     <form data-form="login" class="stack">
       <fieldset class="rolecards"><legend class="small sub" style="margin-bottom:6px">시연할 역할을 선택하세요</legend>
         <label class="rolecard"><input type="radio" name="role" value="member" ${pre === 'member' ? 'checked' : ''}>
-          <span><b>👤 부원</b><span class="small sub">지출 근거를 확인하고 익명으로 의견·질문을 남겨요</span></span></label>
+          <span><b>${아이콘('user')} 부원</b><span class="small sub">지출 근거를 확인하고 익명으로 의견·질문을 남겨요</span></span></label>
         <label class="rolecard"><input type="radio" name="role" value="treasurer" ${pre === 'treasurer' ? 'checked' : ''}>
-          <span><b>👑 총무</b><span class="small sub">지출과 증빙을 등록하고 공개 질문에 답변해요 (PIN 필요)</span></span></label>
+          <span><b>${아이콘('crown')} 총무</b><span class="small sub">지출과 증빙을 등록하고 공개 질문에 답변해요 (PIN 필요)</span></span></label>
       </fieldset>
       <button type="submit" class="btn primary block tall" id="login-start">시연 시작하기</button>
     </form>
-    <p class="notice">역할별 화면을 구분하기 위한 시연용 로그인입니다. 실제 계정 인증이나 보안 기능은 없습니다.</p>
-    <p class="notice">회비는 동아리 명의(고유번호증) 계좌에 있고 이 앱은 거래내역만 읽습니다. 자금을 보관·이체하지 않습니다. 시연의 모든 거래는 가상 데이터입니다.</p>
-    ${통계켜짐 ? '<p class="notice">이용 통계(화면 이동·버튼 클릭·머문 시간과 Google이 추정한 연령대·성별)를 Google Analytics로 집계합니다. 질문·답변·의견 선택 내용은 수집하지 않습니다.</p>' : ''}
+    <p class="notice">역할만 고르는 시연용 로그인이라 실제 계정 인증은 없어요. 이 앱은 동아리 명의(고유번호증) 계좌의 거래내역만 읽고, 돈을 보관하거나 옮기지 않아요. 시연의 모든 거래는 가상 데이터예요.</p>
     <p class="foot"><button type="button" class="linkbtn" id="login-privacy" data-act="sheet" data-sheet="privacy">개인정보 처리방침</button></p>
   </div>`;
 }
@@ -992,25 +1019,25 @@ function 로그인화면() {
 function PIN화면() {
   return `<div class="center content" id="content">
     ${MVP카드('pin')}
-    <div class="brand"><div class="logo" aria-hidden="true">👑</div><h2>총무 결제 PIN 확인</h2>
+    <div class="brand"><div class="logo">${아이콘('crown')}</div><h2>총무 결제 PIN 확인</h2>
       <p class="sub small">총무 화면으로 들어가려면 PIN을 한 번 더 입력하세요.</p></div>
     <form data-form="pin" class="stack card" id="pin-form" novalidate>
-      ${필드('pin-input', '결제 PIN 4자리 (시연용)', `<input id="pin-input" class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-describedby="pin-input-hint pin-input-err">`, pin실패횟수 ? `PIN이 일치하지 않습니다. 다시 입력해 주세요. (실패 ${pin실패횟수}회)` : '', `시연용 PIN은 ${CONFIG.demoPin}입니다. 실패 흐름을 보려면 다른 숫자를 넣어 보세요.`)}
+      ${필드('pin-input', '결제 PIN 4자리 (시연용)', `<input id="pin-input" class="pin-input" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-describedby="pin-input-hint pin-input-err">`, pin실패횟수 ? `PIN이 맞지 않아요. 다시 입력해 주세요. (실패 ${pin실패횟수}회)` : '', `시연용 PIN: ${CONFIG.demoPin} (실패 흐름을 보려면 다른 숫자를 넣어 보세요)`)}
       <button type="submit" class="btn primary block tall" id="pin-ok">확인</button>
       <button type="button" class="btn ghost block" id="pin-back" data-act="tologin">역할 다시 선택</button>
     </form>
-    <p class="notice strong">시연용 인증입니다. PIN은 브라우저 안에서만 비교하며 실제 결제·보안 기능이 없습니다.</p>
+    <p class="notice">PIN은 이 브라우저 안에서만 비교해요. 실제 결제나 보안 기능은 없어요.</p>
   </div>`;
 }
 /* ---------- S2 권한 없음 ---------- */
 function 권한없음화면() {
-  return `<header class="hdr"><div class="role">👤 부원 모드<small>QFlowz</small></div>
+  return `<header class="hdr"><div class="role">${아이콘('user')} 부원 모드<small>QFlowz</small></div>
     <button type="button" class="icon-btn" id="hdr-out" data-act="logout">로그아웃</button></header>
     <div class="center content" id="content" style="text-align:center;justify-content:center">
     ${MVP카드('denied')}
-    <div style="font-size:56px" aria-hidden="true">🚫</div>
-    <h2>이 화면은 총무 전용 화면입니다</h2>
-    <p class="sub">부원 계정으로는 총무 관리 기능을 열 수 없어요. 대신 모든 지출 근거와 공개 Q&A는 부원 화면에서 그대로 볼 수 있습니다.</p>
+    <div style="font-size:52px;color:var(--danger)">${아이콘('ban')}</div>
+    <h2>총무만 볼 수 있는 화면이에요</h2>
+    <p class="sub">부원 계정으로는 총무 관리 기능을 열 수 없어요. 대신 모든 지출 근거와 공개 Q&A는 부원 화면에서 그대로 볼 수 있어요.</p>
     <button type="button" class="btn primary block tall" id="denied-back" data-act="godenied">거래 내역으로 돌아가기</button>
   </div>`;
 }
@@ -1020,8 +1047,8 @@ function 거래카드(tx, 선택) {
   return `<button type="button" class="txcard" id="txc-${esc(tx.id)}" data-act="pick" data-id="${esc(tx.id)}" aria-pressed="${선택}">
     <span class="top"><span>${esc(tx.id)} · ${esc(tx.date)}</span><span>${esc(tx.category)}</span></span>
     <span class="mid"><span class="item">${tx.item ? esc(tx.item) : esc(tx.merchant || '') + ' (근거 대기)'}</span><span class="won">${원(tx.amount)}</span></span>
-    <span class="why">사유: ${tx.reason ? esc(tx.reason) : '⚠️ 사유 미기재'}</span>
-    <span class="row" style="margin-top:6px">${대조배지(결과코드(tx))}${tx.reason ? 상태배지(집계(tx.id).code, 집계(tx.id).total) : '<span class="badge b-wait">⏳ 총무 근거 대기</span>'}${선택 ? '<span class="badge b-pending">✔ 선택됨</span>' : ''}</span>
+    <span class="why">사유: ${tx.reason ? esc(tx.reason) : '미기재'}</span>
+    <span class="row" style="margin-top:6px">${대조배지(결과코드(tx))}${tx.reason ? 상태배지(집계(tx.id).code, 집계(tx.id).total) : `<span class="badge b-wait">${아이콘('clock')}총무 근거 대기</span>`}${선택 ? `<span class="badge b-pending">${아이콘('check')}선택됨</span>` : ''}</span>
   </button>`;
 }
 function 거래내역화면() {
@@ -1039,19 +1066,19 @@ function 거래내역화면() {
     </div></div>
     <div class="stack" role="group" aria-label="카테고리 필터"><div class="chips">${카테고리칩}</div></div>
     <p class="small sub">카드를 누르면 거래가 선택되고, 모든 탭에서 그 거래 기준으로 보여 줘요.</p>
-    <div class="stack">${list.length ? list.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('') : '<div class="card empty"><p>조건에 맞는 거래가 없습니다.</p></div>'}</div>
+    <div class="stack">${list.length ? list.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('') : '<div class="card empty"><p>조건에 맞는 거래가 없어요.</p></div>'}</div>
     ${광고띠()}
     <button type="button" class="btn block" id="open-rules" data-act="sheet" data-sheet="rules">회비 운영 기준 보기 (${state.app.feeRules.length ? state.app.feeRules.length + '개 공개' : '미공개'})</button>
-    <p class="notice">거래는 동아리 명의(고유번호증) 계좌의 거래내역에서만 들어옵니다. 총무는 금액·일시·가맹점을 고칠 수 없고 사유·영수증만 붙입니다. 시연 거래는 가상 데이터이며 실제 은행과 연동되지 않았습니다.</p>
+    <p class="notice">거래는 동아리 명의(고유번호증) 계좌의 거래내역에서만 들어와요. 총무는 금액·일시·가맹점을 고칠 수 없고 사유와 영수증만 붙여요.</p>
     <button type="button" class="btn block" id="export-csv" data-act="export">학기 장부 내려받기 (CSV · 엑셀에서 열림)</button>
-    ${다음버튼([{ label: '결제 근거 보기 →', primary: true, attrs: state.app.selectedTx ? `id="next-evi" ${이동속성('evidence')}` : 'id="next-evi" data-act="sheet" data-sheet="select"' }])}`;
+    ${다음버튼([{ label: '결제 근거 보기', next: true, primary: true, attrs: state.app.selectedTx ? `id="next-evi" ${이동속성('evidence')}` : 'id="next-evi" data-act="sheet" data-sheet="select"' }])}`;
 }
 
 /* ---------- 영수증·결과 카드 조각 (결제 근거·모의 대조에서 재사용) ---------- */
 function 영수증카드(tx) {
   const 있음 = tx.receiptNo || tx.receiptAmount > 0;
   return `<section class="card sec-rc" aria-label="영수증 요약">
-    <div class="head"><span>영수증 요약</span><span class="small sub">시연용 영수증</span></div>
+    <div class="head"><span>영수증 요약</span></div>
     ${tx.photo ? `<img src="${tx.photo}" alt="총무가 올린 영수증 사진" style="display:block;max-width:100%;max-height:220px;margin:0 auto 8px;border-radius:8px;border:1px solid var(--line)">` : ''}
     ${있음 ? `<div class="receipt">
       <div class="rhead">${esc(tx.merchant || '(가상) 가맹점')}<br><span class="small">시연용 가상 영수증 · 실물 아님</span></div>
@@ -1059,7 +1086,7 @@ function 영수증카드(tx) {
       <div class="rl"><span>영수증 날짜</span><span>${esc(tx.receiptDate || '없음')}</span></div>
       <div class="rl"><span>품목</span><span>${esc(항목명(tx))}</span></div>
       <div class="rl rtotal"><span>합계</span><span>${tx.receiptAmount > 0 ? 원(tx.receiptAmount) : '없음'}</span></div>
-    </div>` : `<div class="receipt" style="text-align:center">영수증 미첨부<br><span class="small">비교할 영수증 정보가 없습니다</span></div>`}
+    </div>` : `<div class="receipt" style="text-align:center">영수증 미첨부<br><span class="small">비교할 영수증 정보가 없어요</span></div>`}
   </section>`;
 }
 function 결과카드(tx, 실행버튼) {
@@ -1067,27 +1094,28 @@ function 결과카드(tx, 실행버튼) {
   const r = CONFIG.results[code];
   return `<section class="card sec-res r-${code}" aria-label="대조 결과" aria-live="polite">
     <div class="head"><span>대조 결과</span>${대조배지(code)}</div>
-    ${tx.result ? `<p><b>${r.icon} ${r.label}</b>: ${esc(tx.result.detail)}</p><p class="small sub">대조 시각 ${시각표시(tx.result.at)}</p>`
-      : `<p>아직 모의 대조를 실행하지 않았습니다.</p>`}
-    <p class="small sub" style="margin-top:4px">시연에서는 가상 데이터를 규칙에 따라 판정합니다. 실제 서비스에서는 총무 휴대폰의 AI 문자 인식(OCR)이 영수증의 날짜·금액을 읽어 같은 규칙으로 비교합니다. 확인을 돕기 위한 결과이며, 잘잘못을 판단하지는 않습니다.</p>
+    ${tx.result ? `<p><b>${r.label}</b>: ${esc(tx.result.detail)}</p><p class="small sub">대조 시각 ${시각표시(tx.result.at)}</p>`
+      : `<p>아직 모의 대조를 실행하지 않았어요.</p>`}
+    <p class="small sub" style="margin-top:4px">시연에서는 가상 데이터를 같은 규칙으로 판정해요. 확인을 돕는 결과일 뿐 잘잘못을 판단하지는 않아요.</p>
     ${실행버튼 || ''}
   </section>`;
 }
 function 익명버튼(tx, 접두) {
-  if (!tx.reason) return `<p class="notice">⏳ 총무가 사유·영수증을 붙이면 익명 확인(${CONFIG.rules.periodDays}일)이 열립니다. 그 전에도 공개 Q&A로 물어볼 수 있습니다.</p>`;
-  if (역할() === 'treasurer') return `<p class="notice">총무는 자신이 처리한 지출에 의견을 낼 수 없고, 집계만 볼 수 있습니다.</p>`;
+  if (!tx.reason) return `<p class="notice">총무가 사유·영수증을 붙이면 익명 확인(${CONFIG.rules.periodDays}일)이 열려요. 그 전에도 공개 Q&A로 물어볼 수 있어요.</p>`;
+  if (역할() === 'treasurer') return `<p class="notice">총무는 자신이 처리한 지출에 의견을 낼 수 없고, 집계만 볼 수 있어요.</p>`;
   const mine = state.app.myVotes[tx.id];
   return `<div class="vote-btns" role="group" aria-label="익명 의견">
       <button type="button" class="btn" id="${접두}-ok" data-act="vote" data-v="ok" aria-pressed="${mine === 'ok'}">근거 확인</button>
       <button type="button" class="btn" id="${접두}-ask" data-act="vote" data-v="ask" aria-pressed="${mine === 'ask'}">설명 요청</button>
     </div>
     <button type="button" class="btn ghost block" id="${접두}-cancel" data-act="vote" data-v="cancel" ${mine ? '' : 'disabled'}>응답 취소</button>
-    <p class="small sub">${mine ? `내 응답: <b>${mine === 'ok' ? '근거 확인' : '설명 요청'}</b> (이 브라우저에만 저장, 다른 사람에게 공개되지 않음)` : '참여는 선택이며, 응답하지 않아도 근거를 확인할 수 있습니다.'}</p>`;
+    ${mine ? `<p class="small sub">내 응답: <b>${mine === 'ok' ? '근거 확인' : '설명 요청'}</b> (이 브라우저에만 저장, 다른 사람에게 공개되지 않음)</p>`
+      : 접두 === 'vote' ? '' : '<p class="small sub">참여는 선택이고, 응답하지 않아도 근거는 그대로 볼 수 있어요.</p>'}`;  // 익명 확인 탭은 위쪽 안내에 같은 말이 있어 뺀다
 }
 function QA목록(list, 접두) {
-  if (!list.length) return '<p class="small sub">아직 등록된 질문이 없습니다.</p>';
+  if (!list.length) return '<p class="small sub">아직 등록된 질문이 없어요.</p>';
   return list.map(q => `<article class="qa" aria-label="공개 질문 ${esc(q.id)}">
-    <div class="meta"><span>${esc(q.txId)} · 익명 부원 · ${시각표시(q.qAt)}</span>${q.a ? '<span class="badge b-done">✔ 답변 완료</span>' : '<span class="badge b-wait">⏳ 답변 대기</span>'}</div>
+    <div class="meta"><span>${esc(q.txId)} · 익명 부원 · ${시각표시(q.qAt)}</span>${q.a ? `<span class="badge b-done">${아이콘('check')}답변 완료</span>` : `<span class="badge b-wait">${아이콘('clock')}답변 대기</span>`}</div>
     <p class="q">Q. ${esc(q.q)}</p>
     ${q.a ? `<div class="a"><b>총무 공개 답변</b> · <span class="small sub">${시각표시(q.aAt)}</span><br>${esc(q.a)}</div>`
       : (총무인가() ? `<form data-form="answer" data-id="${esc(q.id)}" class="stack">
@@ -1101,7 +1129,7 @@ function 질문폼(접두, 고정tx) {
   const err = state.__qErr && state.__qErr.form === 접두 ? state.__qErr : {};
   return `<form data-form="question" data-prefix="${접두}" class="stack" novalidate>
     ${고정tx ? `<input type="hidden" name="tx" value="${esc(고정tx)}">` : 필드(`${접두}-qtx`, '질문할 거래', `<select id="${접두}-qtx" name="tx"><option value="">거래를 선택하세요</option>${opts}</select>`, err.tx)}
-    ${필드(`${접두}-q`, '공개 질문 (익명)', `<textarea id="${접두}-q" name="q" data-draft="q-${접두}" maxlength="300" placeholder="예: 이 지출의 인원 기준이 궁금합니다">${esc(state.app.drafts['q-' + 접두] || '')}</textarea>`, err.q, '특정 개인을 지목하지 말고 지출 내용에 대해 질문해 주세요. (최대 300자)')}
+    ${필드(`${접두}-q`, '공개 질문 (익명)', `<textarea id="${접두}-q" name="q" data-draft="q-${접두}" maxlength="300" placeholder="예: 이 지출의 인원 기준이 궁금해요">${esc(state.app.drafts['q-' + 접두] || '')}</textarea>`, err.q, '특정 개인을 지목하지 말고 지출 내용에 대해 질문해 주세요. (최대 300자)')}
     <button type="submit" class="btn primary" id="${접두}-qbtn">질문 등록하기</button></form>`;
 }
 
@@ -1120,7 +1148,7 @@ function 결제근거화면() {
         <dt>지출 항목</dt><dd>${esc(항목명(tx))}${tx.category ? ' · ' + esc(tx.category) : ''}</dd>
         <dt>가맹점</dt><dd>${esc(tx.merchant || '-')}</dd>
         <dt>가맹점 위치</dt><dd>${esc(tx.address || '-')}</dd>
-        <dt>지출 사유</dt><dd>${tx.reason ? esc(tx.reason) : '<b style="color:var(--warn)">⚠️ 사유 미기재</b>'}</dd>
+        <dt>지출 사유</dt><dd>${tx.reason ? esc(tx.reason) : '<b style="color:var(--warn)">미기재</b>'}</dd>
       </dl>
     </section>
     ${영수증카드(tx)}
@@ -1136,7 +1164,7 @@ function 결제근거화면() {
       <div class="stack">${QA목록(qs, 'evi')}</div>
       ${질문폼('evi', tx.id)}
     </section>
-    ${다음버튼([{ label: '모의 대조 하러 가기 →', primary: true, attrs: `id="next-cmp" ${이동속성('compare')}` }, { label: '다른 거래 선택', attrs: 'id="evi-pick" data-act="sheet" data-sheet="select"' }])}`;
+    ${다음버튼([{ label: '모의 대조 하러 가기', next: true, primary: true, attrs: `id="next-cmp" ${이동속성('compare')}` }, { label: '다른 거래 선택', attrs: 'id="evi-pick" data-act="sheet" data-sheet="select"' }])}`;
 }
 
 /* ---------- 탭3 모의 대조 (킬러 기능 2단계) ---------- */
@@ -1144,11 +1172,11 @@ function 모의대조화면() {
   const tx = 선택거래();
   if (!tx) return `<h2>모의 대조</h2>${빈선택('모의 대조')}`;
   const 실행됨 = !!tx.result;
-  const 표시 = (ok) => 실행됨 ? (ok ? '<span aria-label="같음">✅</span>' : '<span aria-label="다름">❌</span>') : '<span aria-label="미대조">⏳</span>';
+  const 표시 = (ok) => 실행됨 ? (ok ? `<span class="mk ok" role="img" aria-label="같음">${아이콘('ok')}</span>` : `<span class="mk bad" role="img" aria-label="다름">${아이콘('bad')}</span>`) : `<span class="mk wait" role="img" aria-label="미대조">${아이콘('clock')}</span>`;
   const 금액같음 = tx.receiptAmount > 0 && Number(tx.amount) === Number(tx.receiptAmount);
   const 날짜같음 = !!tx.receiptDate && tx.date === tx.receiptDate;
   return `<div class="title-row"><h2>모의 대조</h2><span class="small sub">${esc(tx.id)}</span></div>
-    <p class="small sub">거래 내역의 금액·날짜와 영수증 요약의 금액·날짜를 나란히 비교합니다.</p>
+    <p class="small sub">거래 내역의 금액·날짜와 영수증 요약의 금액·날짜를 나란히 비교해요.</p>
     <div class="card" style="padding:10px">
       <table class="cmp">
         <caption class="sr-only">거래 내역과 영수증 비교표</caption>
@@ -1156,23 +1184,23 @@ function 모의대조화면() {
         <tbody>
           <tr><th scope="row">금액</th><td>${원(tx.amount)}</td><td>${tx.receiptAmount > 0 ? 원(tx.receiptAmount) : '없음'}</td><td class="mark">${표시(금액같음)}</td></tr>
           <tr><th scope="row">날짜</th><td>${esc(tx.date)}</td><td>${esc(tx.receiptDate || '없음')}</td><td class="mark">${표시(날짜같음)}</td></tr>
-          <tr><th scope="row">번호</th><td>${esc(tx.id)}</td><td>${esc(tx.receiptNo || '없음')}</td><td class="mark">${실행됨 ? (tx.receiptNo ? '✔' : '❌') : '⏳'}</td></tr>
-          <tr><th scope="row">사유</th><td colspan="2">${tx.reason ? esc(tx.reason) : '미기재'}</td><td class="mark">${실행됨 ? (tx.reason ? '✔' : '❌') : '⏳'}</td></tr>
+          <tr><th scope="row">번호</th><td>${esc(tx.id)}</td><td>${esc(tx.receiptNo || '없음')}</td><td class="mark">${표시(!!tx.receiptNo)}</td></tr>
+          <tr><th scope="row">사유</th><td colspan="2">${tx.reason ? esc(tx.reason) : '미기재'}</td><td class="mark">${표시(!!tx.reason)}</td></tr>
         </tbody>
       </table>
     </div>
     <button type="button" class="btn primary block tall" id="cmp-run" data-act="run">모의 대조 실행</button>
     ${결과카드(tx)}
     <div class="card"><h3>판정 규칙</h3><ul class="small" style="margin:0;padding-left:18px">
-      <li>✅ 일치: ${CONFIG.results.match.desc}</li><li>❌ 불일치: ${CONFIG.results.mismatch.desc}</li><li>⚠️ 확인 필요: ${CONFIG.results.need.desc}</li></ul></div>
-    <p class="notice strong">AI 문자 인식은 총무 휴대폰 안에서 처리해서 서버 비용이 들지 않고, 읽지 못한 값은 '확인 필요'로 남깁니다. 이 시연은 은행이나 AI에 연결하지 않습니다.</p>
-    ${다음버튼([{ label: '익명 의견 남기기 →', primary: true, attrs: `id="next-vote" ${이동속성('vote')}` }, { label: '최종 상태 보기 →', attrs: `id="cmp-status" ${이동속성('status')}` }])}`;
+      <li><b>일치</b>: ${CONFIG.results.match.desc}</li><li><b>불일치</b>: ${CONFIG.results.mismatch.desc}</li><li><b>확인 필요</b>: ${CONFIG.results.need.desc}</li></ul></div>
+    <p class="notice">실제 서비스에서는 총무 휴대폰 안의 AI 문자 인식(OCR)이 영수증의 날짜·금액을 읽어 같은 규칙으로 비교해요. 휴대폰 안에서 처리해서 서버 비용이 들지 않고, 읽지 못한 값은 '확인 필요'로 남겨요. 이 시연은 은행이나 AI에 연결하지 않아요.</p>
+    ${다음버튼([{ label: '익명 의견 남기기', next: true, primary: true, attrs: `id="next-vote" ${이동속성('vote')}` }, { label: '최종 상태 보기', next: true, attrs: `id="cmp-status" ${이동속성('status')}` }])}`;
 }
 
 /* ---------- 탭4 익명 확인 ---------- */
 function 익명확인화면() {
   const tx = 선택거래();
-  const 넛지 = `<p class="notice strong">참여는 선택이며, 응답하지 않아도 근거를 확인할 수 있습니다. 확인 기간(${CONFIG.rules.periodDays}일) 안에 응답하지 않으면 '이의 없음'으로 처리됩니다.</p>`;
+  const 넛지 = `<p class="notice strong">참여는 선택이고, 응답하지 않아도 근거는 그대로 볼 수 있어요. 확인 기간(${CONFIG.rules.periodDays}일) 안에 응답하지 않으면 '이의 없음'으로 처리돼요.</p>`;
   if (!tx) return `<h2>익명 확인</h2>${넛지}${빈선택('익명 확인')}`;
   const v = 집계(tx.id);
   const okp = v.total ? v.ok / v.total * 100 : 0;
@@ -1190,10 +1218,10 @@ function 익명확인화면() {
         <div class="metric"><b>${v.ok}</b><span>근거 확인</span></div>
         <div class="metric"><b>${v.ask}</b><span>설명 요청</span></div>
       </div>
-      <p class="small sub" style="margin-top:8px">개인별 투표 기록과 신원은 표시하지 않고 집계 숫자만 보여 줍니다.</p>
+      <p class="small sub" style="margin-top:8px">개인별 투표 기록과 신원은 표시하지 않고 집계 숫자만 보여 줘요.</p>
     </section>
-    <p class="notice">브라우저 안에 저장되는 시연 데이터입니다. 서버 기반 익명성은 구현되지 않았습니다.</p>
-    ${다음버튼([{ label: '최종 상태 보기 →', primary: true, attrs: `id="next-status" ${이동속성('status')}` }])}`;
+    <p class="notice">시연 데이터는 이 브라우저에만 저장돼요. 서버 기반 익명성은 아직 구현하지 않았어요.</p>
+    ${다음버튼([{ label: '최종 상태 보기', next: true, primary: true, attrs: `id="next-status" ${이동속성('status')}` }])}`;
 }
 
 /* ---------- 탭5 최종 상태 ---------- */
@@ -1204,38 +1232,37 @@ function 최종상태화면() {
   const p = 확인기간(tx);
   const 답변 = state.app.qna.filter(q => q.txId === tx.id && q.a).length;
   if (!tx.reason) return `<div class="title-row"><h2>최종 상태</h2><span class="small sub">${esc(tx.id)}</span></div>
-    <section class="card status-card"><div class="stat-big"><span class="ic" aria-hidden="true">⏳</span>총무 근거 대기</div>
+    <section class="card status-card"><div class="stat-big"><span class="ic">${아이콘('clock')}</span>총무 근거 대기</div>
     <p class="small sub">${esc(tx.merchant || '')} · ${원(tx.amount)} · 계좌 거래 ${esc(tx.date)}</p>
-    <p class="notice" style="margin-top:8px">계좌에서 결제가 확인됐지만 총무가 아직 사유·영수증을 붙이지 않았습니다. 근거가 올라오면 ${CONFIG.rules.periodDays}일 익명 확인이 시작됩니다. 궁금하면 공개 Q&A로 물어볼 수 있습니다.</p></section>
-    ${다음버튼([{ label: '공개 Q&A로 가기 →', primary: true, attrs: `id="next-qna" ${이동속성('qna')}` }])}`;
+    <p class="notice" style="margin-top:8px">계좌에서 결제가 확인됐지만 총무가 아직 사유·영수증을 붙이지 않았어요. 근거가 올라오면 ${CONFIG.rules.periodDays}일 익명 확인이 시작돼요. 궁금하면 공개 Q&A로 물어볼 수 있어요.</p></section>
+    ${다음버튼([{ label: '공개 Q&A로 가기', next: true, primary: true, attrs: `id="next-qna" ${이동속성('qna')}` }])}`;
   const 전체 = state.app.txs.map(t => { const a = 집계(t.id); return `<li class="row" style="justify-content:space-between"><span>${esc(t.id)} · ${esc(항목명(t))}</span>${상태배지(a.code, a.total)}</li>`; }).join('');
   return `<div class="title-row"><h2>최종 상태</h2><span class="small sub">${esc(tx.id)}</span></div>
     <section class="card status-card s-${v.code}" aria-live="polite">
-      <div class="stat-big"><span class="ic" aria-hidden="true">${v.code === 'explain' ? '💬' : '☑️'}</span>${v.code === 'explain' ? '설명 필요' : '확인 완료'}</div>
+      <div class="stat-big"><span class="ic">${아이콘(v.code === 'explain' ? 'message' : 'ok')}</span>${v.code === 'explain' ? '설명 필요' : '확인 완료'}</div>
       <p class="small sub">${esc(항목명(tx))} · ${원(tx.amount)} · 대조 ${대조배지(결과코드(tx))}</p>
       ${v.code === 'explain'
-        ? `<p class="notice" style="margin-top:8px">'설명 필요'는 총무의 추가 설명이 필요한 상태일 뿐, 횡령·부정행위가 확정되었다는 뜻이 아닙니다.${답변 ? ` 현재 공개 답변 ${답변}건이 등록되어 있습니다.` : ''}</p>`
-        : `<p class="notice" style="margin-top:8px">이의 비율이 기준 미만입니다.${v.total === 0 ? ' 아직 응답이 없으며, 확인 기간 안에 응답하지 않은 부원은 미리 안내한 대로 \'이의 없음\'으로 처리됩니다.' : ''}</p>`}
+        ? `<p class="notice" style="margin-top:8px">'설명 필요'는 총무의 추가 설명이 필요한 상태일 뿐, 횡령·부정행위가 확정되었다는 뜻이 아니에요.${답변 ? ` 지금 공개 답변 ${답변}건이 등록되어 있어요.` : ''}</p>`
+        : `<p class="notice" style="margin-top:8px">이의 비율이 기준보다 낮아요.${v.total === 0 ? ' 아직 응답이 없고, 확인 기간 안에 응답하지 않은 부원은 미리 안내한 대로 \'이의 없음\'으로 처리돼요.' : ''}</p>`}
       <div class="metrics" style="margin-top:10px">
         <div class="metric"><b>${CONFIG.rules.members}명</b><span>행사 참여 부원(가상)</span></div>
         <div class="metric"><b>${v.ask}</b><span>설명 요청(이의)</span></div>
         <div class="metric"><b>${(v.ratio * 100).toFixed(1)}%</b><span>이의 비율</span></div>
-        <div class="metric"><b>${v.nores}</b><span>미응답 → 이의 없음</span></div>
+        <div class="metric"><b>${v.nores}</b><span>미응답(이의 없음)</span></div>
       </div>
     </section>
     <section class="card"><h3>판정 규칙</h3>
       <ul class="small" style="margin:0;padding-left:18px">
         <li>확인 기간 ${CONFIG.rules.periodDays}일: ${p.start} ~ ${p.end}</li>
         <li>이의 비율 = 설명 요청 수 ÷ 행사 참여 부원 수(가상 ${CONFIG.rules.members}명)</li>
-        <li>${CONFIG.rules.threshold * 100}% 미만 → 확인 완료 · ${CONFIG.rules.threshold * 100}% 이상 → 설명 필요</li>
-        <li>확인 기간 안에 응답하지 않으면 '이의 없음'으로 집계합니다(운영 규칙, 확인 요청 때 먼저 알림). 미응답은 '근거 확인'(적극 동의)으로 세지 않으며, 응답하지 않았다는 뜻일 뿐 동의했다는 뜻이 아닙니다.</li>
-        <li>한두 명의 요청만으로 '설명 필요'가 되지 않도록 분모를 응답자가 아닌 참여 부원 전체로 둡니다. 요청은 Q&A로 언제든 답변받을 수 있습니다.</li>
+        <li>이의 비율 ${CONFIG.rules.threshold * 100}% 미만이면 확인 완료, 이상이면 설명 필요</li>
+        <li>확인 기간 안에 응답하지 않으면 '이의 없음'으로 집계해요(운영 규칙, 확인 요청 때 먼저 알림). 미응답은 '근거 확인'(적극 동의)으로 세지 않고, 응답하지 않았다는 뜻일 뿐 동의했다는 뜻이 아니에요.</li>
+        <li>한두 명의 요청만으로 '설명 필요'가 되지 않도록 분모를 응답자가 아닌 참여 부원 전체로 둬요. 요청은 Q&A로 언제든 답변받을 수 있어요.</li>
       </ul>
-      <p class="notice strong" style="margin-top:8px">이 기준은 팀의 설계 가정이며 실제 회계·법적 판단 기준이나 검증된 업계 표준이 아닙니다.</p>
-      <p class="notice" style="margin-top:6px">확인 기간은 시연 데이터 기준이며 자동 검증되지 않습니다.</p>
+      <p class="notice strong" style="margin-top:8px">이 기준은 팀의 설계 가정이에요. 실제 회계·법적 판단 기준이나 검증된 업계 표준이 아니고, 확인 기간도 시연 데이터 기준이라 자동으로 검증되지 않아요.</p>
     </section>
     <details class="card"><summary><b>전체 거래 상태 한눈에</b></summary><ul class="stack small" style="list-style:none;margin:8px 0 0;padding:0">${전체}</ul></details>
-    ${다음버튼([{ label: '공개 Q&A로 가기 →', primary: true, attrs: `id="next-qna" ${이동속성('qna')}` }])}`;
+    ${다음버튼([{ label: '공개 Q&A로 가기', next: true, primary: true, attrs: `id="next-qna" ${이동속성('qna')}` }])}`;
 }
 
 /* ---------- 탭6 공개 Q&A ---------- */
@@ -1246,13 +1273,12 @@ function 공개QA화면() {
   const list = state.app.qna.filter(q => 범위 === 'all' || q.txId === tx.id).slice().reverse();
   const 대기 = state.app.qna.filter(q => !q.a).length;
   return `<div class="title-row"><h2>공개 Q&A</h2><span class="small sub">답변 대기 ${대기}건</span></div>
-    <div class="card" style="border-left:5px solid var(--warn)"><p>특정 개인을 지목하지 말고 지출 내용에 대해 질문해 주세요.</p>
-      <p class="small sub">등록된 질문과 답변은 누구나 공개 열람할 수 있습니다. 질문자 신원은 표시하지 않습니다.</p></div>
+    <p class="notice">등록된 질문과 답변은 누구나 볼 수 있고, 질문자 신원은 표시하지 않아요.</p>
     <div class="chips" role="group" aria-label="질문 범위">
       <button type="button" class="chip" id="qs-sel" data-act="filter" data-k="qnaScope" data-v="selected" aria-pressed="${범위 === 'selected'}" ${tx ? '' : 'disabled'}>선택한 거래${tx ? ' (' + esc(tx.id) + ')' : ''}</button>
       <button type="button" class="chip" id="qs-all" data-act="filter" data-k="qnaScope" data-v="all" aria-pressed="${범위 === 'all'}">전체 질문</button>
     </div>
-    ${역할() === 'member' ? `<section class="card"><h3>질문 남기기</h3>${질문폼('qna')}</section>` : `<p class="notice">총무는 미답변 질문 아래 입력창에서 공개 답변을 등록할 수 있습니다.</p>`}
+    ${역할() === 'member' ? `<section class="card"><h3>질문 남기기</h3>${질문폼('qna')}</section>` : `<p class="notice">총무는 미답변 질문 아래 입력창에서 공개 답변을 등록할 수 있어요.</p>`}
     <section class="stack" aria-label="질문 목록">${QA목록(list, 'qna')}</section>
     ${다음버튼([{ label: '거래 내역으로 돌아가기', primary: true, attrs: `id="next-ledger" ${이동속성('ledger')}` }])}`;
 }
@@ -1279,7 +1305,7 @@ function 혜택화면() {
       <p class="small sub">${esc(s.desc)}</p>
       ${s.wallet ? 인출바(s.wallet) : ''}
       ${s.items.map((it, i) => `<div class="perk"><span class="info"><b>${esc(it.title)}</b><span class="val">${esc(it.value)}</span><span class="meta">${esc(it.meta)}</span></span>
-        <button type="button" class="btn" id="perk-${s.key}-${i}" data-act="perk">${esc(s.action)}</button></div>`).join('')}
+        <button type="button" class="btn primary" id="perk-${s.key}-${i}" data-act="perk">${esc(s.action)}</button></div>`).join('')}
       ${s.note ? `<p class="hint">${esc(s.note)}</p>` : ''}
     </section>`;
   return `<div class="title-row"><h2>혜택</h2><span class="small sub">목업</span></div>
@@ -1290,19 +1316,19 @@ function 혜택화면() {
 
 /* ---------- 탭8 총무 관리 ---------- */
 function 총무관리화면() {
-  if (!총무인가()) return '<p>권한이 없습니다.</p>';
+  if (!총무인가()) return '<p>권한이 없어요.</p>';
   const d = state.app.drafts.tx || {};
   const e = state.__txErr || {};
   const 미답변 = state.app.qna.filter(q => !q.a);
   const 입력 = (id, type, extra) => `<input id="tx-${id}" name="${id}" type="${type}" value="${esc(d[id] || '')}" data-draft="tx.${id}" ${extra || ''} aria-describedby="tx-${id}-err">`;
   const catOpts = CONFIG.categories.map(c => `<option ${d.category === c ? 'selected' : ''}>${c}</option>`).join('');
   return `<div class="title-row"><h2>총무 관리</h2><span class="small sub">총무 전용</span></div>
-    <button type="button" class="card" id="adm-unans" data-act="go" data-page="qna" style="text-align:left;cursor:pointer;border-left:5px solid var(--warn)">
-      <b>미답변 공개 질문 ${미답변.length}건</b><br><span class="small sub">${미답변.length ? '눌러서 공개 Q&A에서 바로 답변하기 →' : '모든 질문에 답변했습니다'}</span></button>
+    <button type="button" class="card" id="adm-unans" data-act="go" data-page="qna" style="text-align:left;cursor:pointer">
+      <b>미답변 공개 질문 ${미답변.length}건</b><br><span class="small sub">${미답변.length ? '누르면 공개 Q&A에서 바로 답변할 수 있어요' : '모든 질문에 답변했어요'}</span></button>
     <section class="card stack" aria-label="계좌 거래내역 가져오기">
       <h3>동아리 명의 계좌 거래내역 가져오기</h3>
-      <p class="small sub">시연용 가상 거래내역 CSV를 올리면 결제마다 결제 근거 카드가 생깁니다. 금액·일시·가맹점은 계좌 원본 그대로이며 총무가 고칠 수 없습니다. (실제 은행 계좌와 연결되지 않습니다)</p>
-      <label class="btn block" for="csv-file" style="text-align:center;cursor:pointer">거래내역 CSV 선택</label>
+      <p class="small sub">시연용 가상 거래내역 CSV를 올리면 결제마다 결제 근거 카드가 생겨요. 금액·일시·가맹점은 계좌 원본 그대로라 총무가 고칠 수 없어요.</p>
+      <label class="btn primary block" for="csv-file" style="text-align:center;cursor:pointer">거래내역 CSV 선택</label>
       <input id="csv-file" type="file" accept=".csv,text/csv" data-act="csvfile" class="sr-only">
       <div class="grid2"><button type="button" class="btn" id="csv-sample-dl" data-act="csvsample">샘플 CSV 받기</button>
       <button type="button" class="btn" id="csv-sample-load" data-act="csvdemo">샘플 거래 불러오기</button></div>
@@ -1311,8 +1337,8 @@ function 총무관리화면() {
     ${근거입력폼()}
     <section class="card stack" aria-label="회비 운영 기준 공개">
       <h3>회비 운영 기준 공개</h3>
-      <p class="small sub">납부액·면제 기준 등 동아리가 실제로 정한 기준만 공개하세요. 부원은 거래 내역 탭에서 볼 수 있습니다.</p>
-      <ul class="small" style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="sub">(${시각표시(r.at)})</span></li>`).join('') || '<li class="sub">아직 공개된 기준이 없습니다.</li>'}</ul>
+      <p class="small sub">납부액·면제 기준 등 동아리가 실제로 정한 기준만 공개하세요. 부원은 거래 내역 탭에서 볼 수 있어요.</p>
+      <ul class="small" style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="sub">(${시각표시(r.at)})</span></li>`).join('') || '<li class="sub">아직 공개된 기준이 없어요.</li>'}</ul>
       <form data-form="rule" class="stack" novalidate>
         ${필드('rule-text', '공개할 기준 한 줄', `<input id="rule-text" type="text" maxlength="100" data-draft="rule" value="${esc(state.app.drafts.rule || '')}">`, state.__ruleErr || '')}
         <button type="submit" class="btn" id="rule-btn">기준 공개</button>
@@ -1320,19 +1346,19 @@ function 총무관리화면() {
     </section>
     <section class="card stack" aria-label="등록된 가상 거래">
       <h3>계좌 거래 ${state.app.txs.length}건</h3>
-      <p class="small sub">투명성을 위해 등록된 지출은 삭제할 수 없습니다. 정정이 필요하면 공개 Q&A에 설명을 남겨 주세요.</p>
+      <p class="small sub">등록된 지출은 투명성을 위해 삭제할 수 없어요. 정정이 필요하면 공개 Q&A에 설명을 남겨 주세요.</p>
       ${state.app.txs.slice().reverse().map(t => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0">
         <span class="small"><b>${esc(t.id)}</b> ${esc(항목명(t))}<br>${원(t.amount)} · ${esc(t.date)}</span>
         <span class="row">${대조배지(결과코드(t))}<button type="button" class="btn" id="adm-evi-${esc(t.id)}" data-act="admevi" data-id="${esc(t.id)}">근거 입력</button><button type="button" class="btn" id="adm-open-${esc(t.id)}" data-act="admopen" data-id="${esc(t.id)}">대조</button></span></div>`).join('')}
     </section>
     <button type="button" class="btn block" id="adm-logs" data-act="sheet" data-sheet="logs">활동 로그 보기</button>
-    ${다음버튼([{ label: '거래 내역 확인하기 →', primary: true, attrs: `id="next-added" ${이동속성('ledger')}` }])}`;
+    ${다음버튼([{ label: '거래 내역 확인하기', next: true, primary: true, attrs: `id="next-added" ${이동속성('ledger')}` }])}`;
 }
 // 결제 근거 입력: 계좌 원본(금액·일시·가맹점)은 읽기 전용, 총무는 사유·영수증만 붙인다
 function 근거입력폼() {
   const 대상 = state.app.txs.filter(t => !t.reason || !t.item || (!t.receiptNo && !t.photo));
   const sel = 찾기(state.app.eviTarget) || 대상[0] || null;
-  if (!sel) return `<section class="card"><h3>결제 근거 입력</h3><p class="small sub">근거가 비어 있는 거래가 없습니다. 위에서 계좌 거래내역을 가져오면 여기에 표시됩니다.</p></section>`;
+  if (!sel) return `<section class="card"><h3>결제 근거 입력</h3><p class="small sub">근거가 비어 있는 거래가 없어요. 위에서 계좌 거래내역을 가져오면 여기에 나타나요.</p></section>`;
   const d = (state.app.drafts.evi && state.app.drafts.evi.id === sel.id) ? state.app.drafts.evi : { id: sel.id, item: sel.item || '', category: sel.category || '', reason: sel.reason || '', receiptNo: sel.receiptNo || '', receiptDate: sel.receiptDate || '', receiptAmount: sel.receiptAmount ? String(sel.receiptAmount) : '' };
   const e = state.__eviErr || {};
   const 입력 = (k, type, extra) => `<input id="evi-${k}" name="${k}" type="${type}" value="${esc(d[k] || '')}" ${extra || ''}>`;
@@ -1344,22 +1370,22 @@ function 근거입력폼() {
     <dl class="kv" style="background:var(--muted-soft);border-radius:8px;padding:8px">
       <dt>계좌 원본</dt><dd><b>${원(sel.amount)}</b> · ${esc(sel.date)} ${esc(sel.time || '')}</dd>
       <dt>가맹점</dt><dd>${esc(sel.merchant || '-')}</dd><dt>위치</dt><dd>${esc(sel.address || '-')}</dd></dl>
-    <p class="small sub">위 값은 계좌 거래내역 그대로라 수정할 수 없습니다.</p>
+    <p class="small sub">위 값은 계좌 거래내역 그대로라 수정할 수 없어요.</p>
     ${필드('evi-item', '지출 항목 *', 입력('item', 'text', 'maxlength="40" placeholder="예: 종강총회 식비"'), e.item)}
     <div class="grid2">
       ${필드('evi-category', '카테고리 *', `<select id="evi-category" name="category"><option value="">선택</option>${catOpts}</select>`, e.category)}
       ${필드('evi-reason', '지출 사유 *', 입력('reason', 'text', 'maxlength="80" placeholder="예: 참석 20명 식사"'), e.reason)}
     </div>
-    <label class="btn block" for="evi-photo" style="text-align:center;cursor:pointer">영수증 사진 올리기${sel.photo ? ' (올림 ✓)' : ''}</label>
+    <label class="btn block" for="evi-photo" style="text-align:center;cursor:pointer">${sel.photo ? '영수증 사진 다시 올리기' : '영수증 사진 올리기'}</label>
     <input id="evi-photo" type="file" accept="image/*" data-act="evphoto" class="sr-only">
     <div id="evi-preview">${state.__photoPreview ? `<img src="${state.__photoPreview}" alt="올릴 영수증 미리보기" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line)">` : ''}</div>
-    <p class="small sub">실제 서비스에서는 휴대폰 안의 AI 문자 인식이 사진에서 영수증 번호·날짜·금액을 읽어 아래 칸을 채웁니다. 시연에서는 사진을 이 브라우저에만 저장하고, 값은 직접 입력합니다.</p>
+    <p class="small sub">실제 서비스에서는 휴대폰 안의 AI 문자 인식이 사진에서 영수증 번호·날짜·금액을 읽어 아래 칸을 채워요. 시연에서는 사진을 이 브라우저에만 저장하고, 값은 직접 입력해요.</p>
     <div class="grid2">
       ${필드('evi-receiptNo', '영수증 번호', 입력('receiptNo', 'text', 'maxlength="20"'), e.receiptNo)}
       ${필드('evi-receiptDate', '영수증 날짜', 입력('receiptDate', 'date'), e.receiptDate)}
     </div>
     ${필드('evi-receiptAmount', '영수증 금액(원)', 입력('receiptAmount', 'text', 'inputmode="numeric"'), e.receiptAmount)}
-    <button type="submit" class="btn primary block tall" id="evi-save">근거 저장 → 대조로</button>
+    <button type="submit" class="btn primary block tall" id="evi-save">근거 저장하고 대조하기</button>
   </form>`;
 }
 
@@ -1371,17 +1397,17 @@ function 시트내용(name) {
       <span class="row">${대조배지(결과코드(t))}</span></button>`).join('') };
   }
   if (name === 'settings') {
-    const 역할명 = 역할() === 'treasurer' ? '👑 총무' : 역할() === 'member' ? '👤 부원' : '로그인 전';
+    const 역할명 = 역할() === 'treasurer' ? '총무' : 역할() === 'member' ? '부원' : '로그인 전';
     return { title: '설정', body: `
       <dl class="kv"><dt>현재 역할</dt><dd>${역할명} (시연용)</dd><dt>마지막 저장</dt><dd>${state.app.lastSaved ? 시각표시(state.app.lastSaved) : '아직 없음'}</dd>
       <dt>저장 위치</dt><dd class="small">이 브라우저 localStorage "${esc(CONFIG.storageKey)}"</dd></dl>
-      <p class="small sub">입력은 바뀔 때마다 자동 저장됩니다.</p>
+      <p class="small sub">입력은 바뀔 때마다 자동으로 저장돼요.</p>
       <div class="grid2"><button type="button" class="btn" id="set-save" data-act="savenow">지금 저장</button>
       <button type="button" class="btn" id="set-restore" data-act="restore">저장 데이터 복원</button></div>
-      <label class="check" for="set-mvp"><input type="checkbox" id="set-mvp" data-act="mvpchk" ${state.mvpMode ? 'checked' : ''}><span>💡 MVP 설명 모드<small>모든 화면 맨 위에 설계 해설 카드를 보여 줍니다</small></span></label>
+      <label class="check" for="set-mvp"><input type="checkbox" id="set-mvp" data-act="mvpchk" ${state.mvpMode ? 'checked' : ''}><span>MVP 설명 모드<small>모든 화면 맨 위에 설계 해설 카드를 보여 줘요</small></span></label>
       <button type="button" class="btn block" id="set-logs" data-act="sheet" data-sheet="logs">활동 로그</button>
       <button type="button" class="btn block" id="set-mvpsheet" data-act="sheet" data-sheet="mvp">MVP 해설·단위경제</button>
-      <button type="button" class="btn block" id="set-check" data-act="sheet" data-sheet="checklist">✅ 다크패턴 점검표</button>
+      <button type="button" class="btn block" id="set-check" data-act="sheet" data-sheet="checklist">다크패턴 점검표</button>
       <button type="button" class="btn block" id="set-privacy" data-act="sheet" data-sheet="privacy">개인정보 처리방침</button>
       <button type="button" class="btn danger block" id="set-reset" data-act="resetask">데모 데이터 초기화</button>
       ${역할() ? '<button type="button" class="btn primary block" id="set-logout" data-act="logout">로그아웃</button>' : ''}` };
@@ -1389,11 +1415,11 @@ function 시트내용(name) {
   if (name === 'checklist') {
     const done = Object.values(state.app.checklist).filter(Boolean).length;
     const total = CONFIG.darkPatterns.checklist.reduce((a, g) => a + g.items.length, 0);
-    return { title: '✅ 다크패턴 점검표', body: `<p class="small sub">항목을 직접 확인하고 체크하세요. (${done}/${total} 확인)</p>` +
+    return { title: '다크패턴 점검표', body: `<p class="small sub">항목을 직접 확인하고 체크하세요. (${done}/${total} 확인)</p>` +
       CONFIG.darkPatterns.checklist.map(g => `<fieldset style="border:0;padding:0;margin:0"><legend><b>${esc(g.title)}</b></legend>
         ${g.items.map(i => `<label class="check" for="chk-${i.id}"><input type="checkbox" id="chk-${i.id}" data-act="check" data-id="${i.id}" ${state.app.checklist[i.id] ? 'checked' : ''}>
         <span>${esc(i.text)}<small>이 앱에서: ${esc(i.how)}</small></span></label>`).join('')}</fieldset>`).join('') +
-      `<p class="notice">체크 결과는 팀 자체 점검용이며 외부 인증이 아닙니다.</p>` };
+      `<p class="notice">체크 결과는 팀 자체 점검용이고 외부 인증이 아니에요.</p>` };
   }
   if (name === 'mvp') {
     const u = state.app.ue || {};
@@ -1410,31 +1436,31 @@ function 시트내용(name) {
       ${CONFIG.mvp.items.map(i => `<div class="card"><b>${i.no} ${esc(i.title)}</b><p class="small">${esc(i.text)}</p></div>`).join('')}
       <div class="mvp-card"><b>한 줄 정리</b><p>${esc(CONFIG.mvp.summary)}</p></div>
       <div class="card"><h3>부원 여정지도</h3><ol class="journey">${CONFIG.journey.steps.map((s, i) => `<li class="${i === CONFIG.journey.lowestIndex ? 'low' : ''}">${i + 1}. ${esc(s)}${i === CONFIG.journey.lowestIndex ? ' (최저점: ' + esc(CONFIG.journey.emotions) + ')' : ''}</li>`).join('')}</ol>
-        <p class="small sub" style="margin-top:6px">킬러 기능은 최저점에서 총무에게 묻지 않고도 근거를 확인하게 설계했습니다.</p></div>
-      <div class="card"><h3>인터뷰 요약 (부원 5명)</h3>${CONFIG.interviews.map(i => `<p class="small"><b>${i.id}</b> ${esc(i.title)}: ${esc(i.pain)}<br><span class="sub">→ ${esc(i.ui)}</span></p>`).join('')}
+        <p class="small sub" style="margin-top:6px">킬러 기능은 최저점에서 총무에게 묻지 않고도 근거를 확인하게 설계했어요.</p></div>
+      <div class="card"><h3>인터뷰 요약 (부원 5명)</h3>${CONFIG.interviews.map(i => `<p class="small"><b>${i.id}</b> ${esc(i.title)}: ${esc(i.pain)}<br><span class="sub">화면 반영: ${esc(i.ui)}</span></p>`).join('')}
         <p class="small" style="margin-top:6px"><b>공통 인사이트</b> ${esc(CONFIG.insight)}</p></div>
       <div class="card"><h3>페르소나</h3>${CONFIG.personas.map(p => `<p class="small"><b>${esc(p.name)}</b> · ${esc(p.who)}<br>상황: ${esc(p.situation)}${p.say ? `<br>겉말: "${esc(p.say)}"` : ''}<br>속마음/고통: ${esc(p.think)}<br>원하는 결과: ${esc(p.want)}<br><span class="sub">근거: ${esc(p.basis)}</span></p>`).join('')}</div>
       <div class="card"><h3>단위경제 (동아리 1곳·월 · 팀 모델 v43 · 가정 포함)</h3>
         <table class="ue"><thead><tr><th>지표</th><th>현재 값</th><th>계산식·비고</th></tr></thead><tbody>
         ${CONFIG.unitEconomics.metrics.map(m => `<tr><td>${esc(m.name)}</td><td>${esc(m.value)}</td><td>${esc(m.note)}</td></tr>`).join('')}</tbody></table>
-        <p class="small sub" style="margin-top:8px">아래 칸은 팀이 가정을 넣어 보는 계산기입니다. 비워 두면 계산하지 않으며, 결과는 가정일 뿐 확정 수치가 아닙니다.</p>
+        <p class="small sub" style="margin-top:8px">아래 칸은 팀이 가정을 넣어 보는 계산기예요. 비워 두면 계산하지 않아요.</p>
         <div class="grid2">${ueIn('fee', '월 매출(원)')}${ueIn('cost', '월 비용(원)')}${ueIn('keep', '유지 기간(개월)')}${ueIn('spend', '획득 비용 합계(원)')}${ueIn('cust', '획득 고객 수')}</div>
         <dl class="kv" id="ue-out" style="margin-top:8px"><dt>월 공헌이익</dt><dd>${표시(공헌, 원)}</dd><dt>LTV</dt><dd>${표시(ltv, 원)}</dd><dt>CAC</dt><dd>${표시(cac, v => 원(Math.round(v)))}</dd>
           <dt>회수 기간</dt><dd>${표시(회수, v => v.toFixed(1) + '개월')}</dd><dt>LTV/CAC</dt><dd>${표시(비율, v => v.toFixed(2))}</dd></dl>
-        <p class="notice" style="margin-top:6px">계산기 결과는 입력한 가정값 기준이며, 위 표의 값도 파일럿에서 검증할 가정입니다.</p></div>
+        <p class="notice" style="margin-top:6px">계산기 결과는 입력한 가정값 기준이고, 위 표의 값도 파일럿에서 검증할 가정이에요.</p></div>
       <div class="card"><h3>규제 관련 안내</h3><ul class="small" style="margin:0;padding-left:18px">${CONFIG.darkPatterns.regulatory.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
       <div class="card"><h3>다크패턴 회피 원칙</h3><ul class="small" style="margin:0;padding-left:18px">${CONFIG.darkPatterns.principles.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` };
   }
   if (name === 'logs') {
     const logs = state.app.logs.slice().reverse();
-    return { title: '활동 로그 (시연용)', body: `<p class="notice strong">브라우저에 저장되는 시연용 로그입니다. 실제 삭제 불가능한 서버 로그가 아니며, 데이터 초기화나 브라우저 데이터 삭제 시 함께 사라집니다. 앱 안에는 개별 삭제 버튼이 없습니다.</p>
-      <p class="small sub">익명성을 위해 의견 제출은 '제출했다'는 사실만 남기고 선택 내용은 기록하지 않습니다. 총 ${logs.length}건</p>
+    return { title: '활동 로그 (시연용)', body: `<p class="notice strong">이 브라우저에 저장되는 시연용 로그예요. 지울 수 없는 서버 로그가 아니라서 데이터를 초기화하거나 브라우저 데이터를 지우면 함께 사라져요. 앱 안에는 개별 삭제 버튼이 없어요.</p>
+      <p class="small sub">익명성을 위해 의견 제출은 '제출했다'는 사실만 남기고 선택 내용은 기록하지 않아요. 총 ${logs.length}건</p>
       <ul class="loglist">${logs.map(l => `<li><span class="sub">${시각표시(l.t)} · ${esc(l.role)}</span><span>${esc(l.action)}${l.tx ? ` <b>${esc(l.tx)}</b>` : ''}</span></li>`).join('')}</ul>` };
   }
   if (name === 'rules') {
     return { title: '회비 운영 기준', body: `<p class="small">${esc(CONFIG.feeRules.intro)}</p>
       ${state.app.feeRules.length ? `<ul style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="small sub">(총무 공개 · ${시각표시(r.at)})</span></li>`).join('')}</ul>`
-        : '<div class="card empty"><p>아직 총무가 공개한 회비 운영 기준이 없습니다.</p><p class="small sub">궁금하다면 공개 Q&A에서 익명으로 물어볼 수 있어요.</p></div>'}` };
+        : '<div class="card empty"><p>아직 총무가 공개한 회비 운영 기준이 없어요.</p><p class="small sub">궁금하다면 공개 Q&A에서 익명으로 물어볼 수 있어요.</p></div>'}` };
   }
   if (name === 'privacy') return { title: '개인정보 처리방침', body: 처리방침본문() };
   return null;
@@ -1461,7 +1487,7 @@ function 시트그리기() {
   layer.innerHTML = `<div class="backdrop" data-act="closesheet"></div>
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
       <div class="grab" data-drag="1" aria-hidden="true"><span></span></div>
-      <div class="shead" data-drag="1"><h2 id="sheet-title">${c.title}</h2><button type="button" class="icon-btn" id="sheet-close" data-act="closesheet" aria-label="닫기">✕</button></div>
+      <div class="shead" data-drag="1"><h2 id="sheet-title">${c.title}</h2><button type="button" class="icon-btn" id="sheet-close" data-act="closesheet" aria-label="닫기">${아이콘('close')}</button></div>
       <div class="sbody">${c.body}</div></div>`;
   layer.hidden = false;
   state.__시트열림 = true;
@@ -1509,35 +1535,35 @@ function 패널그리기() {
   const el = document.getElementById('panel');
   if (!el || getComputedStyle(el).display === 'none') return;
   const r = 역할();
-  el.innerHTML = `<div class="card"><div class="brandline"><div class="logo" aria-hidden="true">🧾</div><div><h2>${esc(CONFIG.app.name)}</h2><p class="small sub">${esc(CONFIG.app.title)}</p></div></div>
+  el.innerHTML = `<div class="card"><div class="brandline"><div class="logo">${아이콘('receipt')}</div><div><h2>${esc(CONFIG.app.name)}</h2><p class="small sub">${esc(CONFIG.app.title)}</p></div></div>
       <p class="small" style="margin-top:8px">${esc(CONFIG.app.oneLine)}</p></div>
-    <div class="card stack"><h3>▶ 바로 시연하기</h3>
-      <div class="row"><button type="button" class="chip" id="pn-member" data-act="demo" data-role="member" aria-pressed="${r === 'member'}">👤 부원으로 시연</button>
-      <button type="button" class="chip" id="pn-treasurer" data-act="demo" data-role="treasurer" aria-pressed="${r === 'treasurer'}">👑 총무로 시연</button></div>
-      <p class="small sub">총무는 시연용 PIN(${CONFIG.demoPin}) 입력 화면을 거칩니다.</p></div>
+    <div class="card stack"><h3>바로 시연하기</h3>
+      <div class="row"><button type="button" class="chip" id="pn-member" data-act="demo" data-role="member" aria-pressed="${r === 'member'}">부원으로 시연</button>
+      <button type="button" class="chip" id="pn-treasurer" data-act="demo" data-role="treasurer" aria-pressed="${r === 'treasurer'}">총무로 시연</button></div>
+      <p class="small sub">총무는 시연용 PIN(${CONFIG.demoPin}) 입력 화면을 거쳐요.</p></div>
     <div class="card stack"><h3>평가위원 핵심 점검 포인트</h3>
       <ul class="cp">${CONFIG.checkpoints.map((c, i) => `<li><button type="button" id="cp-${c.key}" data-act="checkpoint" data-i="${i}"><b>${i + 1}. ${esc(c.label)}</b>: <span class="sub">${esc(c.desc)}</span></button></li>`).join('')}</ul></div>
     <div class="card stack"><h3>킬러기능 흐름 따라 하기</h3>
       <ol class="small" style="margin:0;padding-left:18px">
-        <li>👑 총무로 시연(PIN ${CONFIG.demoPin}) → 총무 관리 → 샘플 거래 불러오기 (계좌 거래내역 → 결제 근거 카드)</li>
-        <li>결제 근거 입력: 항목·사유·영수증 사진 첨부 (금액·일시·가맹점은 잠김) → 근거 저장</li>
-        <li>모의 대조 실행 (실서비스: 휴대폰 안 AI 영수증 인식)</li>
-        <li>로그아웃 → 👤 부원으로 시연 → 같은 거래에서 익명 확인 → 최종 상태 · 공개 Q&A</li>
-        <li>거래 내역 → 학기 장부 내려받기</li></ol></div>
+        <li>총무로 시연(PIN ${CONFIG.demoPin})하고, 총무 관리에서 샘플 거래를 불러와요. 계좌 거래내역마다 결제 근거 카드가 생겨요.</li>
+        <li>결제 근거를 입력해요. 항목·사유·영수증 사진을 붙이고 저장해요(금액·일시·가맹점은 잠겨 있어요).</li>
+        <li>모의 대조를 실행해요(실서비스에서는 휴대폰 안 AI가 영수증을 읽어요).</li>
+        <li>로그아웃하고 부원으로 시연해서 같은 거래를 익명으로 확인한 뒤, 최종 상태와 공개 Q&A를 봐요.</li>
+        <li>거래 내역에서 학기 장부를 내려받아요.</li></ol></div>
     <div class="card stack"><p class="small"><b>HMW</b> ${esc(CONFIG.app.hmw)}</p></div>
-    <p class="notice strong">가상 데이터로 동작하는 교육용 시연입니다. 회비는 동아리 명의(고유번호증) 계좌에 있다고 가정하며, 실제 은행·금융 계좌와는 연결되지 않습니다.</p>
+    <p class="notice strong">가상 데이터로 동작하는 교육용 시연이에요. 회비는 동아리 명의(고유번호증) 계좌에 있다고 가정하고, 실제 은행·금융 계좌와는 연결되지 않아요.</p>
     <button type="button" class="btn danger block" id="pn-reset" data-act="resetask">데모 데이터 초기화</button>
     <p class="foot"><button type="button" class="linkbtn" id="pn-privacy" data-act="sheet" data-sheet="privacy">개인정보 처리방침</button></p>`;
 }
 
 /* =====================================================================
-   8. 이벤트 — 문서 하나에 위임해 다시 그려도 리스너가 사라지지 않게
+   8. 이벤트: 문서 하나에 위임해 다시 그려도 리스너가 사라지지 않게
    ===================================================================== */
 function 로그인처리(roleVal) {
   if (roleVal === 'treasurer') {
     state.app.session = { role: null, pinOk: false, pending: 'treasurer' };
     pin실패횟수 = 0;
-    로그('총무 로그인 시도 → PIN 확인 화면');
+    로그('총무 로그인 시도(PIN 확인 화면으로 이동)');
     저장();
     이동({ area: 'pin' });
   } else {
@@ -1565,7 +1591,7 @@ function 총무전용확인() {
 function 의견처리(v) {
   const tx = 선택거래();
   if (!tx) return;
-  if (역할() !== 'member') { 토스트('총무는 의견을 낼 수 없습니다'); return; }
+  if (역할() !== 'member') { 토스트('총무는 의견을 낼 수 없어요'); return; }
   if (v === 'cancel') { delete state.app.myVotes[tx.id]; 로그('익명 의견 취소', tx.id); }
   else { state.app.myVotes[tx.id] = v; 로그('익명 의견 제출', tx.id); }  // 선택 내용은 로그에 남기지 않는다(익명성)
   track(v === 'cancel' ? 'opinion_cancel' : 'opinion_submit', { app_tx: tx.id });  // 통계에도 선택 내용(v)은 보내지 않는다
@@ -1577,7 +1603,7 @@ function 대조실행() {
   if (!tx) return;
   const r = 규칙대조(tx);
   tx.result = { code: r.code, detail: r.detail, at: new Date().toISOString() };
-  로그(`모의 대조 실행 → ${CONFIG.results[r.code].label}`, tx.id);
+  로그(`모의 대조 실행(결과: ${CONFIG.results[r.code].label})`, tx.id);
   저장();
   그리기();
 }
@@ -1630,12 +1656,12 @@ document.addEventListener('click', ev => {
     case 'savenow': if (저장()) 그리기(); break;
     case 'restore': {
       const res = 불러오기();
-      if (res.error || res.fresh) { 토스트('복원할 저장 데이터가 없습니다'); break; }
-      state = res.s; 토스트('저장 데이터를 복원했습니다'); 라우트적용(); break;
+      if (res.error || res.fresh) { 토스트('복원할 저장 데이터가 없어요'); break; }
+      state = res.s; 토스트('저장 데이터를 복원했어요'); 라우트적용(); break;
     }
     case 'resetask':
       모달열기(`<h2 id="modal-title">데모 데이터를 초기화할까요?</h2>
-        <p class="small">가져온 거래·첨부한 근거, 의견, 질문·답변, 활동 로그, 점검표 체크가 모두 지워지고 기본 시연 데이터로 돌아갑니다.</p>
+        <p class="small">가져온 거래·첨부한 근거, 의견, 질문·답변, 활동 로그, 점검표 체크가 모두 지워지고 기본 시연 데이터로 돌아가요.</p>
         <div class="grid2"><button type="button" class="btn" id="m-cancel" data-act="modalclose">취소</button>
         <button type="button" class="btn primary" id="m-reset" data-act="reset">초기화</button></div>`);
       break;
@@ -1645,7 +1671,7 @@ document.addEventListener('click', ev => {
       state.mvpMode = 이전모드;
       저장();
       모달닫기();
-      토스트('초기화했습니다');
+      토스트('초기화했어요');
       history.replaceState(null, '', '#/login');
       라우트적용();
       break;
@@ -1686,12 +1712,12 @@ document.addEventListener('change', ev => {
   if (t.dataset.act === 'evitarget') { state.app.eviTarget = t.value; state.__photoPreview = null; state.__eviErr = null; 저장(true); 그리기(); }
   if (t.dataset.act === 'csvfile' && t.files && t.files[0]) {
     if (!총무전용확인()) return;
-    const fr = new FileReader(); fr.onload = () => CSV가져오기(fr.result); fr.onerror = () => 토스트('파일을 읽지 못했습니다'); fr.readAsText(t.files[0], 'utf-8');
+    const fr = new FileReader(); fr.onload = () => CSV가져오기(fr.result); fr.onerror = () => 토스트('파일을 읽지 못했어요'); fr.readAsText(t.files[0], 'utf-8');
   }
   if (t.dataset.act === 'evphoto' && t.files && t.files[0]) {
     // 다시 그리지 않고 미리보기만 바꿔, 입력 중인 칸이 지워지지 않게 한다
     사진줄이기(t.files[0], url => { state.__photoPreview = url; const box = document.getElementById('evi-preview');
-      if (box) box.innerHTML = `<img src="${url}" alt="올릴 영수증 미리보기" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line)">`; 토스트('영수증 사진을 불러왔습니다'); });
+      if (box) box.innerHTML = `<img src="${url}" alt="올릴 영수증 미리보기" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line)">`; 토스트('영수증 사진을 불러왔어요'); });
   }
 });
 document.addEventListener('input', ev => {
@@ -1706,7 +1732,7 @@ document.addEventListener('input', ev => {
     초안저장.ueT = setTimeout(시트그리기, 500);   // 입력 도중 다시 그려 커서를 잃지 않도록 잠깐 기다린다
   }
 });
-// 입력 중인 글도 자동 저장 — 새로고침해도 쓰던 질문·거래 폼이 남는다
+// 입력 중인 글도 자동 저장해서 새로고침해도 쓰던 질문·거래 폼이 남는다
 function 초안저장(t) {
   const key = t.dataset.draft;
   if (key.startsWith('tx.')) { state.app.drafts.tx = state.app.drafts.tx || {}; state.app.drafts.tx[key.slice(3)] = t.value; }
@@ -1749,7 +1775,7 @@ document.addEventListener('submit', ev => {
     if (!q) err.q = '질문 내용을 입력해 주세요.';
     else if (q.length < 5) err.q = '5자 이상 입력해 주세요.';
     if (err.tx || err.q) { state.__qErr = err; 그리기(); const bad = document.querySelector('.field.invalid textarea, .field.invalid select'); if (bad) bad.focus(); return; }
-    if (역할() !== 'member') { 토스트('질문은 부원 화면에서 등록합니다'); return; }
+    if (역할() !== 'member') { 토스트('질문은 부원 화면에서 등록할 수 있어요'); return; }
     state.__qErr = null;
     const id = 'Q-' + (state.app.nextQ++);
     state.app.qna.push({ id, txId, q, a: '', qAt: new Date().toISOString(), aAt: '' });
@@ -1758,7 +1784,7 @@ document.addEventListener('submit', ev => {
     track('question_submit', { app_tx: txId });
     저장();
     그리기();
-    토스트('질문을 공개 등록했습니다 ✓');
+    토스트('질문을 공개로 등록했어요');
   } else if (kind === 'answer') {
     if (!총무전용확인()) return;
     const qa = state.app.qna.find(x => x.id === f.dataset.id);
@@ -1771,7 +1797,7 @@ document.addEventListener('submit', ev => {
     track('answer_submit', { app_tx: qa.txId });
     저장();
     그리기();
-    토스트('공개 답변을 등록했습니다 ✓');
+    토스트('공개 답변을 등록했어요');
   } else if (kind === 'rule') {
     if (!총무전용확인()) return;
     const v = (state.app.drafts.rule || '').trim() || f.querySelector('#rule-text').value.trim();
@@ -1795,7 +1821,7 @@ document.addEventListener('submit', ev => {
     if (!v.item) e.item = '지출 항목을 입력해 주세요.';
     if (!v.category) e.category = '카테고리를 선택해 주세요.';
     if (!v.reason) e.reason = '지출 사유를 입력해 주세요.';
-    if (v.receiptDate && !유효날짜(v.receiptDate)) e.receiptDate = '올바른 날짜가 아닙니다.';
+    if (v.receiptDate && !유효날짜(v.receiptDate)) e.receiptDate = '올바른 날짜가 아니에요.';
     if (v.receiptAmount && (!/^\d+$/.test(v.receiptAmount) || Number(v.receiptAmount) <= 0)) e.receiptAmount = '0원보다 큰 숫자로 입력하거나 비워 두세요.';
     if (Object.keys(e).length) { state.__eviErr = e; state.app.drafts.evi = v; 그리기(); 토스트('입력값을 확인해 주세요'); return; }
     state.__eviErr = null;
@@ -1805,7 +1831,7 @@ document.addEventListener('submit', ev => {
     delete state.app.drafts.evi;
     state.app.selectedTx = tx.id;
     로그('결제 근거 입력(사유·영수증)', tx.id);
-    if (!저장()) { delete tx.photo; 저장(true); 토스트('사진이 너무 커서 사진은 빼고 저장했습니다'); }
+    if (!저장()) { delete tx.photo; 저장(true); 토스트('사진이 너무 커서 사진은 빼고 저장했어요'); }
     이동({ area: 't', page: 'compare', tx: tx.id });
   }
 });
@@ -1824,15 +1850,15 @@ function 거래추가(f) {
     reason: g('reason').trim(), merchant: g('merchant').trim(), address: g('address').trim(), receiptNo: g('receiptNo').trim(),
     receiptDate: g('receiptDate').trim(), receiptAmount: g('receiptAmount').replace(/[,\s원₩]/g, ''), memo: g('memo').trim() };
   const e = {};
-  if (!v.date) e.date = '거래일을 입력해 주세요.'; else if (!유효날짜(v.date)) e.date = '올바른 날짜가 아닙니다.';
-  if (!v.time) e.time = '결제 시각을 입력해 주세요.'; else if (!/^\d{2}:\d{2}$/.test(v.time)) e.time = '시각 형식이 올바르지 않습니다.';
+  if (!v.date) e.date = '거래일을 입력해 주세요.'; else if (!유효날짜(v.date)) e.date = '올바른 날짜가 아니에요.';
+  if (!v.time) e.time = '결제 시각을 입력해 주세요.'; else if (!/^\d{2}:\d{2}$/.test(v.time)) e.time = '시각 형식이 올바르지 않아요.';
   if (!v.item) e.item = '지출 항목을 입력해 주세요.';
   if (!v.category) e.category = '카테고리를 선택해 주세요.';
   if (!v.amount) e.amount = '금액을 입력해 주세요.';
   else if (!/^-?\d+$/.test(v.amount)) e.amount = '숫자만 입력해 주세요.';
   else if (Number(v.amount) <= 0) e.amount = '0원보다 큰 금액을 입력해 주세요.';
   if (!v.merchant) e.merchant = '가상 가맹점명을 입력해 주세요.';
-  if (v.receiptDate && !유효날짜(v.receiptDate)) e.receiptDate = '올바른 날짜가 아닙니다.';
+  if (v.receiptDate && !유효날짜(v.receiptDate)) e.receiptDate = '올바른 날짜가 아니에요.';
   if (v.receiptAmount && (!/^-?\d+$/.test(v.receiptAmount) || Number(v.receiptAmount) <= 0)) e.receiptAmount = '0원보다 큰 숫자로 입력하거나 비워 두세요.';
   if (Object.keys(e).length) {
     state.__txErr = e;
@@ -1857,10 +1883,10 @@ function 거래추가(f) {
   history.replaceState(history.state, '', 해시만들기(Object.assign({}, 현재, { tx: tx.id })));
   현재.tx = tx.id;
   그리기();
-  토스트(`${tx.id} 추가 완료 ✓`);
+  토스트(`${tx.id} 추가했어요`);
 }
 
-// Esc: 모달 → 시트 순서로 닫기 / 시트 안에서 Tab 순환(포커스 가두기)
+// Esc는 모달, 시트 순서로 닫고, 시트 안에서는 Tab이 시트 밖으로 나가지 않게 한다(포커스 가두기)
 document.addEventListener('keydown', ev => {
   const modal = document.getElementById('modalLayer');
   const sheet = document.getElementById('sheetLayer');
@@ -1948,14 +1974,14 @@ window.addEventListener('resize', () => { 프레임맞추기(); 패널그리기(
     if (!location.hash) history.replaceState(null, '', state.app.session.role ? '#/' + 영역() + '/ledger' : '#/login');
     라우트적용();
     if (res.error) {
-      모달열기(`<h2 id="modal-title">⚠️ 저장 데이터 오류</h2>
-        <p>저장 데이터를 불러오지 못해 기본 시연 데이터로 시작합니다.</p>
+      모달열기(`<h2 id="modal-title">저장 데이터 오류</h2>
+        <p>저장 데이터를 불러오지 못해서 기본 시연 데이터로 시작해요.</p>
         <button type="button" class="btn primary block" id="d1-ok" data-act="modalclose">확인</button>`);
       저장(true);
     }
   } catch (e) {
     // 최후의 방어선: 어떤 예외가 나도 흰 화면 대신 안내를 보여 준다
-    document.getElementById('appMain').innerHTML = `<div class="center"><h2>⚠️ 화면을 그리지 못했습니다</h2><p>기본 시연 데이터로 다시 시작하려면 아래 버튼을 누르세요.</p>
+    document.getElementById('appMain').innerHTML = `<div class="center"><h2>화면을 그리지 못했어요</h2><p>기본 시연 데이터로 다시 시작하려면 아래 버튼을 눌러 주세요.</p>
       <button type="button" class="btn primary" onclick="try{localStorage.removeItem('${CONFIG.storageKey}')}catch(e){};location.hash='';location.reload()">기본 데이터로 다시 시작</button></div>`;
   }
 })();
