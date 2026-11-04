@@ -307,6 +307,8 @@ const CONFIG = {
     ]
   },
   storageKey: 'finpbl:v2',
+  // 이용 통계(Google Analytics 4): 측정 ID(G-로 시작)를 넣으면 켜지고, 비워 두면 아무것도 전송하지 않는다
+  analytics: { gaId: '' },
   demoPin: '1234',               // 시연용 PIN — 실제 보안 기능이 아니다
   rules: { periodDays: 7, threshold: 0.15, members: 30 }, // 15%·7일은 팀 설계 가정, 30명은 가상 행사 참여 부원 수(이의 비율의 분모)
   interviews: [
@@ -720,6 +722,67 @@ function 빈선택(제목) {
 function 역할() { return state.app.session.role; }
 function 총무인가() { return state.app.session.role === 'treasurer' && state.app.session.pinOk; }
 
+/* ---------- 이용 통계 (Google Analytics 4) ----------
+   보내는 값은 화면 이름·버튼 이름·거래 ID·머문 시간뿐이다. 질문·답변·PIN·의견 선택 내용은 보내지 않는다(익명성).
+   CONFIG.analytics.gaId가 비어 있거나, 주소에 ?notrack=1 을 붙여 한 번 연 브라우저(만든 사람의 시험 접속)는 아무것도 보내지 않는다(?notrack=0 으로 해제).
+   통계는 부가 기능이므로 어떤 오류가 나도 앱 동작에 영향이 없도록 try/catch로 감싼다. */
+const 통계제외키 = 'finpbl:notrack';
+let 통계켜짐 = false, 통계화면 = '', 통계역할 = '', 통계시각 = 0, 통계누적 = 0;
+const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role };
+function 통계제외() {
+  try {
+    const q = new URLSearchParams(location.search).get('notrack');
+    if (q === '1') localStorage.setItem(통계제외키, '1');
+    else if (q === '0') localStorage.removeItem(통계제외키);
+    return localStorage.getItem(통계제외키) === '1';
+  } catch (e) { return false; }
+}
+function 통계시작() {
+  const id = CONFIG.analytics.gaId;
+  if (!id || 통계제외()) return;
+  try {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    gtag('js', new Date());
+    // 화면 이동은 해시 주소라 자동 page_view에 맡기지 않고 라우트를 적용할 때 직접 보낸다
+    gtag('config', id, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false, transport_type: 'beacon' });
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+    document.head.appendChild(s);
+    통계켜짐 = true;
+  } catch (e) {}
+}
+function track(name, params) {
+  if (!통계켜짐) return;
+  try { gtag('event', name, Object.assign({ app_role: 역할() || 'guest' }, params)); } catch (e) {}
+}
+function 화면시간보내기() {
+  if (!통계켜짐) return;
+  if (통계시각) { 통계누적 += Date.now() - 통계시각; 통계시각 = 0; }
+  const 초 = Math.round(통계누적 / 1000);
+  통계누적 = 0;
+  // 화면을 떠난 뒤에 보내므로 역할은 그 화면에 들어올 때 값을 쓴다
+  if (통계화면 && 초 >= 1) track('screen_time', { app_role: 통계역할, app_screen: 통계화면, app_seconds: Math.min(초, 1800) });
+}
+function 화면기록(r) {
+  if (!통계켜짐) return;
+  const 키 = r.area + (r.page ? '/' + r.page : '');
+  if (키 === 통계화면) return;
+  화면시간보내기();
+  통계화면 = 키;
+  통계역할 = 역할() || 'guest';
+  통계시각 = document.hidden ? 0 : Date.now();
+  track('page_view', { page_location: location.href.split('#')[0] + '#/' + 키, page_title: 키, app_screen: 키 });
+}
+function 통계클릭(t) {
+  if (!통계켜짐) return;
+  try {
+    const d = t.dataset, f = 통계대상[d.act];
+    track('ui_click', { app_act: d.act, app_target: (f && f(d)) || '', app_screen: 통계화면 });
+  } catch (e) {}
+}
+
 /* =====================================================================
    6. 라우팅 — URL 해시로 화면·시트·선택 거래를 기록 (뒤로 가기·새로고침 대응)
    ===================================================================== */
@@ -773,6 +836,7 @@ function 라우트적용() {
   // 해시의 거래 ID가 실제로 있으면 선택 거래로 반영(새로고침·링크 공유 대응)
   if (r.tx && 찾기(r.tx) && r.tx !== state.app.selectedTx) { state.app.selectedTx = r.tx; 저장(true); }
   현재 = r;
+  화면기록(r);
   그리기();
 }
 
@@ -848,6 +912,7 @@ function 로그인화면() {
     </form>
     <p class="notice">역할별 화면을 구분하기 위한 시연용 로그인입니다. 실제 계정 인증이나 보안 기능은 없습니다.</p>
     <p class="notice">회비는 동아리 명의(고유번호증) 계좌에 있고 이 앱은 거래내역만 읽습니다. 자금을 보관·이체하지 않습니다. 시연의 모든 거래는 가상 데이터입니다.</p>
+    ${통계켜짐 ? '<p class="notice">이용 통계(화면 이동·버튼 클릭·머문 시간)를 Google Analytics로 익명 집계합니다. 질문·답변·의견 선택 내용은 수집하지 않습니다.</p>' : ''}
   </div>`;
 }
 /* ---------- 총무 PIN ---------- */
@@ -1427,6 +1492,7 @@ function 의견처리(v) {
   if (역할() !== 'member') { 토스트('총무는 의견을 낼 수 없습니다'); return; }
   if (v === 'cancel') { delete state.app.myVotes[tx.id]; 로그('익명 의견 취소', tx.id); }
   else { state.app.myVotes[tx.id] = v; 로그('익명 의견 제출', tx.id); }  // 선택 내용은 로그에 남기지 않는다(익명성)
+  track(v === 'cancel' ? 'opinion_cancel' : 'opinion_submit', { app_tx: tx.id });  // 통계에도 선택 내용(v)은 보내지 않는다
   저장();
   그리기();
 }
@@ -1445,6 +1511,7 @@ document.addEventListener('click', ev => {
   if (!t || t.disabled) return;
   const act = t.dataset.act;
   if (act === 'mvpchk' || act === 'check') return; // 체크박스는 change 이벤트에서 처리
+  통계클릭(t);
   switch (act) {
     case 'go': if (t.dataset.page === 'admin' && !총무인가()) { 총무전용확인(); break; } 탭이동(t.dataset.page); break;
     case 'pick': {
@@ -1573,6 +1640,7 @@ document.addEventListener('submit', ev => {
   if (!f) return;
   ev.preventDefault();
   const kind = f.dataset.form;
+  track('form_submit', { app_form: kind });  // 제출 시도 횟수(내용은 보내지 않는다)
   if (kind === 'login') {
     const v = (f.querySelector('input[name=role]:checked') || {}).value || 'member';
     로그인처리(v);
@@ -1608,6 +1676,7 @@ document.addEventListener('submit', ev => {
     state.app.qna.push({ id, txId, q, a: '', qAt: new Date().toISOString(), aAt: '' });
     delete state.app.drafts['q-' + f.dataset.prefix];
     로그('공개 질문 등록', txId);
+    track('question_submit', { app_tx: txId });
     저장();
     그리기();
     토스트('질문을 공개 등록했습니다 ✓');
@@ -1620,6 +1689,7 @@ document.addEventListener('submit', ev => {
     qa.a = a; qa.aAt = new Date().toISOString();
     delete state.app.drafts['ans-' + qa.id];
     로그('공개 답변 등록', qa.txId);
+    track('answer_submit', { app_tx: qa.txId });
     저장();
     그리기();
     토스트('공개 답변을 등록했습니다 ✓');
@@ -1758,6 +1828,14 @@ document.addEventListener('keydown', ev => {
 
 window.addEventListener('hashchange', 라우트적용);
 
+/* ---------- 이용 통계: 화면에 머문 시간(탭이 보이는 동안만 센다) ---------- */
+document.addEventListener('visibilitychange', () => {
+  if (!통계켜짐) return;
+  if (document.hidden) 화면시간보내기();
+  else if (통계화면) 통계시각 = Date.now();
+});
+window.addEventListener('pagehide', 화면시간보내기);
+
 /* ---------- 프레임 크기·시계 ---------- */
 // 노트북 화면이 프레임보다 작으면 비율을 유지한 채 축소(잘리거나 바깥 스크롤이 생기지 않게)
 function 프레임맞추기() {
@@ -1782,6 +1860,7 @@ window.addEventListener('resize', () => { 프레임맞추기(); 패널그리기(
     const res = 불러오기();
     state = res.s;
     if (res.fresh) 저장(true);
+    통계시작();
     프레임맞추기();
     시계();
     // 분이 바뀌는 순간에 맞춰 1분마다 갱신
