@@ -74,6 +74,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .txband{flex:none;display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--accent-soft);font-size:13px;border-bottom:1px solid var(--line)}
 .txband .lbl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .txband button{height:28px;font-size:13px;padding:0 10px;border-radius:8px;border:1px solid var(--accent);background:var(--card);color:var(--accent);cursor:pointer;font-weight:700}
+.txband button.lbl{height:auto;padding:4px 0;border:0;background:none;color:inherit;font-weight:400;text-align:left;border-radius:0}
 .content{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
 .content.slide-in{animation:slideIn .25s ease-out}
 @keyframes slideIn{from{transform:translateX(28px);opacity:.3}to{transform:none;opacity:1}}
@@ -84,6 +85,15 @@ button,input,select,textarea{font:inherit;color:inherit}
   align-items:center;justify-content:center;gap:0;font-size:12px;white-space:nowrap;color:var(--sub);padding:4px 2px;border-top:3px solid transparent}
 .tab .ic{font-size:19px;line-height:1}
 .tab[aria-current="page"]{color:var(--accent);font-weight:800;border-top-color:var(--accent)}
+/* 거래 단계 띠: 결제 근거 → 모의 대조 → 익명 확인 → 최종 상태. 하단 탭에는 없고 이 화면들에서만 위에 나타난다 */
+.stepbar{flex:none;display:flex;background:var(--card);border-bottom:1px solid var(--line)}
+.step{flex:1 1 0;min-width:0;height:46px;border:0;border-bottom:3px solid transparent;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+  font-size:13px;white-space:nowrap;color:var(--sub);padding:0 2px}
+.step .n{flex:none;width:18px;height:18px;border-radius:50%;border:1px solid currentColor;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;line-height:1}
+.step[aria-current="step"]{color:var(--accent);font-weight:800;border-bottom-color:var(--accent)}
+.step[aria-current="step"] .n{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.step:active{transform:scale(.97)}
+@media (max-width:350px){.step .n{display:none}}
 
 /* ===== 카드·버튼 공통 ===== */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;min-width:0}
@@ -363,7 +373,7 @@ const CONFIG = {
   //   기록을 남기지 않고 열어야 하는 팀의 시연·시험 접속은 주소에 ?notrack=1 을 붙인다(만든 사람용, 화면에는 안내하지 않는다).
   // 항목이나 보기를 바꾸면 version을 올려 다시 받는다. notes의 보관 기간은 아래 privacy 문구와 같이 고친다
   profile: {
-    version: 2,
+    version: 3,
     required: true,
     title: '테스트 참여 정보',
     intro: '이 앱은 수업 보고서에 쓸 실측 표본을 모으는 테스트예요. 이름과 아래 네 가지를 입력하고 동의해야 쓸 수 있어요.',
@@ -372,8 +382,8 @@ const CONFIG = {
     notes: ['이름과 참여 정보, 무작위로 만든 방문자 코드, 화면 이동·클릭 기록, 혜택 탭 질문에 고른 답을 팀의 구글 시트에 저장해요. 샘플 설문의 답은 저장하지 않아요.', '이름과 참여 정보는 Google Analytics로 보내지 않아요. 이용 통계(화면 이동·클릭)는 Google Analytics에도 저장돼요.', '수업 보고서의 표본 설명과 기능별 관심도 집계에만 써요. 이번 학기 수업이 끝나는 대로 삭제해요.'],
     off: '입력하지 않고 수집 없이 쓰기',
     fields: [
-      { key: 'grade', label: '학년', opts: [['g1', '1학년'], ['g2', '2학년'], ['g3', '3학년'], ['g4', '4학년 이상'], ['grad', '대학원'], ['etc', '기타']] },
-      { key: 'gender', label: '성별', opts: [['f', '여성'], ['m', '남성'], ['na', '기타·응답 안 함']] },
+      { key: 'grade', label: '학년', opts: [['g1', '1학년'], ['g2', '2학년'], ['g3', '3학년'], ['g4', '4학년 이상']] },
+      { key: 'gender', label: '성별', opts: [['m', '남성'], ['f', '여성']] },
       { key: 'org', label: '동아리 소속', opts: [['central', '중앙동아리'], ['other', '기타 동아리·소모임'], ['dept', '학과 학회·학생회'], ['none', '소속 없음']] },
       { key: 'exp', label: '동아리 총무 경험', opts: [['yes', '있어요'], ['no', '없어요']] }
     ]
@@ -623,16 +633,19 @@ const CONFIG = {
     { key:'qna',    label:'공개 Q&A', desc:'지출 카드에 연결된 질문·답변', page:'qna' },
     { key:'dark',   label:'다크패턴 점검', desc:'점검표 A·B·C 직접 체크', sheet:'checklist' }
   ],
+  // 화면 목록. inBar:false인 화면은 하단 탭에 나오지 않고, 아래 steps의 단계 띠로 오간다(플러터 앱과 같은 구성)
   tabs: [
     { page:'ledger',   icon:'list', label:'거래 내역' },
-    { page:'evidence', icon:'receipt', label:'결제 근거' },
-    { page:'compare',  icon:'search', label:'모의 대조' },
-    { page:'vote',     icon:'vote', label:'익명 확인' },
-    { page:'status',   icon:'flag', label:'최종 상태' },
+    { page:'evidence', icon:'receipt', label:'결제 근거', inBar:false },
+    { page:'compare',  icon:'search', label:'모의 대조', inBar:false },
+    { page:'vote',     icon:'vote', label:'익명 확인', inBar:false },
+    { page:'status',   icon:'flag', label:'최종 상태', inBar:false },
     { page:'qna',      icon:'message', label:'공개 Q&A' },
     { page:'perks',    icon:'gift', label:'혜택' },
     { page:'admin',    icon:'briefcase', label:'총무 관리', treasurerOnly:true }
-  ]
+  ],
+  // 선택한 거래를 따라 한 줄로 이어지는 화면들. 이 화면에서는 하단 탭의 '거래 내역'이 켜져 있고, 위에 단계 띠가 나온다
+  steps: ['evidence', 'compare', 'vote', 'status']
 };
 
 /* =====================================================================
@@ -1301,13 +1314,16 @@ function 앱화면() {
     <button type="button" class="icon-btn" id="hdr-set" data-act="sheet" data-sheet="settings" aria-label="설정 열기" title="설정">${아이콘('sliders')}</button>
     <button type="button" class="icon-btn" id="hdr-out" data-act="logout" title="로그아웃">로그아웃</button>
   </header>
-  <div class="txband" aria-live="polite"><span class="lbl">${tx ? `선택한 거래: <b>${esc(tx.id)}</b> · ${esc(항목명(tx))}` : '선택한 거래 없음'}</span>
+  <div class="txband" aria-live="polite">${tx ? `<button type="button" class="lbl" id="band-open" data-act="go" data-page="evidence" title="결제 근거 보기">선택한 거래: <b>${esc(tx.id)}</b> · ${esc(항목명(tx))}</button>` : '<span class="lbl">선택한 거래 없음</span>'}
     <button type="button" id="band-pick" data-act="sheet" data-sheet="select">${tx ? '변경' : '선택'}</button></div>`;
+  const 단계쪽 = CONFIG.steps.includes(현재.page);
+  const 막대쪽 = 단계쪽 ? 'ledger' : 현재.page;   // 거래의 단계 화면에서는 '거래 내역' 탭이 켜진 것으로 본다
+  const 단계띠 = 단계쪽 ? `<nav class="stepbar" aria-label="거래 단계">${CONFIG.steps.map((p, i) => `<button type="button" class="step" id="step-${p}" data-act="go" data-page="${p}" aria-label="${i + 1}단계 ${CONFIG.tabs.find(t => t.page === p).label}" ${현재.page === p ? 'aria-current="step"' : ''}><span class="n" aria-hidden="true">${i + 1}</span>${CONFIG.tabs.find(t => t.page === p).label}</button>`).join('')}</nav>` : '';
   const 화면들 = { ledger: 거래내역화면, evidence: 결제근거화면, compare: 모의대조화면, vote: 익명확인화면, status: 최종상태화면, qna: 공개QA화면, perks: 혜택화면, admin: 총무관리화면 };
   const body = (화면들[현재.page] || 거래내역화면)();
-  const tabs = CONFIG.tabs.filter(t => !t.treasurerOnly || 총무)   // 부원 화면에는 총무 탭을 아예 그리지 않는다
-    .map(t => `<button type="button" class="tab" id="tab-${t.page}" data-act="go" data-page="${t.page}" ${현재.page === t.page ? 'aria-current="page"' : ''}><span class="ic">${아이콘(t.icon)}</span>${t.label}</button>`).join('');
-  return `${header}<main class="content" id="content" tabindex="-1">${MVP카드(현재.page)}${body}</main>
+  const tabs = CONFIG.tabs.filter(t => t.inBar !== false && (!t.treasurerOnly || 총무))   // 부원 화면에는 총무 탭을 아예 그리지 않는다
+    .map(t => `<button type="button" class="tab" id="tab-${t.page}" data-act="go" data-page="${t.page}" ${막대쪽 === t.page ? 'aria-current="page"' : ''}><span class="ic">${아이콘(t.icon)}</span>${t.label}</button>`).join('');
+  return `${header}${단계띠}<main class="content" id="content" tabindex="-1">${MVP카드(현재.page)}${body}</main>
     <nav class="tabbar" aria-label="${총무 ? '총무' : '부원'} 하단 탭">${tabs}</nav>`;
 }
 
@@ -1382,7 +1398,7 @@ function 거래내역화면() {
       <div class="metric"><b>${원(합계)}</b><span>지출 합계</span></div>
     </div></div>
     <div class="stack" role="group" aria-label="카테고리 필터"><div class="chips">${카테고리칩}</div></div>
-    <p class="small sub">카드를 누르면 거래가 선택되고, 모든 탭에서 그 거래 기준으로 보여 줘요.</p>
+    <p class="small sub">카드를 누르면 거래가 선택되고, 결제 근거부터 최종 상태까지 그 거래 기준으로 보여 줘요.</p>
     <div class="stack">${list.length ? list.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('') : '<div class="card empty"><p>조건에 맞는 거래가 없어요.</p></div>'}</div>
     ${광고띠()}
     <button type="button" class="btn block" id="open-rules" data-act="sheet" data-sheet="rules">회비 운영 기준 보기 (${state.app.feeRules.length ? state.app.feeRules.length + '개 공개' : '미공개'})</button>
