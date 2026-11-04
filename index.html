@@ -106,6 +106,31 @@ button,input,select,textarea{font:inherit;color:inherit}
 .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
 .chip{flex:none;height:32px;border-radius:16px;border:1px solid var(--line);background:var(--card);padding:0 12px;cursor:pointer;font-size:13px;white-space:nowrap}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.chips.wrap{flex-wrap:wrap;overflow-x:visible}
+.chips.wrap .chip{height:40px;padding:0 14px}
+.pgroup{display:flex;flex-direction:column;gap:6px}
+.pgroup .lb{font-size:13px;font-weight:700;color:var(--sub)}
+.pgroup .err{color:var(--danger);font-size:13px}
+.opt{position:relative;display:inline-flex}
+.opt input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.opt span{display:inline-flex;align-items:center;height:40px;padding:0 14px;border:1px solid var(--line);border-radius:20px;background:var(--card);font-size:13px;white-space:nowrap}
+.opt input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.opt input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.pgroup.invalid .opt span{border-color:var(--danger)}
+/* 샘플 설문(혜택 탭): 보기가 긴 문장이라 알약 대신 한 줄짜리 선택 상자로 보여 준다 */
+.sbody>*{flex-shrink:0}
+.sq{border:0;padding:0;margin:0;min-width:0;display:flex;flex-direction:column;gap:8px}
+.sq legend{padding:0;margin-bottom:8px;font-size:15px;font-weight:700;line-height:1.5}
+.sopts{display:flex;flex-direction:column;gap:6px}
+.sopt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:14px;line-height:1.45;cursor:pointer}
+.sopt input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--accent)}
+.sopt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.sopt:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.sq.invalid .sopt,.sq.invalid textarea{border-color:var(--danger)}
+.sq .err{color:var(--danger);font-size:13px}
+.sq textarea{width:100%;max-width:100%;min-height:96px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--card);font-size:16px;resize:vertical}
+#sv-top:focus{outline:none}
+.modal.scroll{max-height:calc(100% - 24px);overflow-y:auto}
 .notice{font-size:13px;color:var(--sub);background:var(--muted-soft);border-radius:8px;padding:8px 10px}
 .notice.strong{background:var(--warn-soft);color:var(--text)}
 .foot{text-align:center;margin:0}
@@ -182,15 +207,27 @@ button,input,select,textarea{font:inherit;color:inherit}
 .qa .a{background:var(--muted-soft);border-radius:8px;padding:8px;font-size:15px}
 .qa .meta{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:13px;color:var(--sub);flex-wrap:wrap}
 
-/* ===== 혜택 탭·광고 띠: 결제 근거 카드와 헷갈리지 않게 점선 + '광고' 표시 ===== */
+/* ===== 혜택 탭·광고 띠: 결제 근거 카드와 헷갈리지 않게 '광고' 표시를 붙인다 ===== */
 .perk{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card)}
 .perk .info{flex:1;min-width:0}
 .perk .val{display:block;font-weight:800;color:var(--accent);font-size:14px}
 .perk .meta{display:block;font-size:13px;color:var(--sub)}
+.perklead{font-size:17px;font-weight:800;line-height:1.45;margin:2px 0}
 .wallet{background:var(--muted-soft);border-radius:8px;padding:10px}
-.adband{display:flex;gap:10px;align-items:center;border:1px dashed var(--sub);border-radius:var(--radius);padding:10px 12px;background:var(--muted-soft);font-size:13px}
+.adband{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.adband .adhead{display:flex;align-items:center;gap:8px;min-width:0}
 .adband .adtag{flex:none;font-size:12px;font-weight:800;border:1px solid var(--sub);border-radius:4px;padding:0 6px;color:var(--sub)}
-.adband .info{flex:1;min-width:0}
+.adband .addots{margin-left:auto;display:flex;gap:4px;flex:none}
+.adband .addots i{width:6px;height:6px;border-radius:50%;background:var(--line)}
+.adband .addots i.on{background:var(--sub)}
+/* 배너마다 자기 카드(테두리·모서리)를 갖고, 카드째로 옆으로 밀려 나간다. 띠를 화면 좌우 여백(.content의 16px)만큼 넓게 그려 옆 카드가 화면 끝까지 보이며 지나가게 한다 */
+.adtrack{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:0 -16px}
+.adtrack::-webkit-scrollbar{display:none}
+.adslide{flex:0 0 100%;scroll-snap-align:center;padding:0 16px;border:0;background:none;cursor:pointer;display:block}
+.adcard{display:block;aspect-ratio:3.2/1;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--muted-soft)}
+.adcard img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none}
+.adslide:focus-visible{outline:none}
+.adslide:focus-visible .adcard{outline:2px solid var(--accent);outline-offset:-2px}
 
 /* ===== 입력 폼 ===== */
 .field{display:flex;flex-direction:column;gap:4px}
@@ -248,6 +285,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .check{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
 .check input{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--accent)}
 .check small{display:block;color:var(--sub)}
+.check small.err{color:var(--danger)}
 .ue{width:100%;border-collapse:collapse;font-size:13px}
 .ue th,.ue td{border:1px solid var(--line);padding:6px;text-align:left;vertical-align:top}
 .ue th{background:var(--muted-soft)}
@@ -318,18 +356,43 @@ const CONFIG = {
   storageKey: 'finpbl:v3',      // 화면 문구를 바꾸면 버전을 올려 예전 저장본의 문구가 남지 않게 한다
   // 이용 통계(Google Analytics 4): 측정 ID(G-로 시작)를 넣으면 켜지고, 비워 두면 아무것도 전송하지 않는다
   analytics: { gaId: 'G-4C5DE34ELV' },
+  // 직접 수집: collector/Code.gs 를 구글 시트에 붙여 웹앱으로 배포한 주소(…/exec)를 넣으면 켜지고, 비워 두면 보내지 않는다
+  collect: { url: 'https://script.google.com/macros/s/AKfycbxxlmyrODD8mKXu-x67LxP3vcsFlucV2iL248DH4-yaizYe2QbnK18stY70ULtLVWWO/exec' },
+  // 테스트 참여 정보: 직접 수집이 켜진 브라우저가 처음 열 때 한 번 받는다. 연락처는 받지 않는다.
+  // required: true면 이름을 포함한 참여 정보를 입력하고 동의해야만 쓸 수 있다(창을 닫거나 건너뛸 수 없고 '수집 없이 쓰기'도 없다).
+  //   기록을 남기지 않고 열어야 하는 팀의 시연·시험 접속은 주소에 ?notrack=1 을 붙인다(만든 사람용, 화면에는 안내하지 않는다).
+  // 항목이나 보기를 바꾸면 version을 올려 다시 받는다. notes의 보관 기간은 아래 privacy 문구와 같이 고친다
+  profile: {
+    version: 2,
+    required: true,
+    title: '테스트 참여 정보',
+    intro: '이 앱은 수업 보고서에 쓸 실측 표본을 모으는 테스트예요. 이름과 아래 네 가지를 입력하고 동의해야 쓸 수 있어요.',
+    name: { label: '이름', placeholder: '예: 홍길동', hint: '참여자를 구분하고 같은 사람의 중복 응답을 가리는 데만 써요.' },
+    consent: '위 내용을 확인했고, 이름과 참여 정보를 수집·이용하는 데 동의해요.',
+    notes: ['이름과 참여 정보, 무작위로 만든 방문자 코드, 화면 이동·클릭 기록, 혜택 탭 질문에 고른 답을 팀의 구글 시트에 저장해요. 샘플 설문의 답은 저장하지 않아요.', '이름과 참여 정보는 Google Analytics로 보내지 않아요. 이용 통계(화면 이동·클릭)는 Google Analytics에도 저장돼요.', '수업 보고서의 표본 설명과 기능별 관심도 집계에만 써요. 이번 학기 수업이 끝나는 대로 삭제해요.'],
+    off: '입력하지 않고 수집 없이 쓰기',
+    fields: [
+      { key: 'grade', label: '학년', opts: [['g1', '1학년'], ['g2', '2학년'], ['g3', '3학년'], ['g4', '4학년 이상'], ['grad', '대학원'], ['etc', '기타']] },
+      { key: 'gender', label: '성별', opts: [['f', '여성'], ['m', '남성'], ['na', '기타·응답 안 함']] },
+      { key: 'org', label: '동아리 소속', opts: [['central', '중앙동아리'], ['other', '기타 동아리·소모임'], ['dept', '학과 학회·학생회'], ['none', '소속 없음']] },
+      { key: 'exp', label: '동아리 총무 경험', opts: [['yes', '있어요'], ['no', '없어요']] }
+    ]
+  },
   // 개인정보 처리방침 시트의 문구. contact(문의처)는 비워 두면 그 항목을 숨긴다
   privacy: {
     effective: '2026-11-04',
     contact: '',
     intro: '수업 시연용 앱이고 모든 거래는 가상 데이터예요. 이용 통계 수집에 한해 아래와 같이 처리해요.',
     sections: [
-      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)'] },
-      { title: '수집하지 않는 정보', text: '이름, 연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요.' },
-      { title: '이용 목적', text: '수업 보고서와 서비스 개선을 위한 이용 현황 집계예요. 광고 개인화에는 쓰지 않도록 설정했어요.' },
-      { title: '처리 위탁과 국외 이전', text: '통계 처리는 Google LLC(Google Analytics)에 맡기며, 데이터는 미국 등 해외 서버에서 처리될 수 있어요.' },
-      { title: '보관 기간', text: '이용자·이벤트 단위 원본 데이터는 Google Analytics에서 최대 14개월(설정에 따라 더 짧을 수 있어요) 보관한 뒤 자동 삭제되고, 이후에는 합산된 통계만 남아요.' },
-      { title: '수집 거부', text: '아래 버튼으로 이 브라우저의 수집을 바로 끌 수 있어요. 브라우저의 쿠키 차단이나 Google Analytics 차단 확장 프로그램을 써도 수집되지 않아요.', optout: true }
+      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간, 광고 배너가 화면에 보였는지와 어느 배너를 눌렀는지', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)', '혜택 탭의 미구현 기능 질문에서 보내기를 누른 경우, 고른 답(쓸 의향, 최소 희망 보상 구간)', '혜택 탭 샘플 설문에서 어느 구간까지 했는지, 끝냈는지, 걸린 시간(고른 답은 수집하지 않아요)', '접속 주소에 붙은 유입 표시(?src= 값, 어느 경로로 온 접속인지 구분하는 용도)'],
+        ownItems: ['테스트 참여 정보(이름, 학년, 성별, 동아리 소속, 총무 경험)', '무작위로 만든 방문자 코드(참여 정보를 입력할 때 이름과 연결돼요)', '위 이용 기록 전체를 팀의 구글 시트에도 저장'] },
+      { title: '수집하지 않는 정보', text: '이름, 연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답은 예외로 통계에 보내요.', ownText: '테스트 참여 정보도 예외로, 팀의 구글 시트로 보내요.',
+        ownFull: '연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답과 테스트 참여 정보(이름 포함)는 예외로 팀의 구글 시트로 보내요. 이름과 참여 정보는 Google Analytics로는 보내지 않아요.' },
+      { title: '이용 목적', text: '수업 보고서와 서비스 개선을 위한 이용 현황 집계예요. 광고 개인화에는 쓰지 않도록 설정했어요. 혜택 탭 질문은 아직 만들지 않은 기능을 쓸 사람이 있는지 가늠하는 수요 조사에만 써요. 샘플 설문의 진행 기록은 설문형 일감을 끝까지 하는 사람의 비율과 걸리는 시간을 가늠하는 데만 써요.', ownText: '이름과 참여 정보는 테스트 참여자를 구분하고 같은 사람의 중복 응답을 가리며, 어떤 사람들인지 표본을 설명하는 데에만 써요.' },
+      { title: '처리 위탁과 국외 이전', text: '통계 처리는 Google LLC(Google Analytics)에 맡기며, 데이터는 미국 등 해외 서버에서 처리될 수 있어요.', ownText: '직접 수집한 기록은 팀이 만든 구글 스프레드시트(Google LLC)에 저장돼요.' },
+      { title: '보관 기간', text: '이용자·이벤트 단위 원본 데이터는 Google Analytics에서 최대 14개월(설정에 따라 더 짧을 수 있어요) 보관한 뒤 자동 삭제되고, 이후에는 합산된 통계만 남아요.', ownText: '팀의 구글 시트에 저장된 기록과 참여 정보는 이번 학기 수업이 끝나는 대로 삭제해요.' },
+      { title: '수집 거부', text: '아래 버튼으로 이 브라우저의 수집을 바로 끌 수 있어요. 브라우저의 쿠키 차단이나 Google Analytics 차단 확장 프로그램을 써도 수집되지 않아요.', ownText: '수집을 끄면 참여 정보를 입력하지 않아도 앱을 쓸 수 있어요.',
+        requiredText: '이 테스트는 참여 정보를 입력하고 동의해야 쓸 수 있어서, 동의하지 않으면 앱을 쓸 수 없어요. 동의를 철회하면 이 브라우저에 저장된 정보를 지우고 입력 창으로 돌아가요. 이미 팀의 구글 시트에 보낸 기록의 삭제는 아래 문의처로 요청해 주세요.', optout: true }
     ]
   },
   demoPin: '1234',               // 시연용 PIN이며 실제 보안 기능이 아니다
@@ -395,29 +458,103 @@ const CONFIG = {
   },
   // 혜택 탭 목업: 단위경제의 부가 수익원(푸드패스·비대면 일감)이 들어갈 자리. 제휴처·할인율·보상이 정해지지 않아 숫자는 ○○로 둔다
   perks: {
+    lead: '회비·모임비가 부담되면 집에서 할 수 있는 미션으로 용돈을 직접 마련해 보세요.',
     intro: '결제 근거 카드는 무료이고, 아래 혜택은 원하는 사람만 골라 써요. 쓰지 않아도 모든 기능을 똑같이 쓸 수 있어요.',
     blank: '○○ 표시는 제휴처·할인율·보상이 정해지면 채울 자리예요.',
     sections: [
-      { key:'food', title:'푸드패스', desc:'동아리 회식·총회·간식 때 쓰는 제휴 식당 쿠폰', action:'쿠폰 받기',
-        note:'쿠폰으로 결제한 지출도 결제 근거 카드에 그대로 남아요.',
-        items: [
-          { title:'능동로 한식당', value:'단체 식사 ○○% 할인', meta:'총회·회식 단체 예약 시' },
-          { title:'군자역 치킨집', value:'뒤풀이 메뉴 ○○원 할인', meta:'행사 뒤풀이 예약 시' },
-          { title:'학교 앞 분식', value:'간식 단체 주문 ○○% 할인', meta:'동아리방 간식 주문 시' }
-        ] },
       { key:'job', title:'용돈 미션', desc:'외부 회사가 맡기는, 집에서 할 수 있는 비대면 미션', action:'참여하기',
         note:'미션은 개인이 고르는 것이며 동아리 회비와 섞이지 않아요.',
         // 최소 인출 바: 금액 미정이라 ○○로 두고, 막대는 목업 비율(ratio)로만 채운다
         wallet: { saved:'○○원', min:'○○원', ratio:0.6, note:'모은 보상이 최소 인출 금액을 넘으면 내 계좌로 받을 수 있어요. (시연: 실제 적립·이체 없음)' },
+        // 모은 보상을 최소 얼마부터 꺼낼 수 있어야 하는지: 첫 일감 질문에서 한 번만 묻는다
+        withdraw: { q:'모은 보상을 최소 얼마부터 인출할 수 있으면 좋겠어요?', opts:[1000, 3000, 5000, 10000] },
+        // 일감 네 가지는 단위경제 모델의 설문 · 사용성 테스트 · 사진·음성 수집 · AI 답변 평가에 하나씩 대응한다
         items: [
-          { title:'설문 응답 데이터 정리', value:'보상 ○○원', meta:'리서치 회사 · 노트북 · 약 ○시간' },
-          { title:'상품 사진 태그 달기', value:'보상 ○○원', meta:'쇼핑몰 · 휴대폰 가능 · 약 ○시간' },
-          { title:'강의 자막 검수', value:'보상 ○○원', meta:'교육 스타트업 · 노트북 · 약 ○시간' }
+          // survey:true — 가짜 문이 아니라 아래 CONFIG.survey의 샘플 설문을 실제로 풀게 한다. 의향 질문은 설문을 끝낸 뒤에 묻는다
+          { key:'job-survey', title:'금연제품 인지도 설문 (샘플)', value:'보상 ○○원', meta:'리서치 회사 · 휴대폰 · 15문항 · 약 5분', survey:true,
+            reward: { q:'방금 해 본 설문 같은 일감 1건에 최소 얼마를 받으면 할 만해요?', unit:'원', opts:[1000, 3000, 5000, 10000] } },
+          { key:'job-ut', title:'앱 사용성 테스트', value:'보상 ○○원', meta:'스타트업 · 화면 녹화 · 약 15~20분',
+            reward: { q:'15~20분짜리 테스트 1건에 최소 얼마를 받으면 할 만해요?', unit:'원', opts:[5000, 10000, 15000, 20000] } },
+          { key:'job-photo', title:'사진·음성 데이터 촬영', value:'보상 ○○원', meta:'AI 회사 · 휴대폰 · 약 3분',
+            reward: { q:'3분짜리 촬영 1건에 최소 얼마를 받으면 할 만해요?', unit:'원', opts:[300, 500, 1000, 2000] } },
+          { key:'job-eval', title:'한국어 AI 답변 평가', value:'시급 ○○원', meta:'AI 회사 · 노트북 · 선발 시험 있음',
+            reward: { q:'한 시간 일하는 데 최소 얼마를 받으면 할 만해요?', unit:'원', opts:[10000, 15000, 20000, 30000] } }
+        ] },
+      // 푸드패스는 용돈 미션 아래에 둔다(미션을 먼저 보여 참여를 유도)
+      { key:'food', title:'푸드패스', desc:'동아리 회식·총회·간식 때 쓰는 제휴 식당 쿠폰', action:'쿠폰 받기',
+        note:'쿠폰으로 결제한 지출도 결제 근거 카드에 그대로 남아요.',
+        // reward: 버튼을 누른 뒤에 묻는 '최소 이 정도는 돼야 쓴다' 질문. 보기는 기준값이고, 고른 값만 통계로 보낸다
+        reward: { q:'최소 얼마나 할인해 주면 단체로 가 볼 만해요?', unit:'%', opts:[5, 10, 15, 20] },
+        items: [
+          { key:'food-hansik', title:'능동로 한식당', value:'단체 식사 ○○% 할인', meta:'총회·회식 단체 예약 시' },
+          { key:'food-chicken', title:'군자역 치킨집', value:'뒤풀이 메뉴 ○○원 할인', meta:'행사 뒤풀이 예약 시' },
+          { key:'food-snack', title:'학교 앞 분식', value:'간식 단체 주문 ○○% 할인', meta:'동아리방 간식 주문 시' }
+        ] },
+      // 총무에게만 보이는 부가 기능(역할이 treasurer일 때). 단위경제의 여행자보험·가맹점 결제·통계 활용 동의 가정을 재는 가짜 문이다.
+      // reward·second는 항목마다 다른 숫자 질문(명·회·% 등)이라 target 값으로 뜻을 가른다. intent로 질문·보기를 바꿀 수 있다
+      { key:'treasurer', role:'treasurer', title:'총무 전용 기능', desc:'동아리 돈을 다루는 총무가 쓰는 부가 기능', action:'써 보기',
+        items: [
+          { key:'tr-insurance', title:'여행자보험 단체 견적', value:'1인당 ○○원', meta:'MT·답사 같은 이동 행사 전에 · 보험대리점 제휴(가정)',
+            reward: { q:'MT·답사 같은 이동 행사에 보통 몇 명이 가요?', unit:'명', opts:[10, 20, 30, 50] },
+            second: { q:'이런 이동 행사가 1년에 몇 번 있어요?', unit:'회', opts:[1, 2, 3, 4] } },
+          { key:'tr-pay', title:'제휴 가맹점에 앱으로 바로 결제', value:'결제 수수료 ○○원', meta:'숙소·전세버스·식당 단체 결제 · 영수증이 자동으로 붙어요',
+            reward: { q:'동아리 1년 지출 중 몇 %를 앱으로 바로 결제할 것 같아요?', unit:'비중', opts:[10, 20, 40, 60] } },
+          { key:'tr-data', title:'지출 통계 익명 활용', value:'동의 여부만 먼저 확인', meta:'이름·계좌를 뺀 건별 금액·항목만 묶어 외부 리서치에 제공',
+            intent: { q:'우리 동아리의 지출 내역을 이름·계좌를 뺀 건별 금액·항목으로 묶어 외부 리서치에 제공하는 데 동의하시겠어요?', opts:[['yes', '동의해요'], ['maybe', '조건을 보고 정할게요'], ['no', '동의하지 않아요']] } }
         ] }
     ]
   },
-  // 거래 내역 화면 아래 광고 띠 목업(광고주 미정)
-  ad: { title:'학교 앞 카페', text:'동아리 회의 공간 예약 안내', note:'광고주 미정 · 목업' },
+  // 혜택 탭 '용돈 미션'에서 실제로 풀어 볼 수 있는 샘플 설문(리서치 회사가 맡기는 설문 일감의 예시). 실제 설문 한 건을 그대로 옮겼다.
+  // 고른 답은 화면 메모리에만 두고 저장하거나 보내지 않는다.
+  // type: one(하나 고르기) · many(여럿 고르기, none은 다른 보기와 함께 못 고르는 보기 번호) · scale(5점) · text(주관식)
+  // opt:true면 건너뛸 수 있고, out은 그 보기를 고르면 설문을 마치는(대상이 아닌) 보기 번호다
+  survey: {
+    key: 'job-survey',
+    title: '20대의 금연제품 인지도 및 마케팅 활성화 방안에 관한 설문조사',
+    scale: ['매우 그렇다', '그렇다', '보통이다', '그렇지 않다', '전혀 그렇지 않다'],
+    outTitle: '이번 설문의 대상이 아니에요',
+    outText: '이 설문은 만 20~29세만 대상으로 해요. 참여해 주셔서 고마워요.',
+    doneTitle: '응답을 마쳤어요',
+    doneText: '설문에 참여해 주셔서 감사합니다.',
+    sections: [
+      { id: 'A', title: '기본 정보 및 흡연 경험', qs: [
+        { id: 'q1', type: 'one', text: '귀하의 연령은 어떻게 되십니까?', opts: ['만 20~24세', '만 25~29세', '조사 대상 연령에 해당하지 않음'], out: 2 },
+        { id: 'q2', type: 'one', text: '현재 귀하의 흡연 상태는 어떻습니까?', opts: ['현재 흡연 중이다.', '과거에는 흡연했으나 현재는 금연 중이다.', '흡연 경험이 없다.'] },
+        { id: 'q3', type: 'one', text: '금연을 시도하거나 고려해 본 경험이 있습니까?', opts: ['실제로 금연을 시도한 경험이 있다.', '금연을 생각해 본 적은 있지만 시도하지 않았다.', '금연을 생각해 본 적이 없다.', '해당 없음(비흡연자)'] }
+      ] },
+      { id: 'B', title: '금연제품 인지도 및 이용 경험', qs: [
+        { id: 'q4', type: 'many', text: '다음 금연제품 중 알고 있는 제품을 모두 선택해 주세요.', opts: ['금연패치', '니코틴 껌', '니코틴 사탕 및 트로키', '은단', '금연 보조 캔디', '기타 금연 보조용품', '알고 있는 제품이 없다'], none: 6 },
+        { id: 'q5', type: 'one', text: '금연제품을 직접 사용해 본 경험이 있습니까?', opts: ['있다', '없다', '현재 사용 중이다'] },
+        { id: 'q6', type: 'one', text: '금연제품에 대한 정보를 주로 어디에서 접하셨습니까?', opts: ['유튜브 및 SNS', 'TV 및 방송 광고', '약국 및 병원', '정부 및 공공기관 홍보', '지인 추천', '온라인 쇼핑몰 및 검색', '접한 경험이 없다'] },
+        { id: 'q7', type: 'scale', text: '현재 금연제품은 담배나 전자담배에 비해 마케팅 및 홍보가 부족하다고 생각하십니까?' }
+      ] },
+      { id: 'C', title: '금연제품 구매 및 이용 장애요인', qs: [
+        { id: 'q8', type: 'one', text: '금연제품을 구매하거나 사용하지 않는 가장 큰 이유는 무엇입니까?', opts: ['금연제품의 존재를 잘 몰라서', '제품의 종류와 사용 방법을 몰라서', '가격이 부담스러워서', '금연 효과에 대한 신뢰가 부족해서', '구매할 수 있는 장소가 제한적이어서', '제품 디자인이나 브랜드에 매력을 느끼지 못해서', '금연에 관심이 없어서', '기타'] },
+        { id: 'q9', type: 'one', text: '금연제품의 인지도가 낮은 가장 큰 원인은 무엇이라고 생각하십니까?', opts: ['기업의 적극적인 마케팅 부족', '정부의 홍보 및 지원 부족', '20대의 금연에 대한 관심 부족', '제품의 디자인 및 브랜드 경쟁력 부족', '금연제품의 효과에 대한 정보 부족', '광고 및 홍보에 관한 제도적 제한', '기타'] }
+      ] },
+      { id: 'D', title: '새로운 금연제품에 대한 선호도', intro: '다음은 20대의 관심과 접근성을 높이기 위해 연구자가 구상한 가상의 제품 아이디어입니다. 실제 판매 여부나 금연 효과가 검증된 제품은 아닙니다.', qs: [
+        { id: 'q10', type: 'one', text: '다음 제품 중 가장 관심이 가는 제품은 무엇입니까?', opts: ['스마트폰 앱과 연동되는 스마트 금연패치', '세련된 디자인과 다양한 맛을 갖춘 프리미엄 은단', '흡연 욕구가 생길 때 활용하는 무니코틴 금연 캔디', '흡연 행동을 대체하는 금연 스트레스 해소 반지', '금연 목표 달성 시 포인트를 지급하는 리워드 앱', '다양한 향을 선택할 수 있는 무니코틴 아로마 스틱'] },
+        { id: 'q11', type: 'scale', text: '위와 같은 새로운 금연제품이 출시된다면 구매하거나 이용해 볼 의향이 있습니까?' },
+        { id: 'q12', type: 'one', text: '금연제품을 선택할 때 가장 중요하게 생각하는 요소는 무엇입니까?', opts: ['실제 금연에 도움이 되는 효과', '합리적인 가격', '세련된 디자인 및 휴대성', '안전성 및 성분', '브랜드 인지도 및 신뢰도', '다양한 맛과 향', '사용 편의성'] }
+      ] },
+      { id: 'E', title: '금연제품 마케팅 및 정책 수요', qs: [
+        { id: 'q13', type: 'scale', text: '기업이 SNS, 유튜브 등 20대가 주로 이용하는 플랫폼에서 금연제품을 적극적으로 홍보한다면 제품에 대한 관심이 높아질 것이라고 생각하십니까?' },
+        { id: 'q14', type: 'one', text: '정부가 금연제품의 인지도와 이용률을 높이기 위해 가장 우선적으로 추진해야 할 정책은 무엇이라고 생각하십니까?', opts: ['금연제품에 대한 공익광고 및 홍보 확대', '금연제품 구매 비용 지원 및 할인 혜택', '약국 등 구매 접근성 개선', '20대 대상 SNS 및 디지털 금연 캠페인', '금연제품 연구개발 및 신제품 개발 지원', '금연제품의 안전성과 효과에 관한 정보 제공', '기타'] },
+        { id: 'q15', type: 'text', opt: true, text: '금연제품의 마케팅 활성화 및 20대의 금연 참여를 높이기 위해 필요한 정책이나 아이디어가 있다면 자유롭게 작성해 주세요.' }
+      ] }
+    ]
+  },
+  // 거래 내역 화면 아래 광고 자리. 플러터 앱에서 쓰던 배너를 그대로 가져왔고, 광고주와 계약한 실제 광고는 아니다.
+  // key는 통계(ad_view·ui_click의 target)에 그대로 남는 배너 이름이라, 한 번 정하면 바꾸지 않는다. 배너를 늘리려면 assets/ads에 이미지(가로세로 3.2 대 1)를 넣고 한 줄을 더한다
+  ad: {
+    label:'광고', note:'광고 자리 예시 · 실제 광고 아님', interval:5000,
+    banners: [
+      { key:'kb-insurance', img:'assets/ads/kb_insurance.jpg', alt:'KB손해보험 광고 배너' },
+      { key:'oliveyoung-sale', img:'assets/ads/oliveyoung_live_sale.jpg', alt:'올리브영 올영세일 광고 배너' },
+      { key:'baemin-isaac-toast', img:'assets/ads/baemin_isaac_toast.jpg', alt:'배민오더 이삭토스트 3천원 할인 광고 배너' },
+      { key:'spotify-afterparty', img:'assets/ads/spotify_afterparty.jpg', alt:'스포티파이 참여형 플레이리스트 광고 배너' }
+    ]
+  },
   unitEconomics: {
     metrics: [
       { name:'결제 근거 카드 이용료', value:'0원', note:'핵심 기능은 무료(팀 결정)' },
@@ -450,7 +587,7 @@ const CONFIG = {
         { id:'c1', text:'개별 투표·신원 비공개', how:'집계 숫자만 표시하고 활동 로그에도 선택 내용은 남기지 않는다' },
         { id:'c2', text:"'설명 필요' ≠ 부정행위", how:'상태 카드 안에 추가 설명이 필요한 상태일 뿐이라고 함께 표시' },
         { id:'c3', text:'개인 지목·망신 주기 없음', how:'Q&A 안내 카드에서 지출 내용만 묻도록 안내, 질문자 신원 미표시' },
-        { id:'c4', text:'불필요한 개인정보 수집 없음', how:'이름·학번·계좌·카드번호를 입력받지 않는다' }
+        { id:'c4', text:'불필요한 개인정보 수집 없음', how:'서비스 기능(로그인·근거·의견)은 이름·학번·계좌·카드번호를 입력받지 않는다. 이름은 수업용 표본을 모으는 테스트 참여 정보 창에서만 받는다' }
       ]}
     ]
   },
@@ -467,7 +604,7 @@ const CONFIG = {
   },
   // MVP 설명 모드: 화면마다 어떤 설계 요소인지 한두 문장으로 설명
   mvpNotes: {
-    login:    { tags:['설계 가정','개인정보 보호'], text:'역할별 화면을 나누기 위한 시연용 로그인이에요. 이름·학번 없이 역할만 고르게 해서 개인정보 수집을 최소화했어요.' },
+    login:    { tags:['설계 가정','개인정보 보호'], text:'역할별 화면을 나누기 위한 시연용 로그인이에요. 로그인에서는 이름·학번 없이 역할만 고르게 했어요. (이름은 수업용 표본을 모으는 테스트 참여 정보 창에서만 받아요.)' },
     pin:      { tags:['설계 가정'], text:'총무는 결제 PIN을 한 번 더 입력해야 총무 화면으로 들어가요. 실제 인증이 아닌 시연용 흐름이라 성공과 실패를 모두 보여 줘요.' },
     denied:   { tags:['개인정보 보호','설계 가정'], text:'부원이 주소를 직접 입력해 총무 화면에 들어오려 하면 이 화면으로 막아요. 업무 화면 분리 원칙을 보여 줘요.' },
     ledger:   { tags:['여정지도 3~4단계','HMW'], text:"'행사 후 지출 공지 확인' 단계예요. 각 카드에 지출 사유와 대조 상태를 함께 보여 줘서 A1·A5의 '어디에 왜 썼는지 모름'을 첫 화면에서 줄여요(넛지: 탐색 부담 줄이기)." },
@@ -476,7 +613,7 @@ const CONFIG = {
     vote:     { tags:['여정지도 최저점','개인정보 보호','다크패턴 점검'], text:'관계 부담(A2·A3) 없이 익명으로 의견을 남겨요. 참여는 선택이고, 응답 취소도 한 번에 돼요. 집계 숫자만 보여 줘요.' },
     status:   { tags:['설계 가정','다크패턴 점검'], text:"7일·15% 기준은 팀의 설계 가정이에요. '설명 필요'는 추가 설명이 필요하다는 뜻일 뿐 부정행위 판정이 아니에요." },
     qna:      { tags:['HMW','다크패턴 점검'], text:'총무에게 1:1로 따져 묻는 대신 지출 카드에 연결된 공개 Q&A로 묻고 답해요. 질문자 신원은 표시하지 않아요.' },
-    perks:    { tags:['단위경제','다크패턴 점검'], text:'단위경제의 부가 수익원(푸드패스·용돈 미션)이 들어갈 자리를 보여 주는 목업이에요. 결제 근거 카드와 섞이지 않게 별도 탭으로 두었고, 쓰는 것은 선택이에요. 제휴처·할인율·보상은 정해지지 않아 ○○로 비워 두었어요.' },
+    perks:    { tags:['단위경제','다크패턴 점검'], text:'단위경제의 부가 수익원(푸드패스·용돈 미션)이 들어갈 자리를 보여 주는 목업이에요. 결제 근거 카드와 섞이지 않게 별도 탭으로 두었고, 쓰는 것은 선택이에요. 제휴처·할인율·보상은 정해지지 않아 ○○로 비워 두었어요. 버튼을 누르면 아직 없는 기능이라고 알리고 쓸 의향을 물어요. 다만 설문 일감 하나는 샘플 설문을 실제로 풀어 볼 수 있고, 끝낸 뒤에 같은 의향을 물어요.' },
     admin:    { tags:['킬러 기능','설계 가정'], text:'총무는 거래를 직접 만들 수 없어요. 계좌 거래내역(CSV)을 가져오면 카드가 생기고, 총무는 사유·카테고리·영수증 사진만 붙여요. 금액·일시·가맹점은 계좌 원본이라 고칠 수 없고, 거래는 지울 수 없어요.' }
   },
   checkpoints: [
@@ -778,8 +915,9 @@ function 총무인가() { return state.app.session.role === 'treasurer' && state
    통계는 부가 기능이므로 어떤 오류가 나도 앱 동작에 영향이 없도록 try/catch로 감싼다. */
 const 통계제외키 = 'finpbl:notrack';
 const 통계안내키 = 'finpbl:stats-notice';
-let 통계켜짐 = false, 통계화면 = '', 통계역할 = '', 통계시각 = 0, 통계누적 = 0;
-const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role };
+let 통계켜짐 = false, GA켜짐 = false, 통계화면 = '', 통계역할 = '', 통계시각 = 0, 통계누적 = 0, 화면번호 = 0, 광고관찰 = null, 광고타이머 = 0, 광고보임 = false, 광고쪽 = 0, 광고순서 = null, 광고손시각 = 0;
+const 광고기록 = new Set();   // '화면번호:배너키' — 같은 화면에서 배너마다 노출을 한 번만 세려는 것
+const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role, perk: d => d.key, surveyintent: d => d.key, ad: d => d.key };
 function 통계제외() {
   try {
     const q = new URLSearchParams(location.search).get('notrack');
@@ -789,8 +927,13 @@ function 통계제외() {
   } catch (e) { return false; }
 }
 function 통계시작() {
-  const id = CONFIG.analytics.gaId;
-  if (!id || 통계제외()) return;
+  const id = CONFIG.analytics.gaId, url = CONFIG.collect.url;
+  if ((!id && !url) || 통계제외()) return;
+  if (url) 자체시작();
+  if (id) GA시작(id);
+  통계켜짐 = GA켜짐 || 자체켜짐;
+}
+function GA시작(id) {
   try {
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };
@@ -802,12 +945,156 @@ function 통계시작() {
     s.async = true;
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
     document.head.appendChild(s);
-    통계켜짐 = true;
+    GA켜짐 = true;
   } catch (e) {}
+}
+// 주소의 ?src=이름(예: ?src=kakao-a)을 기억해 모든 이벤트에 붙인다. 어느 경로로 모은 표본인지 가르는 용도라 짧은 영문·숫자 이름만 받는다
+const 유입키 = 'finpbl:src';
+function 유입경로() {
+  try {
+    const q = new URLSearchParams(location.search).get('src');
+    if (q && /^[A-Za-z0-9._-]{1,30}$/.test(q)) localStorage.setItem(유입키, q);
+    return localStorage.getItem(유입키) || '';
+  } catch (e) { return ''; }
 }
 function track(name, params) {
   if (!통계켜짐) return;
-  try { gtag('event', name, Object.assign({ app_role: 역할() || 'guest' }, params)); } catch (e) {}
+  try {
+    const 경로 = 유입경로();
+    const p = Object.assign({ app_role: 역할() || 'guest' }, 경로 ? { app_src: 경로 } : {}, params);
+    if (GA켜짐) gtag('event', name, p);   // 참여 정보는 GA로 보내지 않는다
+    if (자체켜짐) 자체기록(name, p);
+  } catch (e) {}
+}
+
+/* ---------- 직접 수집(구글 시트) ----------
+   GA와 같은 이벤트를 팀의 구글 시트(Apps Script 웹앱)에도 한 행씩 보낸다. 방문자 코드는 무작위로 만든 값이고, 이름은 참여 정보를 입력할 때 profile 행에만 실어 한 번 보낸다.
+   참여 정보를 입력하거나 '수집 안 함'을 고르기 전에는 아무것도 보내지 않고 이 화면의 메모리에만 모아 둔다. */
+const 방문자키 = 'finpbl:vid', 참여정보키 = 'finpbl:profile';
+let 자체켜짐 = false, 자체큐 = [], 자체타이머 = 0, 방문자 = '', 세션 = '';
+const 행이름 = { app_role: 'role', app_src: 'src', app_screen: 'screen', app_act: 'act', app_target: 'target', app_intent: 'intent', app_reward: 'reward', app_withdraw: 'withdraw', app_seconds: 'secs', app_form: 'form', app_tx: 'tx', app_name: 'name' };
+function 무작위코드() {
+  try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+}
+function 자체시작() {
+  try {
+    방문자 = localStorage.getItem(방문자키) || '';
+    if (!방문자) { 방문자 = 무작위코드(); localStorage.setItem(방문자키, 방문자); }
+    세션 = sessionStorage.getItem('finpbl:sid') || '';
+    if (!세션) { 세션 = 's' + 무작위코드().replace(/-/g, '').slice(0, 7); sessionStorage.setItem('finpbl:sid', 세션); }
+    자체켜짐 = true;
+  } catch (e) { 자체켜짐 = false; }
+}
+function 참여정보() {
+  try {
+    const p = JSON.parse(localStorage.getItem(참여정보키) || 'null');
+    return p && p.v === CONFIG.profile.version ? p : null;
+  } catch (e) { return null; }
+}
+function 참여정보필요() { return 통계켜짐 && 자체켜짐 && !참여정보(); }
+function 자체기록(name, p) {
+  const row = { t: new Date().toISOString(), vid: 방문자, sid: 세션, ev: name, dev: window.innerWidth < 720 ? 'm' : 'd' };
+  Object.keys(행이름).forEach(k => { if (p[k] !== undefined && p[k] !== '') row[행이름[k]] = p[k]; });
+  // 기록할 때의 참여 정보를 붙인다. 아직 입력 전이면 비워 두고, 입력한 뒤 보낼 때 채운다
+  const 정보 = 참여정보();
+  if (정보) Object.assign(row, { grade: 정보.grade, gender: 정보.gender, org: 정보.org, exp: 정보.exp });
+  자체큐.push(row);
+  if (자체큐.length > 200) 자체큐.shift();
+  if (자체큐.length >= 10) 자체보내기();
+  else if (!자체타이머) 자체타이머 = setTimeout(자체보내기, 5000);
+}
+function 자체보내기() {
+  clearTimeout(자체타이머); 자체타이머 = 0;
+  const 정보 = 참여정보();
+  if (!자체켜짐 || !자체큐.length || !정보) return;   // 참여 정보를 정하기 전에는 보내지 않는다
+  const rows = 자체큐.splice(0, 50).map(r => r.grade !== undefined ? r : Object.assign({ grade: 정보.grade, gender: 정보.gender, org: 정보.org, exp: 정보.exp }, r));
+  const body = JSON.stringify({ rows });
+  try {
+    const ok = navigator.sendBeacon && navigator.sendBeacon(CONFIG.collect.url, new Blob([body], { type: 'text/plain;charset=UTF-8' }));
+    if (!ok) fetch(CONFIG.collect.url, { method: 'POST', mode: 'no-cors', keepalive: true, body });
+  } catch (e) {}
+  if (자체큐.length) 자체타이머 = setTimeout(자체보내기, 1000);
+}
+
+/* ---------- 테스트 참여 정보(필수 입력) ----------
+   직접 수집이 켜진 브라우저가 처음 열리면 이름과 네 가지를 받고 동의를 확인한다. CONFIG.profile.required가 true면
+   입력하지 않고는 쓸 수 없다(창을 닫을 수 없다). false면 '수집 없이 쓰기'로 건너뛸 수 있고 그러면 아무것도 보내지 않는다. */
+function 필수모드() { return !!(CONFIG.profile.required && CONFIG.collect.url); }
+function 이름검사(s) { return /^[가-힣A-Za-z][가-힣A-Za-z ·.'-]{1,19}$/.test(s); }
+function 참여정보확인() {
+  if (참여정보필요()) 참여정보열기(false);
+}
+function 참여정보열기(고치기) {
+  const P = CONFIG.profile, 값 = 참여정보() || {}, 필수 = 필수모드();
+  const 이름칸 = 필수 ? `<div class="field" id="f-pf-name"><label for="pf-name">${esc(P.name.label)}</label>
+      <input id="pf-name" name="name" type="text" autocomplete="name" maxlength="20" placeholder="${esc(P.name.placeholder)}" value="${esc(값.name || '')}" data-autofocus>
+      <span class="hint">${esc(P.name.hint)}</span><span class="err" id="pf-name-err" role="alert"></span></div>` : '';
+  const 그룹 = P.fields.map((f, i) => `<div class="pgroup" data-pg="${f.key}" role="radiogroup" aria-labelledby="pf-${f.key}-lb">
+      <span class="lb" id="pf-${f.key}-lb">${esc(f.label)}</span>
+      <div class="chips wrap">${f.opts.map(([v, l], j) => `<label class="opt"><input type="radio" name="${f.key}" value="${v}" ${값[f.key] === v ? 'checked' : ''} ${!필수 && i === 0 && j === 0 ? 'data-autofocus' : ''}><span>${esc(l)}</span></label>`).join('')}</div>
+      <span class="err" role="alert"></span></div>`).join('');
+  const 동의칸 = 필수 && !고치기 ? `<label class="check" for="pf-consent"><input type="checkbox" id="pf-consent"><span>${esc(P.consent)}<small class="err" id="pf-consent-err" role="alert"></small></span></label>` : '';
+  const 문의 = CONFIG.privacy.contact ? `<p class="small sub">문의·삭제 요청: ${esc(CONFIG.privacy.contact)}</p>` : '';
+  모달열기(`<h2 id="modal-title">${esc(P.title)}</h2>
+    <p class="small">${esc(P.intro)}</p>
+    <form data-form="profile" class="stack" novalidate ${고치기 ? '' : 'data-gate'}>
+      ${이름칸}${그룹}
+      <ul class="small sub" style="margin:0;padding-left:18px">${P.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>
+      ${문의}${동의칸}
+      <button type="submit" class="btn primary block tall" id="pf-ok">${고치기 ? '저장' : 필수 ? '동의하고 시작' : '입력하고 시작'}</button>
+      ${고치기 ? '<button type="button" class="btn ghost block" id="pf-cancel" data-act="modalclose">닫기</button>' : 필수 ? '<p class="hint" style="text-align:center">입력하지 않으면 앱을 쓸 수 없어요.</p>' : `<button type="button" class="btn ghost block" id="pf-off" data-act="statsoff">${esc(P.off)}</button>`}
+    </form>`, 'scroll');
+}
+function 참여정보저장(f) {
+  const P = CONFIG.profile, 값 = { v: P.version }, 필수 = 필수모드();
+  let 빠진곳 = null;
+  if (필수) {
+    const n = f.querySelector('#pf-name'), s = n.value.trim().replace(/\s+/g, ' ');
+    const 오류 = !s ? '이름을 입력해 주세요.' : !이름검사(s) ? '2~20자의 한글·영문으로 입력해 주세요.' : '';
+    document.getElementById('f-pf-name').classList.toggle('invalid', !!오류);
+    document.getElementById('pf-name-err').textContent = 오류;
+    if (오류) 빠진곳 = n; else 값.name = s;
+  }
+  P.fields.forEach(fd => {
+    const g = f.querySelector(`[data-pg="${fd.key}"]`), c = f.querySelector(`input[name="${fd.key}"]:checked`);
+    g.classList.toggle('invalid', !c);
+    g.querySelector('.err').textContent = c ? '' : '하나를 골라 주세요.';
+    if (c) 값[fd.key] = c.value;
+    else if (!빠진곳) 빠진곳 = g.querySelector('input');
+  });
+  const 동의 = f.querySelector('#pf-consent');
+  if (동의) {
+    document.getElementById('pf-consent-err').textContent = 동의.checked ? '' : '동의해야 쓸 수 있어요.';
+    if (!동의.checked && !빠진곳) 빠진곳 = 동의;
+  }
+  if (빠진곳) { 빠진곳.focus(); return; }
+  try { localStorage.setItem(참여정보키, JSON.stringify(값)); } catch (e) { 토스트('이 브라우저는 정보를 저장하지 못해요'); return; }
+  통계안내확인();
+  모달닫기();
+  // 이름은 이 profile 행에만 싣는다(다른 행에는 방문자 코드만 붙는다). GA로는 보내지 않는다(track을 거치지 않는다)
+  if (자체켜짐) { const 경로 = 유입경로(); 자체기록('profile', Object.assign({ app_role: 역할() || 'guest' }, 경로 ? { app_src: 경로 } : {}, 값.name ? { app_name: 값.name } : {})); }
+  자체보내기();
+  토스트('저장했어요');
+  그리기();
+}
+function 참여정보카드() {
+  const 정보 = 참여정보();
+  if (!정보 || !자체켜짐) return '';
+  const 줄 = (정보.name ? `이름 ${esc(정보.name)} · ` : '') + CONFIG.profile.fields.map(f => `${esc(f.label)} ${esc((f.opts.find(o => o[0] === 정보[f.key]) || [0, '-'])[1])}`).join(' · ');
+  return `<div class="card stack"><p class="small"><b>내 참여 정보</b></p><p class="small">${줄}</p>
+    <button type="button" class="btn block" id="pv-profile" data-act="profedit">정보 고치기</button>
+    ${CONFIG.privacy.contact ? `<p class="small sub">방문자 코드 ${esc(방문자.slice(0, 8))} · 기록 삭제를 요청할 때 이 코드를 알려 주세요.</p>` : ''}</div>`;
+}
+// 필수 모드에서 '수집 안 함' 대신 쓰는 동의 철회: 이 브라우저의 참여 정보·방문자 코드를 지우고 입력 창으로 돌아간다
+function 참여철회() {
+  try { [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  clearTimeout(자체타이머); 자체타이머 = 0; 자체큐 = [];
+  try { 방문자 = 무작위코드(); localStorage.setItem(방문자키, 방문자); } catch (e) {}
+  if (현재.sheet) 시트닫기();
+  토스트('동의를 철회했어요. 이 브라우저에 저장된 정보를 지웠어요');
+  setTimeout(참여정보확인, 350);
+  그리기();
 }
 function 화면시간보내기() {
   if (!통계켜짐) return;
@@ -815,7 +1102,29 @@ function 화면시간보내기() {
   const 초 = Math.round(통계누적 / 1000);
   통계누적 = 0;
   // 화면을 떠난 뒤에 보내므로 역할은 그 화면에 들어올 때 값을 쓴다
-  if (통계화면 && 초 >= 1) track('screen_time', { app_role: 통계역할, app_screen: 통계화면, app_seconds: Math.min(초, 1800) });
+  if (통계화면 && 초 >= 1) {
+    const 조각 = Math.min(초, 1800);
+    track('screen_time', { app_role: 통계역할, app_screen: 통계화면, app_seconds: 조각 });
+    방문초(조각);
+  }
+}
+// 한 번 접속(이 탭의 방문) 동안 화면을 보고 있던 시간의 합계. 새로고침해도 이어지게 sessionStorage에 둔다(탭을 닫으면 사라지고, 방문자 코드와 별개다)
+const 방문초키 = 'finpbl:sec';
+let 방문초폴백 = 0, 마지막방문초 = 0;
+function 방문초(더할초) {
+  try {
+    const n = (Number(sessionStorage.getItem(방문초키)) || 0) + (더할초 || 0);
+    if (더할초) sessionStorage.setItem(방문초키, String(n));
+    return n;
+  } catch (e) { 방문초폴백 += 더할초 || 0; return 방문초폴백; }
+}
+// 탭이 가려지거나 닫힐 때 그때까지의 합계를 한 번 남긴다. 한 방문에서 여러 번 남을 수 있어 같은 방문(sid)에서는 가장 큰 값을 쓴다
+function 방문시간보내기() {
+  if (!통계켜짐) return;
+  const 초 = 방문초();
+  if (초 < 1 || 초 === 마지막방문초) return;
+  마지막방문초 = 초;
+  track('session_time', { app_role: 통계역할 || 역할() || 'guest', app_seconds: 초 });
 }
 function 화면기록(r) {
   if (!통계켜짐) return;
@@ -823,6 +1132,7 @@ function 화면기록(r) {
   if (키 === 통계화면) return;
   화면시간보내기();
   통계화면 = 키;
+  화면번호++;
   통계역할 = 역할() || 'guest';
   통계시각 = document.hidden ? 0 : Date.now();
   track('page_view', { page_location: location.href.split('#')[0] + '#/' + 키, page_title: 키, app_screen: 키 });
@@ -836,7 +1146,7 @@ function 통계띠그리기() {
   if (!el) return;
   let 확인함 = false;
   try { 확인함 = localStorage.getItem(통계안내키) === '1'; } catch (e) {}
-  el.hidden = !통계켜짐 || 확인함;
+  el.hidden = !통계켜짐 || 확인함 || 필수모드();   // 필수 모드는 입력 창이 같은 안내를 한다
   el.innerHTML = el.hidden ? '' : `<span>이용 통계(화면 이동·클릭·머문 시간)를 수집해요. 질문·답변·의견 내용은 수집하지 않아요.</span>
     <span class="row"><button type="button" class="btn" id="strip-more" data-act="sheet" data-sheet="privacy">자세히</button>
     <button type="button" class="btn" id="strip-off" data-act="statsoff">수집 안 함</button>
@@ -847,9 +1157,10 @@ function 통계안내확인() {
   통계띠그리기();
 }
 function 통계거부() {
-  try { localStorage.setItem(통계제외키, '1'); } catch (e) {}
+  try { localStorage.setItem(통계제외키, '1'); [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   window['ga-disable-' + CONFIG.analytics.gaId] = true;  // 이미 불러온 gtag.js도 이후 어떤 전송도 하지 않게 막는다
-  통계켜짐 = false;
+  통계켜짐 = false; GA켜짐 = false; 자체켜짐 = false; 자체큐 = [];
+  { const ml = document.getElementById('modalLayer'); if (ml && !ml.hidden) 모달닫기(); }
   통계안내확인();
   토스트('이 브라우저에서 통계 수집을 껐어요');
   그리기();
@@ -862,7 +1173,11 @@ function 통계허용() {
   else location.reload();
 }
 function 처리방침본문() {
-  const id = CONFIG.analytics.gaId, p = CONFIG.privacy;
+  const id = CONFIG.analytics.gaId || CONFIG.collect.url, p = CONFIG.privacy;
+  const 직접 = !!CONFIG.collect.url, 내정보 = 참여정보카드(), 필수 = 필수모드();
+  const 문장 = s => (필수 && s.requiredText) || (직접 && s.ownFull) || (s.text + (직접 && s.ownText ? ' ' + s.ownText : ''));
+  const 필수상태 = 참여정보() ? '참여 정보를 입력하고 수집에 동의한 상태예요.' : '참여 정보를 아직 입력하지 않았어요.';
+  const 필수버튼 = 참여정보() ? '<button type="button" class="btn block" id="pv-withdraw" data-act="profwithdraw">동의 철회하고 정보 지우기</button>' : '';
   const 상태 = !id ? '이 앱은 현재 이용 통계를 수집하지 않아요.'
     : 통계켜짐 ? '이 브라우저에서 이용 통계를 수집하고 있어요.'
     : 통계거부여부() ? '이 브라우저에서는 이용 통계를 수집하지 않아요.' : '이용 통계 수집이 꺼져 있어요.';
@@ -870,14 +1185,15 @@ function 처리방침본문() {
     : 통계켜짐 ? '<button type="button" class="btn block" id="pv-off" data-act="statsoff">이 브라우저에서 수집 안 함</button>'
     : 통계거부여부() ? '<button type="button" class="btn block" id="pv-on" data-act="statson">다시 수집 허용</button>' : '';
   const 절 = p.sections.map((s, i) => `<h3>${i + 1}. ${esc(s.title)}</h3>
-    ${s.items ? `<ul class="small" style="margin:0;padding-left:18px">${s.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : `<p class="small">${esc(s.text)}</p>`}
-    ${s.optout ? `<div class="card stack"><p class="small"><b>${상태}</b></p>${버튼}</div>` : ''}`).join('');
+    ${s.items ? `<ul class="small" style="margin:0;padding-left:18px">${s.items.concat(직접 ? (s.ownItems || []) : []).map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : `<p class="small">${esc(문장(s))}</p>`}
+    ${s.optout ? `<div class="card stack"><p class="small"><b>${필수 ? 필수상태 : 상태}</b></p>${필수 ? 필수버튼 : 버튼}</div>` : ''}`).join('');
   const 문의 = p.contact ? `<h3>${p.sections.length + 1}. 문의</h3><p class="small">${esc(p.contact)}</p>` : '';
-  return `<p class="notice">${esc(p.intro)}</p>${절}${문의}<p class="small sub">시행일 ${esc(p.effective)}</p>`;
+  return `<p class="notice">${esc(p.intro)}</p>${절}${문의}${내정보}<p class="small sub">시행일 ${esc(p.effective)}</p>`;
 }
 function 통계클릭(t) {
   if (!통계켜짐) return;
-  if (t.dataset.act === 'statsoff') return;  // 수집을 끄는 클릭은 보내지 않는다
+  // 수집을 끄는 클릭, 보내기 전에 답을 고르는 클릭, 설문 쪽 이동 클릭(구간 기록이 따로 있다)은 보내지 않는다
+  if (['statsoff', 'perkpick', 'perksend', 'snext', 'sprev'].includes(t.dataset.act)) return;
   try {
     const d = t.dataset, f = 통계대상[d.act];
     track('ui_click', { app_act: d.act, app_target: (f && f(d)) || '', app_screen: 통계화면 });
@@ -973,6 +1289,7 @@ function 그리기() {
     if (el) el.focus({ preventScroll: true });
   }
   패널그리기();
+  광고노출확인();
 }
 
 function 앱화면() {
@@ -1286,8 +1603,59 @@ function 공개QA화면() {
 /* ---------- 탭7 혜택 (푸드패스·용돈 미션 목업) + 광고 띠 ---------- */
 function 광고띠() {
   const a = CONFIG.ad;
-  return `<aside class="adband" aria-label="광고"><span class="adtag">광고</span>
-    <span class="info"><b>${esc(a.title)}</b> · ${esc(a.text)}<span class="small sub" style="display:block">${esc(a.note)}</span></span></aside>`;
+  if (!광고순서) {   // 방문마다 첫 배너가 달라지게, 처음 한 번만 섞는다
+    광고순서 = a.banners.slice();
+    for (let i = 광고순서.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [광고순서[i], 광고순서[j]] = [광고순서[j], 광고순서[i]]; }
+  }
+  return `<aside class="adband" aria-label="${esc(a.label)}">
+    <div class="adhead"><span class="adtag">${esc(a.label)}</span><span class="small sub">${esc(a.note)}</span>
+      <span class="addots" aria-hidden="true">${광고순서.map((b, i) => `<i${i === 광고쪽 ? ' class="on"' : ''}></i>`).join('')}</span></div>
+    <div class="adtrack">${광고순서.map(b => `<button type="button" class="adslide" data-act="ad" data-key="${esc(b.key)}" aria-label="${esc(b.alt)} (광고 자리 예시)"><span class="adcard"><img src="${esc(b.img)}" alt="" draggable="false"></span></button>`).join('')}</div></aside>`;
+}
+// 배너가 돌아가는 광고 띠. 띠가 절반 이상 보이는 동안 화면에 멈춰 있는 배너마다 노출(ad_view)을 한 번씩 센다 — 배너별 클릭률의 분모.
+// 같은 화면에서는 배너마다 한 번만 센다(다시 그려도, 한 바퀴 더 돌아도 늘지 않는다). 지나가기만 한 배너는 세지 않는다
+function 광고노출기록() {
+  if (!통계켜짐 || !광고보임 || document.hidden || !광고순서) return;
+  const b = 광고순서[광고쪽], id = 화면번호 + ':' + b.key;
+  if (광고기록.has(id)) return;
+  광고기록.add(id);
+  track('ad_view', { app_target: b.key, app_screen: 통계화면 });
+}
+function 광고노출확인() {
+  if (광고관찰) { 광고관찰.disconnect(); 광고관찰 = null; }
+  clearInterval(광고타이머); 광고타이머 = 0; 광고보임 = false;
+  const el = document.querySelector('.adband');
+  if (!el || !광고순서) return;
+  const 띠 = el.querySelector('.adtrack'), 점 = el.querySelectorAll('.addots i'), 주기 = CONFIG.ad.interval;
+  띠.scrollLeft = 광고쪽 * 띠.clientWidth;   // 다시 그려도 보던 배너에서 이어 간다
+  // 넘기는 동안 지나치는 배너는 세지 않도록, 멈춘 뒤(스크롤이 120ms 쉰 뒤)의 배너만 현재로 친다
+  let 멈춤 = 0;
+  띠.addEventListener('scroll', () => {
+    clearTimeout(멈춤);
+    멈춤 = setTimeout(() => {
+      if (!띠.clientWidth) return;
+      const i = Math.max(0, Math.min(광고순서.length - 1, Math.round(띠.scrollLeft / 띠.clientWidth)));
+      if (i === 광고쪽) return;
+      광고쪽 = i;
+      점.forEach((d, k) => d.classList.toggle('on', k === i));
+      광고노출기록();
+    }, 120);
+  }, { passive: true });
+  ['pointerdown', 'touchstart', 'wheel'].forEach(ev => 띠.addEventListener(ev, () => { 광고손시각 = Date.now(); }, { passive: true }));
+  if ('IntersectionObserver' in window) {
+    광고관찰 = new IntersectionObserver(목록 => {
+      광고보임 = 목록.some(e => e.isIntersecting && e.intersectionRatio >= 0.5);
+      광고노출기록();
+    }, { threshold: [0, 0.5] });
+    광고관찰.observe(el);
+  } else { 광고보임 = true; 광고노출기록(); }
+  // 화면 움직임을 줄이도록 설정한 사람에게는 저절로 넘기지 않는다(손으로 넘길 수는 있다). 손으로 넘긴 직후 한 주기는 건너뛴다
+  if (광고순서.length > 1 && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    광고타이머 = setInterval(() => {
+      if (document.hidden || !광고보임 || Date.now() - 광고손시각 < 주기) return;
+      띠.scrollTo({ left: ((광고쪽 + 1) % 광고순서.length) * 띠.clientWidth, behavior: 'smooth' });
+    }, 주기);
+  }
 }
 function 인출바(w) {
   const pct = Math.round(Math.min(1, w.ratio) * 100);
@@ -1305,13 +1673,131 @@ function 혜택화면() {
       <p class="small sub">${esc(s.desc)}</p>
       ${s.wallet ? 인출바(s.wallet) : ''}
       ${s.items.map((it, i) => `<div class="perk"><span class="info"><b>${esc(it.title)}</b><span class="val">${esc(it.value)}</span><span class="meta">${esc(it.meta)}</span></span>
-        <button type="button" class="btn primary" id="perk-${s.key}-${i}" data-act="perk">${esc(s.action)}</button></div>`).join('')}
+        <button type="button" class="btn primary" id="perk-${s.key}-${i}" data-act="perk" data-key="${esc(it.key)}">${esc(s.action)}</button></div>`).join('')}
       ${s.note ? `<p class="hint">${esc(s.note)}</p>` : ''}
     </section>`;
   return `<div class="title-row"><h2>혜택</h2><span class="small sub">목업</span></div>
+    <p class="perklead">${esc(p.lead)}</p>
     <p class="notice">${esc(p.intro)}</p>
-    ${p.sections.map(칸).join('')}
+    ${p.sections.filter(s => !s.role || s.role === 역할()).map(칸).join('')}
     <p class="notice strong">${esc(p.blank)}</p>`;
+}
+
+/* 혜택 탭 가짜 문: 버튼을 누르면 '아직 없는 기능'이라고 밝히고 쓸 의향을 묻는다.
+   보내기를 누른 답(의향·희망 보상 구간)만 통계로 가고, 고르기만 하고 닫으면 아무것도 가지 않는다.
+   항목마다 한 번만 답하게 해(이 브라우저 기준) 같은 사람의 중복 응답이 비율을 흔들지 않게 한다. */
+const 혜택완료키 = 'finpbl:perk-done';
+function 혜택완료목록() {
+  try { const a = JSON.parse(localStorage.getItem(혜택완료키) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+}
+function 혜택항목찾기(key) {
+  for (const s of CONFIG.perks.sections) {
+    const it = s.items.find(x => x.key === key);
+    if (it) return { s, it };
+  }
+  return null;
+}
+function 혜택질문열기(btn, 의향만) {
+  const key = btn.dataset.key, 찾음 = 혜택항목찾기(key);
+  // 설문 일감은 가짜 문이 아니라 샘플 설문을 실제로 풀게 하고, 끝낸 뒤에 의향을 묻는다
+  if (찾음 && 찾음.it.survey && !의향만) { 설문열기(btn); return; }
+  // 통계가 꺼진 브라우저는 답을 보낼 곳이 없으므로 묻지 않는다
+  if (!찾음 || !통계켜짐) { 토스트('시연용 목업이라 실제 쿠폰·미션은 없어요'); return; }
+  if (혜택완료목록().includes(key)) { 토스트('이미 답해 주셨어요. 고마워요'); return; }
+  state.__perkq = { key, a: {} };
+  // 설문 화면에서 넘어오면 같은 시트 자리를 바꿔 끼워, 질문을 닫을 때 설문이 다시 열리지 않게 한다
+  if (현재.sheet === 'survey') 이동(Object.assign({}, 현재, { sheet: 'perkq' }), { replace: true, state: { sheet: true } });
+  else 시트열기('perkq', btn);
+}
+function 혜택답고르기(q, v) {
+  if (!state.__perkq) return;
+  const a = state.__perkq.a;
+  if (a[q] === v) delete a[q]; else a[q] = v;   // 같은 칩을 다시 누르면 선택을 푼다
+  그리기();
+}
+function 혜택답보내기() {
+  const pq = state.__perkq;
+  if (!pq || !혜택항목찾기(pq.key) || !pq.a.intent) return;
+  const p = { app_target: pq.key, app_intent: pq.a.intent };
+  if (pq.a.reward) p.app_reward = pq.a.reward;
+  if (pq.a.withdraw) p.app_withdraw = pq.a.withdraw;
+  track('perk_answer', p);
+  try { localStorage.setItem(혜택완료키, JSON.stringify(혜택완료목록().concat(pq.key))); } catch (e) {}
+  state.__perkq = null;
+  토스트('답을 받았어요. 고마워요');
+  시트닫기();
+}
+
+/* 샘플 설문: 혜택 탭 '용돈 미션'의 설문 카드를 누르면 열린다(리서치 회사가 맡기는 설문 일감의 예시).
+   고른 답은 화면 메모리(state.__survey)에만 두고 저장하거나 보내지 않는다. 통계로 가는 것은 어느 구간까지 갔는지, 끝냈는지, 걸린 시간뿐이다.
+   구간 기록은 수집기(Code.gs)가 이미 받는 form_submit 이벤트에 app_form 값('survey:A' 등)을 달아 보낸다. */
+function 설문문항들() { return CONFIG.survey.sections.reduce((a, s) => a.concat(s.qs), []); }
+function 설문선택지(q) { return q.type === 'scale' ? CONFIG.survey.scale : (q.opts || []); }
+function 설문초(sv) { return Math.max(0, Math.min(Math.round((Date.now() - sv.t0) / 1000), 3600)); }
+function 설문기록(구간, 초) {
+  const p = { app_form: 'survey:' + 구간, app_target: CONFIG.survey.key };
+  if (초 !== undefined) p.app_seconds = 초;
+  track('form_submit', p);
+}
+function 설문답있음(v) { return Array.isArray(v) ? v.length > 0 : typeof v === 'string' && v.trim() !== ''; }
+function 설문열기(btn) {
+  state.__survey = { p: 0, a: {}, err: [], t0: Date.now(), end: '', secs: 0 };
+  설문기록(CONFIG.survey.sections[0].id);   // 첫 구간을 연 것이 곧 시작이다
+  시트열기('survey', btn);
+}
+function 설문닫기() {
+  const sv = state.__survey;
+  state.__survey = null;
+  if (sv && !sv.end) 설문기록('quit-' + CONFIG.survey.sections[sv.p].id, 설문초(sv));   // 끝내지 않고 닫은 경우만 남긴다
+}
+function 설문답저장(t) {
+  const sv = state.__survey;
+  if (!sv || sv.end) return;
+  const q = 설문문항들().find(x => x.id === t.dataset.sq);
+  if (!q) return;
+  if (q.type === 'many') {
+    const 칸 = [...document.querySelectorAll(`input[data-sq="${q.id}"]`)];
+    const 없음 = q.none !== undefined ? 칸.find(c => c.value === String(q.none)) : null;
+    if (없음 && t.checked) { if (t === 없음) 칸.forEach(c => { if (c !== 없음) c.checked = false; }); else 없음.checked = false; }   // '없다'는 다른 보기와 함께 못 고른다
+    sv.a[q.id] = 칸.filter(c => c.checked).map(c => c.value);
+  } else sv.a[q.id] = t.value;
+  const i = sv.err.indexOf(q.id);
+  if (i >= 0 && 설문답있음(sv.a[q.id])) {
+    sv.err.splice(i, 1);
+    const g = document.getElementById('sq-' + q.id);
+    if (g) { g.classList.remove('invalid'); const e = g.querySelector('.err'); if (e) e.remove(); }
+  }
+}
+function 설문맨위() {
+  const body = document.querySelector('#sheetLayer .sbody');
+  if (body) body.scrollTop = 0;
+  const top = document.getElementById('sv-top');
+  if (top) top.focus({ preventScroll: true });
+}
+function 설문이동(방향) {
+  const sv = state.__survey;
+  if (!sv || sv.end) return;
+  const secs = CONFIG.survey.sections, sec = secs[sv.p];
+  if (방향 < 0) {
+    if (sv.p > 0) sv.p--;
+    sv.err = [];
+  } else {
+    const 빠짐 = sec.qs.filter(q => !q.opt && !설문답있음(sv.a[q.id])).map(q => q.id);
+    if (빠짐.length) {
+      sv.err = 빠짐;
+      시트그리기();
+      토스트('답하지 않은 문항이 있어요');
+      const g = document.getElementById('sq-' + 빠짐[0]);
+      if (g) g.scrollIntoView({ block: 'center' });
+      return;
+    }
+    sv.err = [];
+    if (sec.qs.some(q => q.out !== undefined && sv.a[q.id] === String(q.out))) { sv.end = 'out'; sv.secs = 설문초(sv); 설문기록('out', sv.secs); }
+    else if (sv.p >= secs.length - 1) { sv.end = 'done'; sv.secs = 설문초(sv); 설문기록('done', sv.secs); }
+    else { sv.p++; 설문기록(secs[sv.p].id); }
+  }
+  시트그리기();
+  설문맨위();
 }
 
 /* ---------- 탭8 총무 관리 ---------- */
@@ -1462,12 +1948,65 @@ function 시트내용(name) {
       ${state.app.feeRules.length ? `<ul style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="small sub">(총무 공개 · ${시각표시(r.at)})</span></li>`).join('')}</ul>`
         : '<div class="card empty"><p>아직 총무가 공개한 회비 운영 기준이 없어요.</p><p class="small sub">궁금하다면 공개 Q&A에서 익명으로 물어볼 수 있어요.</p></div>'}` };
   }
+  if (name === 'perkq') {
+    const pq = state.__perkq, 찾음 = pq && 혜택항목찾기(pq.key);
+    if (!찾음) return null;
+    const { s, it } = 찾음, a = pq.a;
+    const rq = it.reward || s.reward;
+    const 칩 = (q, 질문, 목록) => `<div class="chips wrap" role="group" aria-label="${esc(질문)}">${목록.map(([v, l]) =>
+      `<button type="button" class="chip" id="pq-${q}-${v}" data-act="perkpick" data-q="${q}" data-v="${v}" aria-pressed="${a[q] === String(v)}">${esc(l)}</button>`).join('')}</div>`;
+    // 숫자 보기의 단위: 원(보상)·%(할인)·명·회·비중(연 지출 중 비율)
+    const 단위표시 = { '%': n => n + '% 이상', '원': n => n.toLocaleString('ko-KR') + '원부터', '명': n => n + '명쯤', '회': n => n + '회쯤', '비중': n => n + '%쯤' };
+    const 기준 = (n, 단위) => (단위표시[단위] || String)(n);
+    // 둘째 숫자 질문: 항목에 second가 있으면 그것, 없으면 일감 묶음의 '최소 인출액'(일감 항목을 처음 답할 때 한 번만)
+    const 둘째 = it.second || (s.withdraw && !혜택완료목록().some(k => k.startsWith('job-')) ? Object.assign({ unit: '원' }, s.withdraw) : null);
+    const iq = it.intent || { q: '이 기능이 나오면 쓰실 건가요?', opts: [['yes', '꼭 쓸 거예요'], ['maybe', '써 볼 수는 있어요'], ['no', '쓰지 않을 거예요']] };
+    return { title: esc(it.title), body: `
+      <p class="notice">이 기능은 아직 만들어지지 않았어요. 만들지 정하려고 몇 가지만 물어봐요. 보내기를 누르면 고른 답이 참여 정보와 함께 기록돼요.</p>
+      <div class="perk"><span class="info"><b>${esc(it.title)}</b><span class="val">${esc(it.value)}</span><span class="meta">${esc(it.meta)}</span></span></div>
+      <section class="stack"><h3>${esc(iq.q)}</h3>${칩('intent', iq.q, iq.opts)}</section>
+      ${rq ? `<section class="stack"><h3>${esc(rq.q)} <span class="small sub">(선택)</span></h3>${칩('reward', rq.q, rq.opts.map(n => [n, 기준(n, rq.unit)]))}</section>` : ''}
+      ${둘째 ? `<section class="stack"><h3>${esc(둘째.q)} <span class="small sub">(선택)</span></h3>${칩('withdraw', 둘째.q, 둘째.opts.map(n => [n, 기준(n, 둘째.unit)]))}</section>` : ''}
+      <button type="button" class="btn primary block" id="pq-send" data-act="perksend" ${a.intent ? '' : 'disabled'}>보내기</button>
+      <p class="hint">고르기만 하고 닫으면 아무것도 보내지 않아요. 같은 항목에는 한 번만 답할 수 있어요.</p>` };
+  }
+  if (name === 'survey') {
+    const sv = state.__survey, S = CONFIG.survey;
+    if (!sv) return null;
+    if (sv.end) {
+      const 대상아님 = sv.end === 'out', 시간 = 초 => (초 >= 60 ? Math.floor(초 / 60) + '분 ' : '') + (초 % 60) + '초';
+      const 의향가능 = 통계켜짐 && !대상아님 && !혜택완료목록().includes(S.key);
+      return { title: '설문 응답 (샘플)', body: `
+        <div class="card stack"><h3>${esc(대상아님 ? S.outTitle : S.doneTitle)}</h3><p class="small">${esc(대상아님 ? S.outText : S.doneText)}</p>
+          ${대상아님 ? '' : `<dl class="kv"><dt>걸린 시간</dt><dd>${시간(sv.secs)}</dd><dt>보상</dt><dd>샘플이라 지급하지 않아요</dd></dl>`}</div>
+        ${의향가능 ? `<button type="button" class="btn primary block" id="sv-intent" data-act="surveyintent" data-key="${esc(S.key)}">이런 설문 일감이 나오면 쓸지 답하기</button>` : ''}
+        <button type="button" class="btn block" id="sv-close" data-act="closesheet">닫기</button>` };
+    }
+    const secs = S.sections, sec = secs[sv.p], 시작번호 = secs.slice(0, sv.p).reduce((n, s) => n + s.qs.length, 0);
+    const 문항 = (q, i) => {
+      const 답 = sv.a[q.id], 오류 = sv.err.includes(q.id);
+      const 입력 = q.type === 'text'
+        ? `<textarea id="sq-${q.id}-in" data-sq="${q.id}" maxlength="500" rows="4" placeholder="자유롭게 적어 주세요" aria-label="${esc(q.text)}">${esc(답 || '')}</textarea>`
+        : `<div class="sopts">${설문선택지(q).map((l, k) => { const v = String(k), 선택 = Array.isArray(답) ? 답.includes(v) : 답 === v;
+            return `<label class="sopt"><input type="${q.type === 'many' ? 'checkbox' : 'radio'}" name="sq-${q.id}" value="${v}" data-sq="${q.id}" ${선택 ? 'checked' : ''}><span>${esc(l)}</span></label>`; }).join('')}</div>`;
+      return `<fieldset class="sq ${오류 ? 'invalid' : ''}" id="sq-${q.id}"><legend>${시작번호 + i + 1}. ${esc(q.text)}${q.opt ? ' <span class="small sub">(선택)</span>' : ''}</legend>${입력}${오류 ? '<span class="err" role="alert">이 문항에 답해 주세요.</span>' : ''}</fieldset>`;
+    };
+    return { title: '설문 응답 (샘플)', body: `<div id="sv-top" class="stack" tabindex="-1">
+      <p class="small"><b>${esc(S.title)}</b></p>
+      <div class="bar" role="img" aria-label="진행 ${sv.p + 1}/${secs.length}구간"><span class="ok" style="width:${Math.round((sv.p + 1) / secs.length * 100)}%"></span></div>
+      <div class="title-row"><h3>${esc(sec.id)}. ${esc(sec.title)}</h3><span class="small sub">${sv.p + 1}/${secs.length}</span></div>
+      ${sec.intro ? `<p class="notice">${esc(sec.intro)}</p>` : ''}
+      ${sec.qs.map(문항).join('')}
+      <div class="grid2">${sv.p > 0 ? '<button type="button" class="btn" id="sv-prev" data-act="sprev">뒤로</button>' : '<span></span>'}
+        <button type="button" class="btn primary" id="sv-next" data-act="snext">${sv.p === secs.length - 1 ? '제출' : '다음'}</button></div></div>` };
+  }
   if (name === 'privacy') return { title: '개인정보 처리방침', body: 처리방침본문() };
   return null;
 }
 function 시트그리기() {
   const layer = document.getElementById('sheetLayer');
   const name = 현재.sheet;
+  if (state.__survey && name !== 'survey') 설문닫기();   // 설문 시트를 벗어나면 풀던 답을 버린다
   const c = name ? 시트내용(name) : null;
   if (!c) {
     if (!layer.hidden) {
@@ -1516,12 +2055,12 @@ function 시트닫기() {
 
 /* ---------- 모달 (초기화 확인 / D1 저장 데이터 오류) ---------- */
 let 모달연요소 = null;
-function 모달열기(html) {
+function 모달열기(html, cls) {
   const layer = document.getElementById('modalLayer');
   모달연요소 = document.activeElement;
-  layer.innerHTML = `<div class="backdrop"></div><div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="modal-title">${html}</div>`;
+  layer.innerHTML = `<div class="backdrop"></div><div class="modal ${cls || ''}" role="alertdialog" aria-modal="true" aria-labelledby="modal-title">${html}</div>`;
   layer.hidden = false;
-  requestAnimationFrame(() => { layer.classList.add('open'); const b = layer.querySelector('button'); if (b) b.focus(); });
+  requestAnimationFrame(() => { layer.classList.add('open'); const b = layer.querySelector('[data-autofocus], button'); if (b) b.focus(); });
 }
 function 모달닫기() {
   const layer = document.getElementById('modalLayer');
@@ -1629,7 +2168,15 @@ document.addEventListener('click', ev => {
     case 'statsok': 통계안내확인(); break;
     case 'statsoff': 통계거부(); break;
     case 'statson': 통계허용(); break;
-    case 'perk': 토스트('시연용 목업이라 실제 쿠폰·미션은 없어요'); break;
+    case 'perk': 혜택질문열기(t); break;
+    case 'perkpick': 혜택답고르기(t.dataset.q, t.dataset.v); break;
+    case 'perksend': 혜택답보내기(); break;
+    case 'snext': 설문이동(1); break;
+    case 'sprev': 설문이동(-1); break;
+    case 'surveyintent': 혜택질문열기(t, true); break;
+    case 'profedit': 참여정보열기(true); break;
+    case 'profwithdraw': 참여철회(); break;
+    case 'ad': 토스트('광고 자리 예시라 연결되는 곳이 없어요'); break;
     case 'closesheet': 시트닫기(); break;
     case 'sheetpick': {
       state.app.selectedTx = t.dataset.id;
@@ -1676,7 +2223,7 @@ document.addEventListener('click', ev => {
       라우트적용();
       break;
     }
-    case 'modalclose': 모달닫기(); break;
+    case 'modalclose': 모달닫기(); setTimeout(참여정보확인, 300); break;
     case 'demo': {
       모달닫기();
       로그인처리(t.dataset.role);
@@ -1708,6 +2255,7 @@ document.addEventListener('change', ev => {
   const t = ev.target;
   if (t.dataset.act === 'mvpchk') { state.mvpMode = t.checked; 로그('MVP 설명 모드 ' + (state.mvpMode ? '켬' : '끔')); 저장(); 그리기(); }
   if (t.dataset.act === 'check') { state.app.checklist[t.dataset.id] = t.checked; 저장(); 시트그리기(); }
+  if (t.dataset.sq && t.tagName !== 'TEXTAREA') 설문답저장(t);
   if (t.dataset.draft) 초안저장(t);
   if (t.dataset.act === 'evitarget') { state.app.eviTarget = t.value; state.__photoPreview = null; state.__eviErr = null; 저장(true); 그리기(); }
   if (t.dataset.act === 'csvfile' && t.files && t.files[0]) {
@@ -1722,6 +2270,7 @@ document.addEventListener('change', ev => {
 });
 document.addEventListener('input', ev => {
   const t = ev.target;
+  if (t.dataset.sq && t.tagName === 'TEXTAREA') 설문답저장(t);
   if (t.dataset.draft) 초안저장(t);
   const ef = t.closest && t.closest('form[data-form=evidence]');
   if (ef && t.name) { const id = ef.querySelector('#evi-target').value; const d = state.app.drafts.evi && state.app.drafts.evi.id === id ? state.app.drafts.evi : { id }; d[t.name] = t.value; state.app.drafts.evi = d; 지연저장(); }
@@ -1745,10 +2294,12 @@ document.addEventListener('submit', ev => {
   if (!f) return;
   ev.preventDefault();
   const kind = f.dataset.form;
-  track('form_submit', { app_form: kind });  // 제출 시도 횟수(내용은 보내지 않는다)
+  if (kind !== 'profile') track('form_submit', { app_form: kind });  // 제출 시도 횟수(내용은 보내지 않는다). 참여 정보는 입력이 끝난 뒤 profile 행으로 따로 남는다
   if (kind === 'login') {
     const v = (f.querySelector('input[name=role]:checked') || {}).value || 'member';
     로그인처리(v);
+  } else if (kind === 'profile') {
+    참여정보저장(f);
   } else if (kind === 'pin') {
     const input = f.querySelector('#pin-input');
     if (input.value === CONFIG.demoPin) {
@@ -1891,7 +2442,7 @@ document.addEventListener('keydown', ev => {
   const modal = document.getElementById('modalLayer');
   const sheet = document.getElementById('sheetLayer');
   if (ev.key === 'Escape') {
-    if (!modal.hidden) { 모달닫기(); ev.preventDefault(); return; }
+    if (!modal.hidden) { if (!modal.querySelector('[data-gate]')) 모달닫기(); ev.preventDefault(); return; }
     if (!sheet.hidden && 현재.sheet) { 시트닫기(); ev.preventDefault(); }
     return;
   }
@@ -1936,10 +2487,10 @@ window.addEventListener('hashchange', 라우트적용);
 /* ---------- 이용 통계: 화면에 머문 시간(탭이 보이는 동안만 센다) ---------- */
 document.addEventListener('visibilitychange', () => {
   if (!통계켜짐) return;
-  if (document.hidden) 화면시간보내기();
-  else if (통계화면) 통계시각 = Date.now();
+  if (document.hidden) { 화면시간보내기(); 방문시간보내기(); 자체보내기(); }
+  else { if (통계화면) 통계시각 = Date.now(); 광고노출기록(); }   // 가려져 있던 동안 화면에 있던 배너는 다시 보이는 때 센다
 });
-window.addEventListener('pagehide', 화면시간보내기);
+window.addEventListener('pagehide', () => { 화면시간보내기(); 방문시간보내기(); 자체보내기(); });
 
 /* ---------- 프레임 크기·시계 ---------- */
 // 노트북 화면이 프레임보다 작으면 비율을 유지한 채 축소(잘리거나 바깥 스크롤이 생기지 않게)
@@ -1973,6 +2524,7 @@ window.addEventListener('resize', () => { 프레임맞추기(); 패널그리기(
     setTimeout(() => { 시계(); setInterval(시계, 60000); }, (60 - new Date().getSeconds()) * 1000);
     if (!location.hash) history.replaceState(null, '', state.app.session.role ? '#/' + 영역() + '/ledger' : '#/login');
     라우트적용();
+    if (!res.error) 참여정보확인();
     if (res.error) {
       모달열기(`<h2 id="modal-title">저장 데이터 오류</h2>
         <p>저장 데이터를 불러오지 못해서 기본 시연 데이터로 시작해요.</p>
