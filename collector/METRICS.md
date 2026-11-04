@@ -1,0 +1,66 @@
+# 단위경제 입력값 ← 수집 이벤트 대응표
+
+`events` 시트의 열은 A~U 순서다.
+A t · B vid · C sid · D ev · E dev · F role · G src · H screen · I act · J target · K intent · L reward · M withdraw · N secs · O form · P tx · Q grade · R gender · S org · T exp · U name
+
+아래 수식은 **아직 실제 시트에서 돌려 보지 않았다.** 처음 쓸 때 몇 줄만 손으로 세어 값이 맞는지 확인한다.
+N열(secs)이 숫자가 아니라 글자로 들어갔으면(셀이 왼쪽 정렬이면 글자) `MEDIAN` 이 오류를 내므로 `VALUE()` 로 감싼다.
+
+## 먼저 할 일
+
+1. 테스트 행을 뺀다. `src` 가 `claudetest` 인 행, 팀원이 시험 삼아 넣은 행은 계산에서 제외한다(수식에 `G2:G<>"claudetest"` 조건을 더하거나 별도 탭으로 옮긴다).
+2. 동아리별로 나누려면 배포 주소에 `?src=club-이름` 을 붙여 나눠 준다(예: `…/?src=club-photo`). `src` 열에 그대로 남는다.
+3. 표본이 작으면 비율은 크게 흔들린다. 응답 30명이면 ±18%p, 100명이면 ±10%p 정도다. 비율을 보고서에 쓸 때는 "n=○○"를 같이 적는다.
+
+## 입력값별 대응
+
+| 모델 입력(v51) | 어디서 재나 | 계산 |
+|---|---|---|
+| 월 활성 부원 비율 52% | `page_view` 를 남긴 role=member 방문자(vid) ÷ 동아리 부원 수 | 부원 수는 앱 밖(총무에게 확인)에서 받아야 한다. 앱은 명단을 모른다 |
+| 활성 부원 월 세션 2회 / 운영진 월 세션 12 | 방문자별 서로 다른 sid 수, role별 | `=COUNTUNIQUE(FILTER(C2:C, F2:F="member"))/COUNTUNIQUE(FILTER(B2:B, F2:F="member"))`. 기간이 한 달보다 짧으면 달 환산이 필요하다 |
+| 세션당 광고 노출 1.5 | `ad_view` 행 수 ÷ 서로 다른 sid 수 | `=COUNTIF(D2:D,"ad_view")/COUNTUNIQUE(C2:C)`. 배너가 4장 돌아가므로 한 화면에서 최대 4번까지 센다(배너마다 화면당 한 번, 멈춰서 보인 것만). 모델의 1.5와 비교할 때는 이 점을 감안한다 |
+| 광고 클릭률 0.3% | `ui_click` 중 act=`ad` ÷ `ad_view`, 배너(target)별로도 | 전체 `=COUNTIFS(D2:D,"ui_click",I2:I,"ad")/COUNTIF(D2:D,"ad_view")`, 배너별은 `J2:J="kb-insurance"` 처럼 target 조건을 양쪽에 더한다. 배너 키: `kb-insurance`, `oliveyoung-sale`, `baemin-isaac-toast`, `spotify-afterparty` |
+| 설문 소요 10분 | form=`survey:done` 행의 secs 중앙값 | `=MEDIAN(FILTER(N2:N, O2:O="survey:done"))` (초 단위). 샘플 설문이 15문항 약 5분짜리라 실제 일감의 10분과는 다르다 |
+| 설문 완료율·이탈 구간 | form=`survey:A`~`E`, `done`, `out`, `quit-X` | 구간별 서로 다른 vid 수를 세어 A→B→…→done 으로 나눈다. `out` 은 대상 아님(1번 문항에서 탈락), `quit-X` 는 X구간에서 닫음 |
+| 설문·일감 가입률 50% | perk_answer, target=`job-survey` 의 intent=yes 비율 | `=COUNTIFS(D2:D,"perk_answer",J2:J,"job-survey",K2:K,"yes")/COUNTIFS(D2:D,"perk_answer",J2:J,"job-survey")`. 말로 한 의향이라 실제보다 높게 나오기 쉽다 |
+| 일감 참여 비율(UT·데이터·AI평가) | target=`job-ut` / `job-photo` / `job-eval` 의 intent=yes 비율 | 위와 같은 식에서 target만 바꾼다 |
+| 일감 최소 보상(할 만한 금액) | 같은 target의 reward(원) 중앙값 | `=MEDIAN(FILTER(L2:L, D2:D="perk_answer", J2:J="job-ut"))` |
+| 최소 인출 5,000원 | 첫 일감 답변의 withdraw(원) | `=MEDIAN(FILTER(M2:M, D2:D="perk_answer", LEFT(J2:J,4)="job-"))` |
+| 쿠폰 사용률 1% | target=`food-*` 의 intent=yes 비율, reward(최소 할인 %) | 말로 한 의향이라 실제 사용률과는 다르다. 실제 사용률은 쿠폰을 실제로 발급해 봐야 안다 |
+| 제휴 결제 비중 20% | target=`tr-pay` 의 reward(연 지출 중 %) 중앙값 | role=treasurer 답변만 들어온다 |
+| 이동 행사 2회/년·18명 | target=`tr-insurance` 의 reward(명), withdraw(회) 중앙값 | 둘째 질문(연 몇 회)은 withdraw 열에 들어간다 |
+| 통계 활용 동의율 70% | target=`tr-data` 의 intent=yes / maybe / no 비율 | 보고서에는 yes 만이 아니라 maybe 를 따로 적는다 |
+| 방문 한 번의 체류 시간 | `session_time` 행의 secs. 같은 sid 안에서는 가장 큰 값 | `=QUERY(A:U,"select C, max(N) where D='session_time' group by C",1)` 결과의 평균·중앙값 |
+| 화면별 머문 시간 | `screen_time` 의 secs | screen별 평균·중앙값 |
+| 가입(참여 정보 입력) 전환 | profile 행이 있는 vid ÷ page_view 를 남긴 전체 vid | src별로 나누면 유입 경로별 전환이 된다 |
+
+## 광고 클릭률을 읽을 때
+
+- 배너에는 "광고 자리 예시 · 실제 광고 아님"이 붙어 있고, 눌러도 어디로도 연결되지 않는다(토스트만 뜬다). 그래서 이 숫자는 실제 광고의 클릭률이 아니라 **"예시라고 알려 줬는데도 누른 사람의 비율"** 이다. 모델의 0.3%에 그대로 넣지 말고, 배너끼리 비교(어떤 소재가 더 눈길을 끄나)와 위치별 비교에 쓴다.
+- 배너는 자동으로 5초마다 넘어가므로 노출 수는 "띠가 화면에 절반 이상 보이고, 배너가 멈춰 있을 때"만 센다. 지나가기만 한 배너, 탭이 가려진 동안의 배너는 세지 않는다.
+- 배너 이미지의 광고주(KB손해보험·올리브영·배달의민족·이삭토스트·스포티파이)와 모델 얼굴은 실제 업체·인물의 것이다. 수업용 비공개 시연에서만 쓰고, 공개 배포 전에는 직접 만든 이미지로 바꾸거나 사용 허락을 받는다.
+
+## 이 테스트로는 잴 수 없는 것
+
+- **학기 유지율 70%** — 한 학기 동안 같은 사람이 남아 있는지는 학기가 끝나야 안다. 지금은 첫 주와 마지막 주에 다시 온 vid 비율 정도만 대신 볼 수 있다.
+- **가입자 중 월 응답 10%** — 매달 반복해서 응답한 비율이라 한 번 하는 테스트로는 나오지 않는다.
+- **실제 결제·실제 쿠폰 사용·실제 광고 매출** — 목업이라 말한 의향만 있다. 의향은 실제보다 높게 나오는 경향이 있으니 모델에 넣을 때 보수적으로 깎아 쓰고, 깎은 근거를 같이 적는다.
+- **CAC 단계별 전환(40/46/36%)** — 광고 집행 전이라 비어 있다. 유입 경로(src)별 가입 전환까지만 볼 수 있다.
+
+## GA4에서 할 일(앱은 이미 보내고 있다)
+
+1. **맞춤 측정기준·측정항목 등록**(관리 > 데이터 표시 > 맞춤 정의). 등록하기 전에 쌓인 값은 보고서에서 안 보이니 수집을 시작하기 전에 한다.
+   - 이벤트 범위 측정기준: `app_role`, `app_src`, `app_screen`, `app_act`, `app_target`, `app_intent`, `app_reward`, `app_withdraw`, `app_form`, `app_tx`
+   - 이벤트 범위 측정항목: `app_seconds` (단위: 초)
+   - 이름(`app_name`)은 GA로 보내지 않으니 등록하지 않는다.
+2. **데이터 보관 기간**을 14개월로 올린다(관리 > 데이터 수집 및 수정 > 데이터 보관). 기본값은 2개월이다.
+3. **Google 신호**가 켜져 있는지 확인한다. 연령·성별 통계는 사람이 적으면 "(not set)"으로 가려지므로, 표본이 작은 동안은 시트의 grade·gender 열이 더 믿을 만하다.
+4. 첫 데이터가 들어오는지는 보고서 > 실시간에서 본다. 이벤트 이름은 `page_view`, `ui_click`, `screen_time`, `session_time`, `form_submit`, `perk_answer`, `ad_view`, `opinion_submit` 등이다.
+5. 선택: `perk_answer`, `form_submit` 을 주요 이벤트로 표시하면 전환 보고서에서 바로 비율을 볼 수 있다. BigQuery 연결은 무료 일일 내보내기로 충분하다.
+6. 팀원이 시험 삼아 쓸 때는 주소 끝에 `?notrack=1` 을 붙이면 GA와 시트 양쪽에 아무것도 보내지 않는다.
+
+## 시트 관리 주의
+
+- 이 시트에는 이름이 들어 있다. 팀원에게만 공유하고, 보고서나 발표 자료에는 이름 열을 빼고 옮긴다.
+- 삭제를 요청받으면 그 사람의 vid 를 찾아(U열 이름으로 B열 확인) 같은 vid 의 모든 행을 지운다. 문의 연락처가 앱에 아직 비어 있으니(`CONFIG.privacy.contact`) 공개 전에 채운다.
+- Code.gs 를 고치면 새 버전으로 다시 배포해야 반영된다. 열이 바뀐 배포 뒤에는 `events` 탭을 비워 제목 줄이 다시 만들어지게 한다.
