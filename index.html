@@ -307,6 +307,8 @@ const CONFIG = {
     ]
   },
   storageKey: 'finpbl:v2',
+  // 이용 통계(Google Analytics 4): 측정 ID(G-로 시작)를 넣으면 켜지고, 비워 두면 아무것도 전송하지 않는다
+  analytics: { gaId: 'G-4C5DE34ELV' },
   demoPin: '1234',               // 시연용 PIN — 실제 보안 기능이 아니다
   rules: { periodDays: 7, threshold: 0.15, members: 30 }, // 15%·7일은 팀 설계 가정, 30명은 가상 행사 참여 부원 수(이의 비율의 분모)
   interviews: [
@@ -319,7 +321,7 @@ const CONFIG = {
   insight: '핵심은 총무 개인을 의심하게 만드는 것이 아니라, 부원이 판단할 수 있는 지출 근거를 제공하고 질문에 따르는 관계적 부담을 줄이는 것이다.',
   personas: [
     { name:'정다온(가명)', who:'세종대학교 3학년 동아리 부원 · 회비 학기당 5만 원', situation:'개강총회나 종강총회 이후 지출 공지를 보고 의문이 생긴다.', say:'다음엔 효율적으로 써 보자.', think:'불신을 표현하면 관계가 불편해져 활동을 이어가기 어려울까 걱정한다.', want:'총무에게 직접 따지지 않고도 돈이 어디에 왜 쓰였는지 확인하고 싶다.', basis:'A1·A2·A3·A5 인터뷰 요약을 종합한 가상 페르소나' },
-    { name:'총무(가상)', who:'운영진 측 설계 가정 — 부원 인터뷰 결과와 구분', situation:'지출 처리 후 영수증과 사용 사유를 정리해야 한다.', say:'', think:'지출 설명이 누락되거나 반복 질문이 생기면 응대 부담이 커질 수 있다.', want:'지출별 근거를 한곳에 정리하고, 부원 질문에 해당 지출 카드에서 답변하고 싶다.', basis:'설계 가정' }
+    { name:'총무(가상)', who:'운영진 측 설계 가정(부원 인터뷰 결과와 구분)', situation:'지출 처리 후 영수증과 사용 사유를 정리해야 한다.', say:'', think:'지출 설명이 누락되거나 반복 질문이 생기면 응대 부담이 커질 수 있다.', want:'지출별 근거를 한곳에 정리하고, 부원 질문에 해당 지출 카드에서 답변하고 싶다.', basis:'설계 가정' }
   ],
   journey: {
     steps: ['회비 납부','동아리 행사 참여','행사 후 지출 공지 확인','특정 지출에 의문 발생','총무에게 질문할지 고민','관계가 불편해질까 봐 질문을 포기','의문을 해소하지 못하거나 활동을 중단'],
@@ -356,7 +358,7 @@ const CONFIG = {
       receiptNo:'', receiptDate:'', receiptAmount:0, memo:'영수증 미첨부(시연용 판독 불가 예시)', mockResult:'need' },
     { id:'TX-006', date:'2026-10-10', time:'11:00', item:'종강총회 장소 예약금', category:'행사', amount:100000,
       reason:'종강총회 장소 사전 예약금', merchant:'(가상) 어린이대공원역 파티룸', address:'서울 광진구 능동 일대 · 가상 주소',
-      receiptNo:'R-261010-02', receiptDate:'2026-10-10', receiptAmount:100000, memo:'아직 대조 전 — [모의 대조 실행]으로 확인해 보세요', mockResult:null }
+      receiptNo:'R-261010-02', receiptDate:'2026-10-10', receiptAmount:100000, memo:'아직 대조 전입니다. [모의 대조 실행]으로 확인해 보세요', mockResult:null }
   ],
   // 가상 집계(근거 확인 ok / 설명 요청 ask). 실제 투표자 정보는 저장하지 않는다
   seedVotes: { 'TX-001':{ok:14,ask:1}, 'TX-002':{ok:10,ask:0}, 'TX-003':{ok:6,ask:5}, 'TX-004':{ok:8,ask:2}, 'TX-005':{ok:4,ask:1}, 'TX-006':{ok:0,ask:0} },
@@ -373,14 +375,14 @@ const CONFIG = {
     intro: '결제 근거 카드는 무료이고, 아래 혜택은 원하는 사람만 골라 씁니다. 쓰지 않아도 모든 기능을 똑같이 쓸 수 있어요.',
     blank: '○○ 표시는 제휴처·할인율·보상이 정해지면 채울 자리입니다.',
     sections: [
-      { key:'food', icon:'🍱', title:'푸드패스', desc:'동아리 회식·총회·간식 때 쓰는 제휴 식당 쿠폰', action:'쿠폰 받기',
+      { key:'food', title:'푸드패스', desc:'동아리 회식·총회·간식 때 쓰는 제휴 식당 쿠폰', action:'쿠폰 받기',
         note:'쿠폰으로 결제한 지출도 결제 근거 카드에 그대로 남아요.',
         items: [
           { title:'능동로 한식당', value:'단체 식사 ○○% 할인', meta:'총회·회식 단체 예약 시' },
           { title:'군자역 치킨집', value:'뒤풀이 메뉴 ○○원 할인', meta:'행사 뒤풀이 예약 시' },
           { title:'학교 앞 분식', value:'간식 단체 주문 ○○% 할인', meta:'동아리방 간식 주문 시' }
         ] },
-      { key:'job', icon:'💼', title:'용돈 미션', desc:'외부 회사가 맡기는, 집에서 할 수 있는 비대면 미션', action:'참여하기',
+      { key:'job', title:'용돈 미션', desc:'외부 회사가 맡기는, 집에서 할 수 있는 비대면 미션', action:'참여하기',
         note:'미션은 개인이 고르는 것이며 동아리 회비와 섞이지 않아요.',
         // 최소 인출 바: 금액 미정이라 ○○로 두고, 막대는 목업 비율(ratio)로만 채운다
         wallet: { saved:'○○원', min:'○○원', ratio:0.6, note:'모은 보상이 최소 인출 금액을 넘으면 내 계좌로 받을 수 있어요. (시연: 실제 적립·이체 없음)' },
@@ -396,7 +398,7 @@ const CONFIG = {
   unitEconomics: {
     metrics: [
       { name:'결제 근거 카드 이용료', value:'0원', note:'핵심 기능은 무료(팀 결정)' },
-      { name:'월 매출 (동아리 1곳)', value:'8,153원', note:'설문 중개 5,265 · 비대면 일감 1,557 · 푸드패스 679 · 여행자보험 540 · 광고 112 — 수요 미검증 90%' },
+      { name:'월 매출 (동아리 1곳)', value:'8,153원', note:'설문 중개 5,265 · 비대면 일감 1,557 · 푸드패스 679 · 여행자보험 540 · 광고 112 (수요 미검증 90%)' },
       { name:'월 공헌이익', value:'8,057원', note:'매출 − 보상 지급 이체 76 − 결제 처리비 20' },
       { name:'기대 유지 기간', value:'36개월 (기본 20개월)', note:'6 × 1 ÷ (1 − 학기 유지율) · 낙관 83.3% / 기본 70%, 팀 가정' },
       { name:'고객 획득 비용(CAC)', value:'93,285원', note:'운영진 직접 연락 퍼널(해외 SaaS 전환율 대리 지표)' },
@@ -407,7 +409,7 @@ const CONFIG = {
   },
   darkPatterns: {
     principles: ['이의 제기를 어렵게 만들지 않는다','확인이나 이의 제기를 강요하지 않는다','이의를 제기하지 않은 부원을 비난하지 않는다','총무나 특정 부원을 공개적으로 망신 주지 않는다',"'설명 필요' 상태를 횡령·부정행위의 확정으로 표현하지 않는다",'자동 갱신이나 해지 방해를 구현하지 않는다','개인정보를 불필요하게 수집하거나 공개하지 않는다','실제 은행 제휴가 완료된 것처럼 표현하지 않는다'],
-    regulatory: ['MVP는 자금을 보관하거나 이체하지 않는다','실제 금융기관 계좌와 연결하지 않는다','실제 금융 거래를 수행하지 않는다','실제 은행 제휴·계약·API 연동은 완료되지 않았다','법률 검토가 완료되지 않았다 — 실제 출시 전 적용 법령과 계약 요건을 별도로 확인해야 한다'],
+    regulatory: ['MVP는 자금을 보관하거나 이체하지 않는다','실제 금융기관 계좌와 연결하지 않는다','실제 금융 거래를 수행하지 않는다','실제 은행 제휴·계약·API 연동은 완료되지 않았다','법률 검토가 완료되지 않아, 실제 출시 전 적용 법령과 계약 요건을 별도로 확인해야 한다'],
     checklist: [
       { group:'A', title:'A. 선택권·강요 금지', items:[
         { id:'a1', text:'선택 강요 없음', how:'익명 확인은 선택이며, 응답하지 않아도 모든 근거를 볼 수 있다' },
@@ -533,7 +535,7 @@ function 저장(조용히) {
     if (!조용히) 토스트('저장됨 ✓');
     return true;
   } catch (e) {
-    토스트('⚠️ 저장 실패 — 이 탭을 닫으면 사라집니다');
+    토스트('⚠️ 저장 실패: 이 탭을 닫으면 사라집니다');
     return false;
   }
 }
@@ -635,7 +637,7 @@ function CSV가져오기(text) {
     const amount = Number(String(amt || '').replace(/[,\s원₩]/g, ''));
     if (!유효날짜(date || '') || !/^\d{1,2}:\d{2}$/.test(time || '') || !(amount > 0) || !merchant) { 건너뜀++; continue; }
     const tx = { id: 다음거래ID(), date, time: time.padStart(5, '0'), item: '', category: '', amount, reason: '', merchant, address: address || '',
-      receiptNo: '', receiptDate: '', receiptAmount: 0, memo: '계좌 거래내역에서 가져옴 — 총무의 사유·영수증 대기', result: null, source: 'csv' };
+      receiptNo: '', receiptDate: '', receiptAmount: 0, memo: '계좌 거래내역에서 가져옴(총무의 사유·영수증 대기)', result: null, source: 'csv' };
     state.app.txs.push(tx); state.app.votes[tx.id] = { ok: 0, ask: 0 }; 추가++;
     if (!state.app.eviTarget || 추가 === 1) state.app.eviTarget = tx.id;
   }
@@ -708,17 +710,78 @@ function MVP카드(key) {
   return `<section class="mvp-card" aria-label="MVP 설명">
     <div>💡 ${n.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
     <p>${esc(n.text)}</p>
-    <div class="row"><button type="button" class="btn" id="mvp-open-${key}" data-act="sheet" data-sheet="mvp">📊 MVP 해설·단위경제</button>
+    <div class="row"><button type="button" class="btn" id="mvp-open-${key}" data-act="sheet" data-sheet="mvp">MVP 해설·단위경제</button>
     <button type="button" class="btn" id="mvp-check-${key}" data-act="sheet" data-sheet="checklist">✅ 다크패턴 점검표</button></div>
   </section>`;
 }
 function 빈선택(제목) {
   return `<div class="card empty"><div class="big">👆</div><h3>먼저 거래를 선택해 주세요</h3>
     <p class="sub small">${esc(제목)}은(는) 선택한 거래 기준으로 보여 줍니다.</p>
-    <div class="next"><button type="button" class="btn primary block tall" id="pick-${esc(제목)}" data-act="sheet" data-sheet="select">🔎 거래 선택하기</button></div></div>`;
+    <div class="next"><button type="button" class="btn primary block tall" id="pick-${esc(제목)}" data-act="sheet" data-sheet="select">거래 선택하기</button></div></div>`;
 }
 function 역할() { return state.app.session.role; }
 function 총무인가() { return state.app.session.role === 'treasurer' && state.app.session.pinOk; }
+
+/* ---------- 이용 통계 (Google Analytics 4) ----------
+   보내는 값은 화면 이름·버튼 이름·거래 ID·머문 시간뿐이다. 질문·답변·PIN·의견 선택 내용은 보내지 않는다(익명성).
+   CONFIG.analytics.gaId가 비어 있거나, 주소에 ?notrack=1 을 붙여 한 번 연 브라우저(만든 사람의 시험 접속)는 아무것도 보내지 않는다(?notrack=0 으로 해제).
+   통계는 부가 기능이므로 어떤 오류가 나도 앱 동작에 영향이 없도록 try/catch로 감싼다. */
+const 통계제외키 = 'finpbl:notrack';
+let 통계켜짐 = false, 통계화면 = '', 통계역할 = '', 통계시각 = 0, 통계누적 = 0;
+const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role };
+function 통계제외() {
+  try {
+    const q = new URLSearchParams(location.search).get('notrack');
+    if (q === '1') localStorage.setItem(통계제외키, '1');
+    else if (q === '0') localStorage.removeItem(통계제외키);
+    return localStorage.getItem(통계제외키) === '1';
+  } catch (e) { return false; }
+}
+function 통계시작() {
+  const id = CONFIG.analytics.gaId;
+  if (!id || 통계제외()) return;
+  try {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    gtag('js', new Date());
+    // 화면 이동은 해시 주소라 자동 page_view에 맡기지 않고 라우트를 적용할 때 직접 보낸다
+    gtag('config', id, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false, transport_type: 'beacon' });
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+    document.head.appendChild(s);
+    통계켜짐 = true;
+  } catch (e) {}
+}
+function track(name, params) {
+  if (!통계켜짐) return;
+  try { gtag('event', name, Object.assign({ app_role: 역할() || 'guest' }, params)); } catch (e) {}
+}
+function 화면시간보내기() {
+  if (!통계켜짐) return;
+  if (통계시각) { 통계누적 += Date.now() - 통계시각; 통계시각 = 0; }
+  const 초 = Math.round(통계누적 / 1000);
+  통계누적 = 0;
+  // 화면을 떠난 뒤에 보내므로 역할은 그 화면에 들어올 때 값을 쓴다
+  if (통계화면 && 초 >= 1) track('screen_time', { app_role: 통계역할, app_screen: 통계화면, app_seconds: Math.min(초, 1800) });
+}
+function 화면기록(r) {
+  if (!통계켜짐) return;
+  const 키 = r.area + (r.page ? '/' + r.page : '');
+  if (키 === 통계화면) return;
+  화면시간보내기();
+  통계화면 = 키;
+  통계역할 = 역할() || 'guest';
+  통계시각 = document.hidden ? 0 : Date.now();
+  track('page_view', { page_location: location.href.split('#')[0] + '#/' + 키, page_title: 키, app_screen: 키 });
+}
+function 통계클릭(t) {
+  if (!통계켜짐) return;
+  try {
+    const d = t.dataset, f = 통계대상[d.act];
+    track('ui_click', { app_act: d.act, app_target: (f && f(d)) || '', app_screen: 통계화면 });
+  } catch (e) {}
+}
 
 /* =====================================================================
    6. 라우팅 — URL 해시로 화면·시트·선택 거래를 기록 (뒤로 가기·새로고침 대응)
@@ -773,6 +836,7 @@ function 라우트적용() {
   // 해시의 거래 ID가 실제로 있으면 선택 거래로 반영(새로고침·링크 공유 대응)
   if (r.tx && 찾기(r.tx) && r.tx !== state.app.selectedTx) { state.app.selectedTx = r.tx; 저장(true); }
   현재 = r;
+  화면기록(r);
   그리기();
 }
 
@@ -848,6 +912,7 @@ function 로그인화면() {
     </form>
     <p class="notice">역할별 화면을 구분하기 위한 시연용 로그인입니다. 실제 계정 인증이나 보안 기능은 없습니다.</p>
     <p class="notice">회비는 동아리 명의(고유번호증) 계좌에 있고 이 앱은 거래내역만 읽습니다. 자금을 보관·이체하지 않습니다. 시연의 모든 거래는 가상 데이터입니다.</p>
+    ${통계켜짐 ? '<p class="notice">이용 통계(화면 이동·버튼 클릭·머문 시간)를 Google Analytics로 익명 집계합니다. 질문·답변·의견 선택 내용은 수집하지 않습니다.</p>' : ''}
   </div>`;
 }
 /* ---------- 총무 PIN ---------- */
@@ -894,7 +959,7 @@ function 거래내역화면() {
   const 합계 = all.reduce((a, t) => a + Number(t.amount || 0), 0);
   const cats = ['all', ...CONFIG.categories.filter(c => all.some(t => t.category === c))];
   const 카테고리칩 = cats.map(c => `<button type="button" class="chip" id="fc-${c}" data-act="filter" data-k="category" data-v="${c}" aria-pressed="${f.category === c}">${c === 'all' ? '모든 카테고리' : c}</button>`).join('');
-  return `<div class="title-row"><h2>📋 거래 내역</h2><span class="small sub">동아리 명의 계좌 · 가상</span></div>
+  return `<div class="title-row"><h2>거래 내역</h2><span class="small sub">동아리 명의 계좌 · 가상</span></div>
     <div class="card"><div class="metrics">
       <div class="metric"><b>${all.length}건</b><span>공개된 지출</span></div>
       <div class="metric"><b>${원(합계)}</b><span>지출 합계</span></div>
@@ -903,9 +968,9 @@ function 거래내역화면() {
     <p class="small sub">카드를 누르면 거래가 선택되고, 모든 탭에서 그 거래 기준으로 보여 줘요.</p>
     <div class="stack">${list.length ? list.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('') : '<div class="card empty"><p>조건에 맞는 거래가 없습니다.</p></div>'}</div>
     ${광고띠()}
-    <button type="button" class="btn block" id="open-rules" data-act="sheet" data-sheet="rules">📜 회비 운영 기준 보기 (${state.app.feeRules.length ? state.app.feeRules.length + '개 공개' : '미공개'})</button>
-    <p class="notice">🏦 거래는 동아리 명의(고유번호증) 계좌의 거래내역에서만 들어옵니다. 총무는 금액·일시·가맹점을 고칠 수 없고 사유·영수증만 붙입니다. 시연 거래는 가상 데이터이며 실제 은행과 연동되지 않았습니다.</p>
-    <button type="button" class="btn block" id="export-csv" data-act="export">📥 학기 장부 내려받기 (CSV · 엑셀에서 열림)</button>
+    <button type="button" class="btn block" id="open-rules" data-act="sheet" data-sheet="rules">회비 운영 기준 보기 (${state.app.feeRules.length ? state.app.feeRules.length + '개 공개' : '미공개'})</button>
+    <p class="notice">거래는 동아리 명의(고유번호증) 계좌의 거래내역에서만 들어옵니다. 총무는 금액·일시·가맹점을 고칠 수 없고 사유·영수증만 붙입니다. 시연 거래는 가상 데이터이며 실제 은행과 연동되지 않았습니다.</p>
+    <button type="button" class="btn block" id="export-csv" data-act="export">학기 장부 내려받기 (CSV · 엑셀에서 열림)</button>
     ${다음버튼([{ label: '결제 근거 보기 →', primary: true, attrs: state.app.selectedTx ? `id="next-evi" ${이동속성('evidence')}` : 'id="next-evi" data-act="sheet" data-sheet="select"' }])}`;
 }
 
@@ -913,25 +978,25 @@ function 거래내역화면() {
 function 영수증카드(tx) {
   const 있음 = tx.receiptNo || tx.receiptAmount > 0;
   return `<section class="card sec-rc" aria-label="영수증 요약">
-    <div class="head"><span>🧾 영수증 요약</span><span class="small sub">시연용 영수증</span></div>
+    <div class="head"><span>영수증 요약</span><span class="small sub">시연용 영수증</span></div>
     ${tx.photo ? `<img src="${tx.photo}" alt="총무가 올린 영수증 사진" style="display:block;max-width:100%;max-height:220px;margin:0 auto 8px;border-radius:8px;border:1px solid var(--line)">` : ''}
     ${있음 ? `<div class="receipt">
       <div class="rhead">${esc(tx.merchant || '(가상) 가맹점')}<br><span class="small">시연용 가상 영수증 · 실물 아님</span></div>
-      <div class="rl"><span>영수증 번호</span><span>${esc(tx.receiptNo || '— 없음')}</span></div>
-      <div class="rl"><span>영수증 날짜</span><span>${esc(tx.receiptDate || '— 없음')}</span></div>
+      <div class="rl"><span>영수증 번호</span><span>${esc(tx.receiptNo || '없음')}</span></div>
+      <div class="rl"><span>영수증 날짜</span><span>${esc(tx.receiptDate || '없음')}</span></div>
       <div class="rl"><span>품목</span><span>${esc(항목명(tx))}</span></div>
-      <div class="rl rtotal"><span>합계</span><span>${tx.receiptAmount > 0 ? 원(tx.receiptAmount) : '— 없음'}</span></div>
-    </div>` : `<div class="receipt" style="text-align:center">📭 영수증 미첨부<br><span class="small">비교할 영수증 정보가 없습니다</span></div>`}
+      <div class="rl rtotal"><span>합계</span><span>${tx.receiptAmount > 0 ? 원(tx.receiptAmount) : '없음'}</span></div>
+    </div>` : `<div class="receipt" style="text-align:center">영수증 미첨부<br><span class="small">비교할 영수증 정보가 없습니다</span></div>`}
   </section>`;
 }
 function 결과카드(tx, 실행버튼) {
   const code = 결과코드(tx);
   const r = CONFIG.results[code];
   return `<section class="card sec-res r-${code}" aria-label="대조 결과" aria-live="polite">
-    <div class="head"><span>🔍 대조 결과</span>${대조배지(code)}</div>
-    ${tx.result ? `<p><b>${r.icon} ${r.label}</b> — ${esc(tx.result.detail)}</p><p class="small sub">대조 시각 ${시각표시(tx.result.at)}</p>`
+    <div class="head"><span>대조 결과</span>${대조배지(code)}</div>
+    ${tx.result ? `<p><b>${r.icon} ${r.label}</b>: ${esc(tx.result.detail)}</p><p class="small sub">대조 시각 ${시각표시(tx.result.at)}</p>`
       : `<p>아직 모의 대조를 실행하지 않았습니다.</p>`}
-    <p class="small sub" style="margin-top:4px">시연: 가상 데이터로 규칙 기반 모의 판정 · 실서비스: 총무 휴대폰 안의 AI 문자 인식(OCR)이 영수증 사진에서 날짜·금액을 읽어 같은 규칙으로 대조 · 사실 판단이 아닌 확인용 결과</p>
+    <p class="small sub" style="margin-top:4px">시연에서는 가상 데이터를 규칙에 따라 판정합니다. 실제 서비스에서는 총무 휴대폰의 AI 문자 인식(OCR)이 영수증의 날짜·금액을 읽어 같은 규칙으로 비교합니다. 확인을 돕기 위한 결과이며, 잘잘못을 판단하지는 않습니다.</p>
     ${실행버튼 || ''}
   </section>`;
 }
@@ -940,10 +1005,10 @@ function 익명버튼(tx, 접두) {
   if (역할() === 'treasurer') return `<p class="notice">총무는 자신이 처리한 지출에 의견을 낼 수 없고, 집계만 볼 수 있습니다.</p>`;
   const mine = state.app.myVotes[tx.id];
   return `<div class="vote-btns" role="group" aria-label="익명 의견">
-      <button type="button" class="btn" id="${접두}-ok" data-act="vote" data-v="ok" aria-pressed="${mine === 'ok'}">👍 근거 확인</button>
-      <button type="button" class="btn" id="${접두}-ask" data-act="vote" data-v="ask" aria-pressed="${mine === 'ask'}">💬 설명 요청</button>
+      <button type="button" class="btn" id="${접두}-ok" data-act="vote" data-v="ok" aria-pressed="${mine === 'ok'}">근거 확인</button>
+      <button type="button" class="btn" id="${접두}-ask" data-act="vote" data-v="ask" aria-pressed="${mine === 'ask'}">설명 요청</button>
     </div>
-    <button type="button" class="btn ghost block" id="${접두}-cancel" data-act="vote" data-v="cancel" ${mine ? '' : 'disabled'}>↩️ 응답 취소</button>
+    <button type="button" class="btn ghost block" id="${접두}-cancel" data-act="vote" data-v="cancel" ${mine ? '' : 'disabled'}>응답 취소</button>
     <p class="small sub">${mine ? `내 응답: <b>${mine === 'ok' ? '근거 확인' : '설명 요청'}</b> (이 브라우저에만 저장, 다른 사람에게 공개되지 않음)` : '참여는 선택이며, 응답하지 않아도 근거를 확인할 수 있습니다.'}</p>`;
 }
 function QA목록(list, 접두) {
@@ -970,31 +1035,31 @@ function 질문폼(접두, 고정tx) {
 /* ---------- 탭2 결제 근거 (킬러 기능 1단계) ---------- */
 function 결제근거화면() {
   const tx = 선택거래();
-  if (!tx) return `<h2>🧾 결제 근거 카드</h2>${빈선택('결제 근거')}`;
+  if (!tx) return `<h2>결제 근거 카드</h2>${빈선택('결제 근거')}`;
   const v = 집계(tx.id);
   const qs = state.app.qna.filter(q => q.txId === tx.id);
-  return `<div class="title-row"><h2>🧾 결제 근거 카드</h2>${대조배지(결과코드(tx))}</div>
+  return `<div class="title-row"><h2>결제 근거 카드</h2>${대조배지(결과코드(tx))}</div>
     <section class="card sec-tx" aria-label="거래 정보">
-      <div class="head"><span>💳 계좌 거래 · ${esc(tx.id)}</span><span class="small sub">계좌 원본 · 수정 불가</span></div>
+      <div class="head"><span>계좌 거래 · ${esc(tx.id)}</span><span class="small sub">계좌 원본 · 수정 불가</span></div>
       <div class="amount">${원(tx.amount)}</div>
       <dl class="kv">
         <dt>결제 일시</dt><dd>${esc(tx.date)} ${esc(tx.time || '')}</dd>
         <dt>지출 항목</dt><dd>${esc(항목명(tx))}${tx.category ? ' · ' + esc(tx.category) : ''}</dd>
         <dt>가맹점</dt><dd>${esc(tx.merchant || '-')}</dd>
-        <dt>가맹점 위치</dt><dd>📍 ${esc(tx.address || '-')}</dd>
+        <dt>가맹점 위치</dt><dd>${esc(tx.address || '-')}</dd>
         <dt>지출 사유</dt><dd>${tx.reason ? esc(tx.reason) : '<b style="color:var(--warn)">⚠️ 사유 미기재</b>'}</dd>
       </dl>
     </section>
     ${영수증카드(tx)}
-    ${결과카드(tx, tx.result ? '' : `<button type="button" class="btn primary" id="evi-run" data-act="run">🔍 지금 모의 대조 실행</button>`)}
-    ${tx.memo ? `<div class="card"><h3>📝 확인 메모</h3><p class="small">${esc(tx.memo)}</p></div>` : ''}
+    ${결과카드(tx, tx.result ? '' : `<button type="button" class="btn primary" id="evi-run" data-act="run">지금 모의 대조 실행</button>`)}
+    ${tx.memo ? `<div class="card"><h3>확인 메모</h3><p class="small">${esc(tx.memo)}</p></div>` : ''}
     <section class="card" aria-label="익명 확인 현황">
-      <div class="title-row"><h3>🙈 익명 확인</h3>${상태배지(v.code, v.total)}</div>
+      <div class="title-row"><h3>익명 확인</h3>${상태배지(v.code, v.total)}</div>
       <p class="small sub" style="margin-bottom:8px">근거 확인 ${v.ok} · 설명 요청 ${v.ask} · 이의 비율 ${(v.ratio * 100).toFixed(1)}% (설명 요청 ÷ 참여 부원 ${CONFIG.rules.members}명, 가상 집계)</p>
       ${익명버튼(tx, 'evi')}
     </section>
     <section class="card" aria-label="공개 Q&A">
-      <div class="title-row"><h3>💬 이 지출의 공개 Q&A</h3><span class="small sub">${qs.length}건</span></div>
+      <div class="title-row"><h3>이 지출의 공개 Q&A</h3><span class="small sub">${qs.length}건</span></div>
       <div class="stack">${QA목록(qs, 'evi')}</div>
       ${질문폼('evi', tx.id)}
     </section>
@@ -1004,41 +1069,41 @@ function 결제근거화면() {
 /* ---------- 탭3 모의 대조 (킬러 기능 2단계) ---------- */
 function 모의대조화면() {
   const tx = 선택거래();
-  if (!tx) return `<h2>🔍 모의 대조</h2>${빈선택('모의 대조')}`;
+  if (!tx) return `<h2>모의 대조</h2>${빈선택('모의 대조')}`;
   const 실행됨 = !!tx.result;
   const 표시 = (ok) => 실행됨 ? (ok ? '<span aria-label="같음">✅</span>' : '<span aria-label="다름">❌</span>') : '<span aria-label="미대조">⏳</span>';
   const 금액같음 = tx.receiptAmount > 0 && Number(tx.amount) === Number(tx.receiptAmount);
   const 날짜같음 = !!tx.receiptDate && tx.date === tx.receiptDate;
-  return `<div class="title-row"><h2>🔍 모의 대조</h2><span class="small sub">${esc(tx.id)}</span></div>
+  return `<div class="title-row"><h2>모의 대조</h2><span class="small sub">${esc(tx.id)}</span></div>
     <p class="small sub">거래 내역의 금액·날짜와 영수증 요약의 금액·날짜를 나란히 비교합니다.</p>
     <div class="card" style="padding:10px">
       <table class="cmp">
         <caption class="sr-only">거래 내역과 영수증 비교표</caption>
-        <thead><tr><th scope="col">항목</th><th scope="col">💳 거래 내역</th><th scope="col">🧾 영수증</th><th scope="col" class="mark">결과</th></tr></thead>
+        <thead><tr><th scope="col">항목</th><th scope="col">거래 내역</th><th scope="col">영수증</th><th scope="col" class="mark">결과</th></tr></thead>
         <tbody>
-          <tr><th scope="row">금액</th><td>${원(tx.amount)}</td><td>${tx.receiptAmount > 0 ? 원(tx.receiptAmount) : '— 없음'}</td><td class="mark">${표시(금액같음)}</td></tr>
-          <tr><th scope="row">날짜</th><td>${esc(tx.date)}</td><td>${esc(tx.receiptDate || '— 없음')}</td><td class="mark">${표시(날짜같음)}</td></tr>
-          <tr><th scope="row">번호</th><td>${esc(tx.id)}</td><td>${esc(tx.receiptNo || '— 없음')}</td><td class="mark">${실행됨 ? (tx.receiptNo ? '✔' : '❌') : '⏳'}</td></tr>
-          <tr><th scope="row">사유</th><td colspan="2">${tx.reason ? esc(tx.reason) : '— 미기재'}</td><td class="mark">${실행됨 ? (tx.reason ? '✔' : '❌') : '⏳'}</td></tr>
+          <tr><th scope="row">금액</th><td>${원(tx.amount)}</td><td>${tx.receiptAmount > 0 ? 원(tx.receiptAmount) : '없음'}</td><td class="mark">${표시(금액같음)}</td></tr>
+          <tr><th scope="row">날짜</th><td>${esc(tx.date)}</td><td>${esc(tx.receiptDate || '없음')}</td><td class="mark">${표시(날짜같음)}</td></tr>
+          <tr><th scope="row">번호</th><td>${esc(tx.id)}</td><td>${esc(tx.receiptNo || '없음')}</td><td class="mark">${실행됨 ? (tx.receiptNo ? '✔' : '❌') : '⏳'}</td></tr>
+          <tr><th scope="row">사유</th><td colspan="2">${tx.reason ? esc(tx.reason) : '미기재'}</td><td class="mark">${실행됨 ? (tx.reason ? '✔' : '❌') : '⏳'}</td></tr>
         </tbody>
       </table>
     </div>
-    <button type="button" class="btn primary block tall" id="cmp-run" data-act="run">🔍 모의 대조 실행</button>
+    <button type="button" class="btn primary block tall" id="cmp-run" data-act="run">모의 대조 실행</button>
     ${결과카드(tx)}
     <div class="card"><h3>판정 규칙</h3><ul class="small" style="margin:0;padding-left:18px">
       <li>✅ 일치: ${CONFIG.results.match.desc}</li><li>❌ 불일치: ${CONFIG.results.mismatch.desc}</li><li>⚠️ 확인 필요: ${CONFIG.results.need.desc}</li></ul></div>
-    <p class="notice strong">🤖 실서비스에서는 총무 휴대폰 안의 AI 문자 인식(OCR)이 영수증 사진을 읽어 계좌 거래와 대조하고(서버 비용 0원), 읽을 수 없는 값은 지어내지 않고 '확인 필요'로 둡니다. 이 시연은 은행·AI를 호출하지 않고, 영수증 값을 같은 규칙(금액이 다르면 불일치, 날짜만 다르면 확인 필요)으로 모의 판정합니다.</p>
+    <p class="notice strong">AI 문자 인식은 총무 휴대폰 안에서 처리해서 서버 비용이 들지 않고, 읽지 못한 값은 '확인 필요'로 남깁니다. 이 시연은 은행이나 AI에 연결하지 않습니다.</p>
     ${다음버튼([{ label: '익명 의견 남기기 →', primary: true, attrs: `id="next-vote" ${이동속성('vote')}` }, { label: '최종 상태 보기 →', attrs: `id="cmp-status" ${이동속성('status')}` }])}`;
 }
 
 /* ---------- 탭4 익명 확인 ---------- */
 function 익명확인화면() {
   const tx = 선택거래();
-  const 넛지 = `<p class="notice strong">🙂 참여는 선택이며, 응답하지 않아도 근거를 확인할 수 있습니다. 확인 기간(${CONFIG.rules.periodDays}일) 안에 응답하지 않으면 '이의 없음'으로 처리됩니다.</p>`;
-  if (!tx) return `<h2>🙈 익명 확인</h2>${넛지}${빈선택('익명 확인')}`;
+  const 넛지 = `<p class="notice strong">참여는 선택이며, 응답하지 않아도 근거를 확인할 수 있습니다. 확인 기간(${CONFIG.rules.periodDays}일) 안에 응답하지 않으면 '이의 없음'으로 처리됩니다.</p>`;
+  if (!tx) return `<h2>익명 확인</h2>${넛지}${빈선택('익명 확인')}`;
   const v = 집계(tx.id);
   const okp = v.total ? v.ok / v.total * 100 : 0;
-  return `<div class="title-row"><h2>🙈 익명 확인</h2><span class="small sub">${esc(tx.id)}</span></div>
+  return `<div class="title-row"><h2>익명 확인</h2><span class="small sub">${esc(tx.id)}</span></div>
     ${넛지}
     <div class="card"><p class="small sub">${esc(tx.id)} · ${esc(항목명(tx))}</p><p><b>${원(tx.amount)}</b> · ${대조배지(결과코드(tx))}</p></div>
     <section class="card stack" aria-label="익명 의견 선택">
@@ -1046,11 +1111,11 @@ function 익명확인화면() {
       ${익명버튼(tx, 'vote')}
     </section>
     <section class="card" aria-label="집계 결과">
-      <h3>📊 집계 결과 (가상 집계 + 내 응답)</h3>
+      <h3>집계 결과 (가상 집계 + 내 응답)</h3>
       <div class="bar" role="img" aria-label="근거 확인 ${v.ok}명, 설명 요청 ${v.ask}명"><span class="ok" style="width:${okp}%"></span><span class="ask" style="width:${v.total ? 100 - okp : 0}%"></span></div>
       <div class="metrics" style="margin-top:8px">
-        <div class="metric"><b>👍 ${v.ok}</b><span>근거 확인</span></div>
-        <div class="metric"><b>💬 ${v.ask}</b><span>설명 요청</span></div>
+        <div class="metric"><b>${v.ok}</b><span>근거 확인</span></div>
+        <div class="metric"><b>${v.ask}</b><span>설명 요청</span></div>
       </div>
       <p class="small sub" style="margin-top:8px">개인별 투표 기록과 신원은 표시하지 않고 집계 숫자만 보여 줍니다.</p>
     </section>
@@ -1061,17 +1126,17 @@ function 익명확인화면() {
 /* ---------- 탭5 최종 상태 ---------- */
 function 최종상태화면() {
   const tx = 선택거래();
-  if (!tx) return `<h2>📌 최종 상태</h2>${빈선택('최종 상태')}`;
+  if (!tx) return `<h2>최종 상태</h2>${빈선택('최종 상태')}`;
   const v = 집계(tx.id);
   const p = 확인기간(tx);
   const 답변 = state.app.qna.filter(q => q.txId === tx.id && q.a).length;
-  if (!tx.reason) return `<div class="title-row"><h2>📌 최종 상태</h2><span class="small sub">${esc(tx.id)}</span></div>
+  if (!tx.reason) return `<div class="title-row"><h2>최종 상태</h2><span class="small sub">${esc(tx.id)}</span></div>
     <section class="card status-card"><div class="stat-big"><span class="ic" aria-hidden="true">⏳</span>총무 근거 대기</div>
     <p class="small sub">${esc(tx.merchant || '')} · ${원(tx.amount)} · 계좌 거래 ${esc(tx.date)}</p>
     <p class="notice" style="margin-top:8px">계좌에서 결제가 확인됐지만 총무가 아직 사유·영수증을 붙이지 않았습니다. 근거가 올라오면 ${CONFIG.rules.periodDays}일 익명 확인이 시작됩니다. 궁금하면 공개 Q&A로 물어볼 수 있습니다.</p></section>
     ${다음버튼([{ label: '공개 Q&A로 가기 →', primary: true, attrs: `id="next-qna" ${이동속성('qna')}` }])}`;
   const 전체 = state.app.txs.map(t => { const a = 집계(t.id); return `<li class="row" style="justify-content:space-between"><span>${esc(t.id)} · ${esc(항목명(t))}</span>${상태배지(a.code, a.total)}</li>`; }).join('');
-  return `<div class="title-row"><h2>📌 최종 상태</h2><span class="small sub">${esc(tx.id)}</span></div>
+  return `<div class="title-row"><h2>최종 상태</h2><span class="small sub">${esc(tx.id)}</span></div>
     <section class="card status-card s-${v.code}" aria-live="polite">
       <div class="stat-big"><span class="ic" aria-hidden="true">${v.code === 'explain' ? '💬' : '☑️'}</span>${v.code === 'explain' ? '설명 필요' : '확인 완료'}</div>
       <p class="small sub">${esc(항목명(tx))} · ${원(tx.amount)} · 대조 ${대조배지(결과코드(tx))}</p>
@@ -1085,7 +1150,7 @@ function 최종상태화면() {
         <div class="metric"><b>${v.nores}</b><span>미응답 → 이의 없음</span></div>
       </div>
     </section>
-    <section class="card"><h3>📏 판정 규칙</h3>
+    <section class="card"><h3>판정 규칙</h3>
       <ul class="small" style="margin:0;padding-left:18px">
         <li>확인 기간 ${CONFIG.rules.periodDays}일: ${p.start} ~ ${p.end}</li>
         <li>이의 비율 = 설명 요청 수 ÷ 행사 참여 부원 수(가상 ${CONFIG.rules.members}명)</li>
@@ -1107,14 +1172,14 @@ function 공개QA화면() {
   const 범위 = f.qnaScope === 'selected' && tx ? 'selected' : 'all';
   const list = state.app.qna.filter(q => 범위 === 'all' || q.txId === tx.id).slice().reverse();
   const 대기 = state.app.qna.filter(q => !q.a).length;
-  return `<div class="title-row"><h2>💬 공개 Q&A</h2><span class="small sub">답변 대기 ${대기}건</span></div>
-    <div class="card" style="border-left:5px solid var(--warn)"><p>🙏 특정 개인을 지목하지 말고 지출 내용에 대해 질문해 주세요.</p>
+  return `<div class="title-row"><h2>공개 Q&A</h2><span class="small sub">답변 대기 ${대기}건</span></div>
+    <div class="card" style="border-left:5px solid var(--warn)"><p>특정 개인을 지목하지 말고 지출 내용에 대해 질문해 주세요.</p>
       <p class="small sub">등록된 질문과 답변은 누구나 공개 열람할 수 있습니다. 질문자 신원은 표시하지 않습니다.</p></div>
     <div class="chips" role="group" aria-label="질문 범위">
       <button type="button" class="chip" id="qs-sel" data-act="filter" data-k="qnaScope" data-v="selected" aria-pressed="${범위 === 'selected'}" ${tx ? '' : 'disabled'}>선택한 거래${tx ? ' (' + esc(tx.id) + ')' : ''}</button>
       <button type="button" class="chip" id="qs-all" data-act="filter" data-k="qnaScope" data-v="all" aria-pressed="${범위 === 'all'}">전체 질문</button>
     </div>
-    ${역할() === 'member' ? `<section class="card"><h3>✏️ 질문 남기기</h3>${질문폼('qna')}</section>` : `<p class="notice">총무는 미답변 질문 아래 입력창에서 공개 답변을 등록할 수 있습니다.</p>`}
+    ${역할() === 'member' ? `<section class="card"><h3>질문 남기기</h3>${질문폼('qna')}</section>` : `<p class="notice">총무는 미답변 질문 아래 입력창에서 공개 답변을 등록할 수 있습니다.</p>`}
     <section class="stack" aria-label="질문 목록">${QA목록(list, 'qna')}</section>
     ${다음버튼([{ label: '거래 내역으로 돌아가기', primary: true, attrs: `id="next-ledger" ${이동속성('ledger')}` }])}`;
 }
@@ -1128,7 +1193,7 @@ function 광고띠() {
 function 인출바(w) {
   const pct = Math.round(Math.min(1, w.ratio) * 100);
   return `<div class="wallet stack">
-      <div class="title-row"><span class="small"><b>💰 모은 보상 ${esc(w.saved)}</b></span><span class="small sub">최소 인출 ${esc(w.min)}</span></div>
+      <div class="title-row"><span class="small"><b>모은 보상 ${esc(w.saved)}</b></span><span class="small sub">최소 인출 ${esc(w.min)}</span></div>
       <div class="bar" role="img" aria-label="최소 인출 금액까지 ${pct}% 모음(목업)"><span class="ok" style="width:${pct}%"></span></div>
       <span class="hint">${esc(w.note)}</span>
       <button type="button" class="btn block" id="perk-withdraw" ${pct < 100 ? 'disabled' : 'data-act="perk"'}>${pct < 100 ? '최소 인출 금액을 넘으면 인출할 수 있어요' : '인출하기'}</button>
@@ -1137,14 +1202,14 @@ function 인출바(w) {
 function 혜택화면() {
   const p = CONFIG.perks;
   const 칸 = s => `<section class="card stack" aria-label="${esc(s.title)}">
-      <div class="title-row"><h3>${s.icon} ${esc(s.title)}</h3><span class="badge b-pending">목업</span></div>
+      <div class="title-row"><h3>${esc(s.title)}</h3><span class="badge b-pending">목업</span></div>
       <p class="small sub">${esc(s.desc)}</p>
       ${s.wallet ? 인출바(s.wallet) : ''}
       ${s.items.map((it, i) => `<div class="perk"><span class="info"><b>${esc(it.title)}</b><span class="val">${esc(it.value)}</span><span class="meta">${esc(it.meta)}</span></span>
         <button type="button" class="btn" id="perk-${s.key}-${i}" data-act="perk">${esc(s.action)}</button></div>`).join('')}
       ${s.note ? `<p class="hint">${esc(s.note)}</p>` : ''}
     </section>`;
-  return `<div class="title-row"><h2>🎁 혜택</h2><span class="small sub">목업</span></div>
+  return `<div class="title-row"><h2>혜택</h2><span class="small sub">목업</span></div>
     <p class="notice">${esc(p.intro)}</p>
     ${p.sections.map(칸).join('')}
     <p class="notice strong">${esc(p.blank)}</p>`;
@@ -1158,21 +1223,21 @@ function 총무관리화면() {
   const 미답변 = state.app.qna.filter(q => !q.a);
   const 입력 = (id, type, extra) => `<input id="tx-${id}" name="${id}" type="${type}" value="${esc(d[id] || '')}" data-draft="tx.${id}" ${extra || ''} aria-describedby="tx-${id}-err">`;
   const catOpts = CONFIG.categories.map(c => `<option ${d.category === c ? 'selected' : ''}>${c}</option>`).join('');
-  return `<div class="title-row"><h2>🛠️ 총무 관리</h2><span class="small sub">총무 전용</span></div>
+  return `<div class="title-row"><h2>총무 관리</h2><span class="small sub">총무 전용</span></div>
     <button type="button" class="card" id="adm-unans" data-act="go" data-page="qna" style="text-align:left;cursor:pointer;border-left:5px solid var(--warn)">
-      <b>💬 미답변 공개 질문 ${미답변.length}건</b><br><span class="small sub">${미답변.length ? '눌러서 공개 Q&A에서 바로 답변하기 →' : '모든 질문에 답변했습니다'}</span></button>
+      <b>미답변 공개 질문 ${미답변.length}건</b><br><span class="small sub">${미답변.length ? '눌러서 공개 Q&A에서 바로 답변하기 →' : '모든 질문에 답변했습니다'}</span></button>
     <section class="card stack" aria-label="계좌 거래내역 가져오기">
-      <h3>🏦 동아리 명의 계좌 거래내역 가져오기</h3>
+      <h3>동아리 명의 계좌 거래내역 가져오기</h3>
       <p class="small sub">시연용 가상 거래내역 CSV를 올리면 결제마다 결제 근거 카드가 생깁니다. 금액·일시·가맹점은 계좌 원본 그대로이며 총무가 고칠 수 없습니다. (실제 은행 계좌와 연결되지 않습니다)</p>
-      <label class="btn block" for="csv-file" style="text-align:center;cursor:pointer">📂 거래내역 CSV 선택</label>
+      <label class="btn block" for="csv-file" style="text-align:center;cursor:pointer">거래내역 CSV 선택</label>
       <input id="csv-file" type="file" accept=".csv,text/csv" data-act="csvfile" class="sr-only">
-      <div class="grid2"><button type="button" class="btn" id="csv-sample-dl" data-act="csvsample">📄 샘플 CSV 받기</button>
-      <button type="button" class="btn" id="csv-sample-load" data-act="csvdemo">⚡ 샘플 거래 불러오기</button></div>
+      <div class="grid2"><button type="button" class="btn" id="csv-sample-dl" data-act="csvsample">샘플 CSV 받기</button>
+      <button type="button" class="btn" id="csv-sample-load" data-act="csvdemo">샘플 거래 불러오기</button></div>
       <p class="hint">CSV 머리글: 거래일,시각,금액,가맹점,가맹점주소 (예: 2026-10-15,18:40,57000,(가상) 학교 앞 분식,서울 광진구 일대)</p>
     </section>
     ${근거입력폼()}
     <section class="card stack" aria-label="회비 운영 기준 공개">
-      <h3>📜 회비 운영 기준 공개</h3>
+      <h3>회비 운영 기준 공개</h3>
       <p class="small sub">납부액·면제 기준 등 동아리가 실제로 정한 기준만 공개하세요. 부원은 거래 내역 탭에서 볼 수 있습니다.</p>
       <ul class="small" style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="sub">(${시각표시(r.at)})</span></li>`).join('') || '<li class="sub">아직 공개된 기준이 없습니다.</li>'}</ul>
       <form data-form="rule" class="stack" novalidate>
@@ -1181,41 +1246,41 @@ function 총무관리화면() {
       </form>
     </section>
     <section class="card stack" aria-label="등록된 가상 거래">
-      <h3>🗂️ 계좌 거래 ${state.app.txs.length}건</h3>
+      <h3>계좌 거래 ${state.app.txs.length}건</h3>
       <p class="small sub">투명성을 위해 등록된 지출은 삭제할 수 없습니다. 정정이 필요하면 공개 Q&A에 설명을 남겨 주세요.</p>
       ${state.app.txs.slice().reverse().map(t => `<div class="row" style="justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0">
         <span class="small"><b>${esc(t.id)}</b> ${esc(항목명(t))}<br>${원(t.amount)} · ${esc(t.date)}</span>
         <span class="row">${대조배지(결과코드(t))}<button type="button" class="btn" id="adm-evi-${esc(t.id)}" data-act="admevi" data-id="${esc(t.id)}">근거 입력</button><button type="button" class="btn" id="adm-open-${esc(t.id)}" data-act="admopen" data-id="${esc(t.id)}">대조</button></span></div>`).join('')}
     </section>
-    <button type="button" class="btn block" id="adm-logs" data-act="sheet" data-sheet="logs">🧾 활동 로그 보기</button>
+    <button type="button" class="btn block" id="adm-logs" data-act="sheet" data-sheet="logs">활동 로그 보기</button>
     ${다음버튼([{ label: '거래 내역 확인하기 →', primary: true, attrs: `id="next-added" ${이동속성('ledger')}` }])}`;
 }
 // 결제 근거 입력: 계좌 원본(금액·일시·가맹점)은 읽기 전용, 총무는 사유·영수증만 붙인다
 function 근거입력폼() {
   const 대상 = state.app.txs.filter(t => !t.reason || !t.item || (!t.receiptNo && !t.photo));
   const sel = 찾기(state.app.eviTarget) || 대상[0] || null;
-  if (!sel) return `<section class="card"><h3>🧾 결제 근거 입력</h3><p class="small sub">근거가 비어 있는 거래가 없습니다. 위에서 계좌 거래내역을 가져오면 여기에 표시됩니다.</p></section>`;
+  if (!sel) return `<section class="card"><h3>결제 근거 입력</h3><p class="small sub">근거가 비어 있는 거래가 없습니다. 위에서 계좌 거래내역을 가져오면 여기에 표시됩니다.</p></section>`;
   const d = (state.app.drafts.evi && state.app.drafts.evi.id === sel.id) ? state.app.drafts.evi : { id: sel.id, item: sel.item || '', category: sel.category || '', reason: sel.reason || '', receiptNo: sel.receiptNo || '', receiptDate: sel.receiptDate || '', receiptAmount: sel.receiptAmount ? String(sel.receiptAmount) : '' };
   const e = state.__eviErr || {};
   const 입력 = (k, type, extra) => `<input id="evi-${k}" name="${k}" type="${type}" value="${esc(d[k] || '')}" ${extra || ''}>`;
   const catOpts = CONFIG.categories.map(c => `<option ${d.category === c ? 'selected' : ''}>${c}</option>`).join('');
   const opts = state.app.txs.map(t => `<option value="${esc(t.id)}" ${t.id === sel.id ? 'selected' : ''}>${esc(t.id)} · ${t.item ? esc(t.item) : '(근거 없음)'} · ${원(t.amount)}</option>`).join('');
   return `<form data-form="evidence" class="card stack" novalidate aria-label="결제 근거 입력">
-    <h3>🧾 결제 근거 입력</h3>
+    <h3>결제 근거 입력</h3>
     ${필드('evi-target', '거래 선택', `<select id="evi-target" data-act="evitarget">${opts}</select>`, '')}
     <dl class="kv" style="background:var(--muted-soft);border-radius:8px;padding:8px">
       <dt>계좌 원본</dt><dd><b>${원(sel.amount)}</b> · ${esc(sel.date)} ${esc(sel.time || '')}</dd>
-      <dt>가맹점</dt><dd>${esc(sel.merchant || '-')}</dd><dt>위치</dt><dd>📍 ${esc(sel.address || '-')}</dd></dl>
-    <p class="small sub">🔒 위 값은 계좌 거래내역 그대로라 수정할 수 없습니다.</p>
+      <dt>가맹점</dt><dd>${esc(sel.merchant || '-')}</dd><dt>위치</dt><dd>${esc(sel.address || '-')}</dd></dl>
+    <p class="small sub">위 값은 계좌 거래내역 그대로라 수정할 수 없습니다.</p>
     ${필드('evi-item', '지출 항목 *', 입력('item', 'text', 'maxlength="40" placeholder="예: 종강총회 식비"'), e.item)}
     <div class="grid2">
       ${필드('evi-category', '카테고리 *', `<select id="evi-category" name="category"><option value="">선택</option>${catOpts}</select>`, e.category)}
       ${필드('evi-reason', '지출 사유 *', 입력('reason', 'text', 'maxlength="80" placeholder="예: 참석 20명 식사"'), e.reason)}
     </div>
-    <label class="btn block" for="evi-photo" style="text-align:center;cursor:pointer">📷 영수증 사진 올리기${sel.photo ? ' (올림 ✓)' : ''}</label>
+    <label class="btn block" for="evi-photo" style="text-align:center;cursor:pointer">영수증 사진 올리기${sel.photo ? ' (올림 ✓)' : ''}</label>
     <input id="evi-photo" type="file" accept="image/*" data-act="evphoto" class="sr-only">
     <div id="evi-preview">${state.__photoPreview ? `<img src="${state.__photoPreview}" alt="올릴 영수증 미리보기" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--line)">` : ''}</div>
-    <p class="small sub">🤖 실서비스: 휴대폰 안의 AI 문자 인식이 사진에서 영수증 번호·날짜·금액을 읽어 아래 칸을 채웁니다. 시연: 사진은 이 브라우저 안에만 저장하고, 값은 직접 입력합니다.</p>
+    <p class="small sub">실제 서비스에서는 휴대폰 안의 AI 문자 인식이 사진에서 영수증 번호·날짜·금액을 읽어 아래 칸을 채웁니다. 시연에서는 사진을 이 브라우저에만 저장하고, 값은 직접 입력합니다.</p>
     <div class="grid2">
       ${필드('evi-receiptNo', '영수증 번호', 입력('receiptNo', 'text', 'maxlength="20"'), e.receiptNo)}
       ${필드('evi-receiptDate', '영수증 날짜', 입력('receiptDate', 'date'), e.receiptDate)}
@@ -1228,23 +1293,23 @@ function 근거입력폼() {
 /* ---------- 바텀시트 (B1 거래 선택 / B2 설정 / B3 점검표 / MVP 해설 / 활동 로그 / 회비 기준) ---------- */
 function 시트내용(name) {
   if (name === 'select') {
-    return { title: '🔎 거래 선택', body: state.app.txs.map(t => `<button type="button" class="txcard" id="sel-${esc(t.id)}" data-act="sheetpick" data-id="${esc(t.id)}" aria-pressed="${t.id === state.app.selectedTx}">
+    return { title: '거래 선택', body: state.app.txs.map(t => `<button type="button" class="txcard" id="sel-${esc(t.id)}" data-act="sheetpick" data-id="${esc(t.id)}" aria-pressed="${t.id === state.app.selectedTx}">
       <span class="mid"><span class="item">${esc(t.id)} · ${esc(항목명(t))}</span><span class="won">${원(t.amount)}</span></span>
       <span class="row">${대조배지(결과코드(t))}</span></button>`).join('') };
   }
   if (name === 'settings') {
     const 역할명 = 역할() === 'treasurer' ? '👑 총무' : 역할() === 'member' ? '👤 부원' : '로그인 전';
-    return { title: '⚙️ 설정', body: `
+    return { title: '설정', body: `
       <dl class="kv"><dt>현재 역할</dt><dd>${역할명} (시연용)</dd><dt>마지막 저장</dt><dd>${state.app.lastSaved ? 시각표시(state.app.lastSaved) : '아직 없음'}</dd>
       <dt>저장 위치</dt><dd class="small">이 브라우저 localStorage "${esc(CONFIG.storageKey)}"</dd></dl>
       <p class="small sub">입력은 바뀔 때마다 자동 저장됩니다.</p>
-      <div class="grid2"><button type="button" class="btn" id="set-save" data-act="savenow">💾 지금 저장</button>
-      <button type="button" class="btn" id="set-restore" data-act="restore">📂 저장 데이터 복원</button></div>
+      <div class="grid2"><button type="button" class="btn" id="set-save" data-act="savenow">지금 저장</button>
+      <button type="button" class="btn" id="set-restore" data-act="restore">저장 데이터 복원</button></div>
       <label class="check" for="set-mvp"><input type="checkbox" id="set-mvp" data-act="mvpchk" ${state.mvpMode ? 'checked' : ''}><span>💡 MVP 설명 모드<small>모든 화면 맨 위에 설계 해설 카드를 보여 줍니다</small></span></label>
-      <button type="button" class="btn block" id="set-logs" data-act="sheet" data-sheet="logs">🧾 활동 로그</button>
-      <button type="button" class="btn block" id="set-mvpsheet" data-act="sheet" data-sheet="mvp">📊 MVP 해설·단위경제</button>
+      <button type="button" class="btn block" id="set-logs" data-act="sheet" data-sheet="logs">활동 로그</button>
+      <button type="button" class="btn block" id="set-mvpsheet" data-act="sheet" data-sheet="mvp">MVP 해설·단위경제</button>
       <button type="button" class="btn block" id="set-check" data-act="sheet" data-sheet="checklist">✅ 다크패턴 점검표</button>
-      <button type="button" class="btn danger block" id="set-reset" data-act="resetask">🗑️ 데모 데이터 초기화</button>
+      <button type="button" class="btn danger block" id="set-reset" data-act="resetask">데모 데이터 초기화</button>
       ${역할() ? '<button type="button" class="btn primary block" id="set-logout" data-act="logout">로그아웃</button>' : ''}` };
   }
   if (name === 'checklist') {
@@ -1265,17 +1330,17 @@ function 시트내용(name) {
     const cac = spend !== null && cust ? spend / cust : null;
     const 회수 = cac !== null && 공헌 > 0 ? cac / 공헌 : null;
     const 비율 = ltv !== null && cac ? ltv / cac : null;
-    const 표시 = (v, f) => v === null ? '—' : f(v);
+    const 표시 = (v, f) => v === null ? '-' : f(v);
     const ueIn = (k, l) => 필드('ue-' + k, l, `<input id="ue-${k}" type="text" inputmode="numeric" data-ue="${k}" value="${esc(u[k] || '')}" placeholder="가정 입력">`, '');
-    return { title: '📊 MVP 해설 · 단위경제', body: `
+    return { title: 'MVP 해설 · 단위경제', body: `
       ${CONFIG.mvp.items.map(i => `<div class="card"><b>${i.no} ${esc(i.title)}</b><p class="small">${esc(i.text)}</p></div>`).join('')}
       <div class="mvp-card"><b>한 줄 정리</b><p>${esc(CONFIG.mvp.summary)}</p></div>
-      <div class="card"><h3>🗺️ 부원 여정지도</h3><ol class="journey">${CONFIG.journey.steps.map((s, i) => `<li class="${i === CONFIG.journey.lowestIndex ? 'low' : ''}">${i + 1}. ${esc(s)}${i === CONFIG.journey.lowestIndex ? ' — 최저점 (' + esc(CONFIG.journey.emotions) + ')' : ''}</li>`).join('')}</ol>
+      <div class="card"><h3>부원 여정지도</h3><ol class="journey">${CONFIG.journey.steps.map((s, i) => `<li class="${i === CONFIG.journey.lowestIndex ? 'low' : ''}">${i + 1}. ${esc(s)}${i === CONFIG.journey.lowestIndex ? ' (최저점: ' + esc(CONFIG.journey.emotions) + ')' : ''}</li>`).join('')}</ol>
         <p class="small sub" style="margin-top:6px">킬러 기능은 최저점에서 총무에게 묻지 않고도 근거를 확인하게 설계했습니다.</p></div>
-      <div class="card"><h3>🎤 인터뷰 요약 (부원 5명)</h3>${CONFIG.interviews.map(i => `<p class="small"><b>${i.id}</b> ${esc(i.title)} — ${esc(i.pain)}<br><span class="sub">→ ${esc(i.ui)}</span></p>`).join('')}
+      <div class="card"><h3>인터뷰 요약 (부원 5명)</h3>${CONFIG.interviews.map(i => `<p class="small"><b>${i.id}</b> ${esc(i.title)}: ${esc(i.pain)}<br><span class="sub">→ ${esc(i.ui)}</span></p>`).join('')}
         <p class="small" style="margin-top:6px"><b>공통 인사이트</b> ${esc(CONFIG.insight)}</p></div>
-      <div class="card"><h3>👥 페르소나</h3>${CONFIG.personas.map(p => `<p class="small"><b>${esc(p.name)}</b> · ${esc(p.who)}<br>상황: ${esc(p.situation)}${p.say ? `<br>겉말: "${esc(p.say)}"` : ''}<br>속마음/고통: ${esc(p.think)}<br>원하는 결과: ${esc(p.want)}<br><span class="sub">근거: ${esc(p.basis)}</span></p>`).join('')}</div>
-      <div class="card"><h3>💰 단위경제 (동아리 1곳·월 · 팀 모델 v43 · 가정 포함)</h3>
+      <div class="card"><h3>페르소나</h3>${CONFIG.personas.map(p => `<p class="small"><b>${esc(p.name)}</b> · ${esc(p.who)}<br>상황: ${esc(p.situation)}${p.say ? `<br>겉말: "${esc(p.say)}"` : ''}<br>속마음/고통: ${esc(p.think)}<br>원하는 결과: ${esc(p.want)}<br><span class="sub">근거: ${esc(p.basis)}</span></p>`).join('')}</div>
+      <div class="card"><h3>단위경제 (동아리 1곳·월 · 팀 모델 v43 · 가정 포함)</h3>
         <table class="ue"><thead><tr><th>지표</th><th>현재 값</th><th>계산식·비고</th></tr></thead><tbody>
         ${CONFIG.unitEconomics.metrics.map(m => `<tr><td>${esc(m.name)}</td><td>${esc(m.value)}</td><td>${esc(m.note)}</td></tr>`).join('')}</tbody></table>
         <p class="small sub" style="margin-top:8px">아래 칸은 팀이 가정을 넣어 보는 계산기입니다. 비워 두면 계산하지 않으며, 결과는 가정일 뿐 확정 수치가 아닙니다.</p>
@@ -1283,19 +1348,19 @@ function 시트내용(name) {
         <dl class="kv" id="ue-out" style="margin-top:8px"><dt>월 공헌이익</dt><dd>${표시(공헌, 원)}</dd><dt>LTV</dt><dd>${표시(ltv, 원)}</dd><dt>CAC</dt><dd>${표시(cac, v => 원(Math.round(v)))}</dd>
           <dt>회수 기간</dt><dd>${표시(회수, v => v.toFixed(1) + '개월')}</dd><dt>LTV/CAC</dt><dd>${표시(비율, v => v.toFixed(2))}</dd></dl>
         <p class="notice" style="margin-top:6px">계산기 결과는 입력한 가정값 기준이며, 위 표의 값도 파일럿에서 검증할 가정입니다.</p></div>
-      <div class="card"><h3>⚖️ 규제 관련 안내</h3><ul class="small" style="margin:0;padding-left:18px">${CONFIG.darkPatterns.regulatory.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
-      <div class="card"><h3>🚫 다크패턴 회피 원칙</h3><ul class="small" style="margin:0;padding-left:18px">${CONFIG.darkPatterns.principles.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` };
+      <div class="card"><h3>규제 관련 안내</h3><ul class="small" style="margin:0;padding-left:18px">${CONFIG.darkPatterns.regulatory.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>
+      <div class="card"><h3>다크패턴 회피 원칙</h3><ul class="small" style="margin:0;padding-left:18px">${CONFIG.darkPatterns.principles.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` };
   }
   if (name === 'logs') {
     const logs = state.app.logs.slice().reverse();
-    return { title: '🧾 활동 로그 (시연용)', body: `<p class="notice strong">브라우저에 저장되는 시연용 로그입니다. 실제 삭제 불가능한 서버 로그가 아니며, 데이터 초기화나 브라우저 데이터 삭제 시 함께 사라집니다. 앱 안에는 개별 삭제 버튼이 없습니다.</p>
+    return { title: '활동 로그 (시연용)', body: `<p class="notice strong">브라우저에 저장되는 시연용 로그입니다. 실제 삭제 불가능한 서버 로그가 아니며, 데이터 초기화나 브라우저 데이터 삭제 시 함께 사라집니다. 앱 안에는 개별 삭제 버튼이 없습니다.</p>
       <p class="small sub">익명성을 위해 의견 제출은 '제출했다'는 사실만 남기고 선택 내용은 기록하지 않습니다. 총 ${logs.length}건</p>
       <ul class="loglist">${logs.map(l => `<li><span class="sub">${시각표시(l.t)} · ${esc(l.role)}</span><span>${esc(l.action)}${l.tx ? ` <b>${esc(l.tx)}</b>` : ''}</span></li>`).join('')}</ul>` };
   }
   if (name === 'rules') {
-    return { title: '📜 회비 운영 기준', body: `<p class="small">${esc(CONFIG.feeRules.intro)}</p>
+    return { title: '회비 운영 기준', body: `<p class="small">${esc(CONFIG.feeRules.intro)}</p>
       ${state.app.feeRules.length ? `<ul style="margin:0;padding-left:18px">${state.app.feeRules.map(r => `<li>${esc(r.text)} <span class="small sub">(총무 공개 · ${시각표시(r.at)})</span></li>`).join('')}</ul>`
-        : '<div class="card empty"><p>📭 아직 총무가 공개한 회비 운영 기준이 없습니다.</p><p class="small sub">궁금하다면 공개 Q&A에서 익명으로 물어볼 수 있어요.</p></div>'}` };
+        : '<div class="card empty"><p>아직 총무가 공개한 회비 운영 기준이 없습니다.</p><p class="small sub">궁금하다면 공개 Q&A에서 익명으로 물어볼 수 있어요.</p></div>'}` };
   }
   return null;
 }
@@ -1375,18 +1440,18 @@ function 패널그리기() {
       <div class="row"><button type="button" class="chip" id="pn-member" data-act="demo" data-role="member" aria-pressed="${r === 'member'}">👤 부원으로 시연</button>
       <button type="button" class="chip" id="pn-treasurer" data-act="demo" data-role="treasurer" aria-pressed="${r === 'treasurer'}">👑 총무로 시연</button></div>
       <p class="small sub">총무는 시연용 PIN(${CONFIG.demoPin}) 입력 화면을 거칩니다.</p></div>
-    <div class="card stack"><h3>🔎 평가위원 핵심 점검 포인트</h3>
-      <ul class="cp">${CONFIG.checkpoints.map((c, i) => `<li><button type="button" id="cp-${c.key}" data-act="checkpoint" data-i="${i}"><b>${i + 1}. ${esc(c.label)}</b> — <span class="sub">${esc(c.desc)}</span></button></li>`).join('')}</ul></div>
-    <div class="card stack"><h3>🧭 킬러기능 흐름 따라 하기</h3>
+    <div class="card stack"><h3>평가위원 핵심 점검 포인트</h3>
+      <ul class="cp">${CONFIG.checkpoints.map((c, i) => `<li><button type="button" id="cp-${c.key}" data-act="checkpoint" data-i="${i}"><b>${i + 1}. ${esc(c.label)}</b>: <span class="sub">${esc(c.desc)}</span></button></li>`).join('')}</ul></div>
+    <div class="card stack"><h3>킬러기능 흐름 따라 하기</h3>
       <ol class="small" style="margin:0;padding-left:18px">
-        <li>👑 총무로 시연(PIN ${CONFIG.demoPin}) → 🛠️ 총무 관리 → ⚡ 샘플 거래 불러오기 (계좌 거래내역 → 결제 근거 카드)</li>
-        <li>🧾 결제 근거 입력: 항목·사유·영수증 사진 첨부 (금액·일시·가맹점은 잠김) → 근거 저장</li>
-        <li>🔍 모의 대조 실행 (실서비스: 휴대폰 안 AI 영수증 인식)</li>
-        <li>로그아웃 → 👤 부원으로 시연 → 같은 거래에서 🙈 익명 확인 → 📌 최종 상태 · 💬 공개 Q&A</li>
-        <li>📋 거래 내역 → 📥 학기 장부 내려받기</li></ol></div>
+        <li>👑 총무로 시연(PIN ${CONFIG.demoPin}) → 총무 관리 → 샘플 거래 불러오기 (계좌 거래내역 → 결제 근거 카드)</li>
+        <li>결제 근거 입력: 항목·사유·영수증 사진 첨부 (금액·일시·가맹점은 잠김) → 근거 저장</li>
+        <li>모의 대조 실행 (실서비스: 휴대폰 안 AI 영수증 인식)</li>
+        <li>로그아웃 → 👤 부원으로 시연 → 같은 거래에서 익명 확인 → 최종 상태 · 공개 Q&A</li>
+        <li>거래 내역 → 학기 장부 내려받기</li></ol></div>
     <div class="card stack"><p class="small"><b>HMW</b> ${esc(CONFIG.app.hmw)}</p></div>
     <p class="notice strong">가상 데이터로 동작하는 교육용 시연입니다. 회비는 동아리 명의(고유번호증) 계좌에 있다고 가정하며, 실제 은행·금융 계좌와는 연결되지 않습니다.</p>
-    <button type="button" class="btn danger block" id="pn-reset" data-act="resetask">🗑️ 데모 데이터 초기화</button>`;
+    <button type="button" class="btn danger block" id="pn-reset" data-act="resetask">데모 데이터 초기화</button>`;
 }
 
 /* =====================================================================
@@ -1427,6 +1492,7 @@ function 의견처리(v) {
   if (역할() !== 'member') { 토스트('총무는 의견을 낼 수 없습니다'); return; }
   if (v === 'cancel') { delete state.app.myVotes[tx.id]; 로그('익명 의견 취소', tx.id); }
   else { state.app.myVotes[tx.id] = v; 로그('익명 의견 제출', tx.id); }  // 선택 내용은 로그에 남기지 않는다(익명성)
+  track(v === 'cancel' ? 'opinion_cancel' : 'opinion_submit', { app_tx: tx.id });  // 통계에도 선택 내용(v)은 보내지 않는다
   저장();
   그리기();
 }
@@ -1445,6 +1511,7 @@ document.addEventListener('click', ev => {
   if (!t || t.disabled) return;
   const act = t.dataset.act;
   if (act === 'mvpchk' || act === 'check') return; // 체크박스는 change 이벤트에서 처리
+  통계클릭(t);
   switch (act) {
     case 'go': if (t.dataset.page === 'admin' && !총무인가()) { 총무전용확인(); break; } 탭이동(t.dataset.page); break;
     case 'pick': {
@@ -1457,7 +1524,7 @@ document.addEventListener('click', ev => {
       break;
     }
     case 'sheet': 시트열기(t.dataset.sheet, t); break;
-    case 'perk': 토스트('시연용 목업 — 실제 쿠폰·미션은 없어요'); break;
+    case 'perk': 토스트('시연용 목업이라 실제 쿠폰·미션은 없어요'); break;
     case 'closesheet': 시트닫기(); break;
     case 'sheetpick': {
       state.app.selectedTx = t.dataset.id;
@@ -1488,7 +1555,7 @@ document.addEventListener('click', ev => {
       state = res.s; 토스트('저장 데이터를 복원했습니다'); 라우트적용(); break;
     }
     case 'resetask':
-      모달열기(`<h2 id="modal-title">🗑️ 데모 데이터를 초기화할까요?</h2>
+      모달열기(`<h2 id="modal-title">데모 데이터를 초기화할까요?</h2>
         <p class="small">가져온 거래·첨부한 근거, 의견, 질문·답변, 활동 로그, 점검표 체크가 모두 지워지고 기본 시연 데이터로 돌아갑니다.</p>
         <div class="grid2"><button type="button" class="btn" id="m-cancel" data-act="modalclose">취소</button>
         <button type="button" class="btn primary" id="m-reset" data-act="reset">초기화</button></div>`);
@@ -1573,6 +1640,7 @@ document.addEventListener('submit', ev => {
   if (!f) return;
   ev.preventDefault();
   const kind = f.dataset.form;
+  track('form_submit', { app_form: kind });  // 제출 시도 횟수(내용은 보내지 않는다)
   if (kind === 'login') {
     const v = (f.querySelector('input[name=role]:checked') || {}).value || 'member';
     로그인처리(v);
@@ -1608,6 +1676,7 @@ document.addEventListener('submit', ev => {
     state.app.qna.push({ id, txId, q, a: '', qAt: new Date().toISOString(), aAt: '' });
     delete state.app.drafts['q-' + f.dataset.prefix];
     로그('공개 질문 등록', txId);
+    track('question_submit', { app_tx: txId });
     저장();
     그리기();
     토스트('질문을 공개 등록했습니다 ✓');
@@ -1620,6 +1689,7 @@ document.addEventListener('submit', ev => {
     qa.a = a; qa.aAt = new Date().toISOString();
     delete state.app.drafts['ans-' + qa.id];
     로그('공개 답변 등록', qa.txId);
+    track('answer_submit', { app_tx: qa.txId });
     저장();
     그리기();
     토스트('공개 답변을 등록했습니다 ✓');
@@ -1656,7 +1726,7 @@ document.addEventListener('submit', ev => {
     delete state.app.drafts.evi;
     state.app.selectedTx = tx.id;
     로그('결제 근거 입력(사유·영수증)', tx.id);
-    if (!저장()) { delete tx.photo; 저장(true); 토스트('사진이 커서 저장하지 못했습니다 — 사진 없이 저장했습니다'); }
+    if (!저장()) { delete tx.photo; 저장(true); 토스트('사진이 너무 커서 사진은 빼고 저장했습니다'); }
     이동({ area: 't', page: 'compare', tx: tx.id });
   }
 });
@@ -1758,6 +1828,14 @@ document.addEventListener('keydown', ev => {
 
 window.addEventListener('hashchange', 라우트적용);
 
+/* ---------- 이용 통계: 화면에 머문 시간(탭이 보이는 동안만 센다) ---------- */
+document.addEventListener('visibilitychange', () => {
+  if (!통계켜짐) return;
+  if (document.hidden) 화면시간보내기();
+  else if (통계화면) 통계시각 = Date.now();
+});
+window.addEventListener('pagehide', 화면시간보내기);
+
 /* ---------- 프레임 크기·시계 ---------- */
 // 노트북 화면이 프레임보다 작으면 비율을 유지한 채 축소(잘리거나 바깥 스크롤이 생기지 않게)
 function 프레임맞추기() {
@@ -1782,6 +1860,7 @@ window.addEventListener('resize', () => { 프레임맞추기(); 패널그리기(
     const res = 불러오기();
     state = res.s;
     if (res.fresh) 저장(true);
+    통계시작();
     프레임맞추기();
     시계();
     // 분이 바뀌는 순간에 맞춰 1분마다 갱신
