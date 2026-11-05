@@ -982,9 +982,15 @@ function track(name, params) {
 
 /* ---------- 직접 수집(구글 시트) ----------
    GA와 같은 이벤트를 팀의 구글 시트(Apps Script 웹앱)에도 한 행씩 보낸다. 방문자 코드는 무작위로 만든 값이고, 이름은 참여 정보를 입력할 때 profile 행에만 실어 한 번 보낸다.
-   참여 정보를 입력하거나 '수집 안 함'을 고르기 전에는 아무것도 보내지 않고 이 화면의 메모리에만 모아 둔다. */
-const 방문자키 = 'finpbl:vid', 참여정보키 = 'finpbl:profile';
+   참여 정보를 입력하거나 '수집 안 함'을 고르기 전에는 아무것도 보내지 않고 이 화면의 메모리에만 모아 둔다.
+   보내는 방식(여러 명이 동시에 써도 기록이 빠지지 않게):
+   - 기록은 20초 동안 모으거나 30개가 쌓이면, 또는 화면을 닫거나 가릴 때 한 묶음(최대 50행)으로 보낸다. 수집기는 한 번에 한 요청만 쓰므로 요청 수를 줄인다.
+   - 묶음마다 이름표(bid)를 붙이고, 수집기가 'ok'라고 답할 때까지 보관함(localStorage)에 남겨 둔다. 실패하면 5초·10초·20초… 최대 1분 간격(조금씩 흩뜨린다)으로 다시 보낸다.
+   - 화면을 닫아 답을 못 받은 묶음은 다음에 열 때 다시 보낸다. 수집기가 같은 이름표의 묶음은 한 번만 쓰므로 두 번 쌓이지 않는다. */
+const 방문자키 = 'finpbl:vid', 참여정보키 = 'finpbl:profile', 보관함앞 = 'finpbl:outbox:';
 let 자체켜짐 = false, 자체큐 = [], 자체타이머 = 0, 방문자 = '', 세션 = '';
+let 보낼묶음 = [], 보내는중 = false, 재시도타이머 = 0, 재시도횟수 = 0;
+const 묶음간격 = 20000, 묶음행수 = 30, 보관최대행 = 400;
 const 행이름 = { app_role: 'role', app_src: 'src', app_screen: 'screen', app_act: 'act', app_target: 'target', app_intent: 'intent', app_reward: 'reward', app_withdraw: 'withdraw', app_seconds: 'secs', app_form: 'form', app_tx: 'tx', app_name: 'name' };
 function 무작위코드() {
   try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
@@ -998,6 +1004,38 @@ function 자체시작() {
     if (!세션) { 세션 = 's' + 무작위코드().replace(/-/g, '').slice(0, 7); sessionStorage.setItem('finpbl:sid', 세션); }
     자체켜짐 = true;
   } catch (e) { 자체켜짐 = false; }
+  if (!자체켜짐) return;
+  보관함불러오기();
+  // 지난번에 못 보낸 묶음이 있으면 조금 뒤에 보낸다(여러 사람이 한꺼번에 열어도 몰리지 않게 1~4초 사이로 흩뜨린다)
+  if (보낼묶음.length) 재시도타이머 = setTimeout(() => { 재시도타이머 = 0; 다음전송(); }, 1000 + Math.random() * 3000);
+}
+// 보관함은 탭(방문)마다 따로 둔다. 다른 탭의 보관함이 2분 넘게 그대로면 그 탭은 닫힌 것으로 보고 넘겨받는다
+function 보관함불러오기() {
+  try {
+    const 내것 = 보관함앞 + 세션, 키들 = [];
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf(보관함앞) === 0) 키들.push(k); }
+    for (const k of 키들) {
+      const v = JSON.parse(localStorage.getItem(k) || 'null');
+      if (k !== 내것 && v && Date.now() - v.at < 120000) continue;
+      if (v && Array.isArray(v.b)) v.b.forEach(b => { if (b && b.bid && Array.isArray(b.rows) && !보낼묶음.some(x => x.bid === b.bid)) 보낼묶음.push(b); });
+      if (k !== 내것) localStorage.removeItem(k);
+    }
+  } catch (e) {}
+  보관함저장();
+}
+function 보관함저장() {
+  // 너무 오래 못 보내 쌓이면 오래된 묶음부터 버린다
+  let 행 = 보낼묶음.reduce((a, b) => a + b.rows.length, 0);
+  while (행 > 보관최대행 && 보낼묶음.length > 1) 행 -= 보낼묶음.shift().rows.length;
+  try {
+    if (보낼묶음.length) localStorage.setItem(보관함앞 + 세션, JSON.stringify({ at: Date.now(), b: 보낼묶음 }));
+    else localStorage.removeItem(보관함앞 + 세션);
+  } catch (e) {}
+}
+function 보관함비우기() {
+  clearTimeout(자체타이머); clearTimeout(재시도타이머); 자체타이머 = 0; 재시도타이머 = 0; 재시도횟수 = 0;
+  자체큐 = []; 보낼묶음 = [];
+  try { Object.keys(localStorage).filter(k => k.indexOf(보관함앞) === 0).forEach(k => localStorage.removeItem(k)); } catch (e) {}
 }
 function 참여정보() {
   try {
@@ -1014,20 +1052,49 @@ function 자체기록(name, p) {
   if (정보) Object.assign(row, { grade: 정보.grade, gender: 정보.gender, org: 정보.org, exp: 정보.exp });
   자체큐.push(row);
   if (자체큐.length > 200) 자체큐.shift();
-  if (자체큐.length >= 10) 자체보내기();
-  else if (!자체타이머) 자체타이머 = setTimeout(자체보내기, 5000);
+  if (자체큐.length >= 묶음행수) 자체보내기();
+  else if (!자체타이머) 자체타이머 = setTimeout(자체보내기, 묶음간격);
 }
-function 자체보내기() {
+// 모아 둔 기록을 묶음으로 만들어 보관함에 넣고 보낸다. 떠남(화면을 닫거나 가림)이면 답을 기다리지 않고 지금 바로 보낸다
+function 자체보내기(떠남) {
   clearTimeout(자체타이머); 자체타이머 = 0;
+  if (!자체켜짐) return;
   const 정보 = 참여정보();
-  if (!자체켜짐 || !자체큐.length || !정보) return;   // 참여 정보를 정하기 전에는 보내지 않는다
-  const rows = 자체큐.splice(0, 50).map(r => r.grade !== undefined ? r : Object.assign({ grade: 정보.grade, gender: 정보.gender, org: 정보.org, exp: 정보.exp }, r));
-  const body = JSON.stringify({ rows });
+  if (정보) {   // 참여 정보를 정하기 전에는 보내지 않는다
+    while (자체큐.length) {
+      const rows = 자체큐.splice(0, 50).map(r => r.grade !== undefined ? r : Object.assign({ grade: 정보.grade, gender: 정보.gender, org: 정보.org, exp: 정보.exp }, r));
+      보낼묶음.push({ bid: 세션 + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6), rows });
+    }
+    보관함저장();
+  }
+  if (!보낼묶음.length) return;
+  // 페이지가 닫혀도 요청이 끝까지 가도록 keepalive로 보낸다. 답을 받으면 보관함에서 빼고, 못 받으면 다음 방문 때 다시 보낸다
+  if (떠남) { 보낼묶음.slice(0, 3).forEach(b => 전송(b, true).then(ok => { if (ok) 묶음빼기(b.bid); })); return; }
+  다음전송();
+}
+// 보관함의 묶음을 하나씩 차례로 보낸다. 실패하면 간격을 늘려 가며 다시 보낸다
+function 다음전송() {
+  if (!자체켜짐 || 보내는중 || 재시도타이머 || !보낼묶음.length) return;
+  보내는중 = true;
+  const b = 보낼묶음[0];
+  전송(b, false).then(ok => {
+    보내는중 = false;
+    if (ok) { 재시도횟수 = 0; 묶음빼기(b.bid); 다음전송(); return; }
+    재시도횟수++;
+    const 기다림 = Math.min(60000, 5000 * Math.pow(2, Math.min(재시도횟수 - 1, 4))) + Math.random() * 5000;
+    재시도타이머 = setTimeout(() => { 재시도타이머 = 0; 다음전송(); }, 기다림);
+  });
+}
+function 전송(b, keepalive) {
   try {
-    const ok = navigator.sendBeacon && navigator.sendBeacon(CONFIG.collect.url, new Blob([body], { type: 'text/plain;charset=UTF-8' }));
-    if (!ok) fetch(CONFIG.collect.url, { method: 'POST', mode: 'no-cors', keepalive: true, body });
-  } catch (e) {}
-  if (자체큐.length) 자체타이머 = setTimeout(자체보내기, 1000);
+    return fetch(CONFIG.collect.url, { method: 'POST', body: JSON.stringify({ bid: b.bid, rows: b.rows }), keepalive: !!keepalive })
+      .then(r => r.text()).then(t => t.trim() === 'ok').catch(() => false);
+  } catch (e) { return Promise.resolve(false); }
+}
+function 묶음빼기(bid) {
+  const n = 보낼묶음.length;
+  보낼묶음 = 보낼묶음.filter(x => x.bid !== bid);
+  if (보낼묶음.length !== n) 보관함저장();
 }
 
 /* ---------- 테스트 참여 정보(필수 입력) ----------
@@ -1102,7 +1169,7 @@ function 참여정보카드() {
 // 필수 모드에서 '수집 안 함' 대신 쓰는 동의 철회: 이 브라우저의 참여 정보·방문자 코드를 지우고 입력 창으로 돌아간다
 function 참여철회() {
   try { [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
-  clearTimeout(자체타이머); 자체타이머 = 0; 자체큐 = [];
+  보관함비우기();   // 아직 못 보낸 기록도 보내지 않고 지운다
   try { 방문자 = 무작위코드(); localStorage.setItem(방문자키, 방문자); } catch (e) {}
   if (현재.sheet) 시트닫기();
   토스트('동의를 철회했어요. 이 브라우저에 저장된 정보를 지웠어요');
@@ -1172,7 +1239,8 @@ function 통계안내확인() {
 function 통계거부() {
   try { localStorage.setItem(통계제외키, '1'); [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   window['ga-disable-' + CONFIG.analytics.gaId] = true;  // 이미 불러온 gtag.js도 이후 어떤 전송도 하지 않게 막는다
-  통계켜짐 = false; GA켜짐 = false; 자체켜짐 = false; 자체큐 = [];
+  보관함비우기();
+  통계켜짐 = false; GA켜짐 = false; 자체켜짐 = false;
   { const ml = document.getElementById('modalLayer'); if (ml && !ml.hidden) 모달닫기(); }
   통계안내확인();
   토스트('이 브라우저에서 통계 수집을 껐어요');
@@ -1209,6 +1277,8 @@ function 통계클릭(t) {
   if (['statsoff', 'perkpick', 'perksend', 'snext', 'sprev'].includes(t.dataset.act)) return;
   try {
     const d = t.dataset, f = 통계대상[d.act];
+    // 광고 배너 클릭은 노출(ad_view)과 짝이 되도록 따로 남긴다(배너별 클릭률 = ad_click ÷ ad_view). 2026-11-06 전에는 ui_click(act=ad)로 남았다
+    if (d.act === 'ad') { track('ad_click', { app_target: d.key || '', app_screen: 통계화면 }); return; }
     track('ui_click', { app_act: d.act, app_target: (f && f(d)) || '', app_screen: 통계화면 });
   } catch (e) {}
 }
@@ -2503,10 +2573,11 @@ window.addEventListener('hashchange', 라우트적용);
 /* ---------- 이용 통계: 화면에 머문 시간(탭이 보이는 동안만 센다) ---------- */
 document.addEventListener('visibilitychange', () => {
   if (!통계켜짐) return;
-  if (document.hidden) { 화면시간보내기(); 방문시간보내기(); 자체보내기(); }
-  else { if (통계화면) 통계시각 = Date.now(); 광고노출기록(); }   // 가려져 있던 동안 화면에 있던 배너는 다시 보이는 때 센다
+  if (document.hidden) { 화면시간보내기(); 방문시간보내기(); 자체보내기(true); }
+  else { if (통계화면) 통계시각 = Date.now(); 광고노출기록(); 다음전송(); }   // 가려져 있던 동안 화면에 있던 배너는 다시 보이는 때 센다
 });
-window.addEventListener('pagehide', () => { 화면시간보내기(); 방문시간보내기(); 자체보내기(); });
+window.addEventListener('pagehide', () => { 화면시간보내기(); 방문시간보내기(); 자체보내기(true); });
+window.addEventListener('online', () => { clearTimeout(재시도타이머); 재시도타이머 = 0; 다음전송(); });   // 인터넷이 다시 연결되면 기다리지 않고 보낸다
 
 /* ---------- 프레임 크기·시계 ---------- */
 // 노트북 화면이 프레임보다 작으면 비율을 유지한 채 축소(잘리거나 바깥 스크롤이 생기지 않게)
