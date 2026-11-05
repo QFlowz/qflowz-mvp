@@ -28,7 +28,7 @@
  */
 const 시트이름 = 'events';
 const 열 = ['t', 'vid', 'sid', 'ev', 'dev', 'role', 'src', 'screen', 'act', 'target', 'intent', 'reward', 'withdraw', 'secs', 'form', 'tx', 'grade', 'gender', 'org', 'exp', 'name'];
-const 허용이벤트 = ['page_view', 'ui_click', 'screen_time', 'form_submit', 'opinion_submit', 'opinion_cancel', 'question_submit', 'answer_submit', 'perk_answer', 'ad_view', 'ad_click', 'session_time', 'profile'];
+const 허용이벤트 = ['page_view', 'ui_click', 'screen_time', 'form_submit', 'opinion_submit', 'opinion_cancel', 'question_submit', 'answer_submit', 'perk_answer', 'ad_view', 'ad_click', 'nudge_view', 'nudge_click', 'session_time', 'profile'];
 const 최대행 = 50;
 const 최대길이 = 60;
 const 대기ms = 30000;
