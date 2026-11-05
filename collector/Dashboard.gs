@@ -17,7 +17,15 @@
  * 주의
  *  - events 탭의 열 순서가 바뀌면(Code.gs 의 열 배열) 아래 기대열도 같이 고친다. 어긋나면 대시보드의 '데이터 점검'에 경고가 뜬다.
  *  - 아직 실제 시트에서 돌려 보지 않은 수식이다. 처음에는 events 에서 몇 줄을 손으로 세어 대시보드 숫자와 맞는지 본다.
+ *  - 한 Apps Script 프로젝트의 파일들은 이름을 함께 쓴다. Code.gs 와 이름이 겹치지 않도록 이 파일의 내용은 모두 아래 QFlowz대시보드 묶음 안에 두고,
+ *    밖으로는 onOpen · 대시보드만들기 · QFlowz대시보드 세 이름만 내놓는다.
  */
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('QFlowz').addItem('대시보드 새로 만들기', '대시보드만들기').addToUi();
+}
+function 대시보드만들기() { QFlowz대시보드.만들기(); }
+
+const QFlowz대시보드 = (() => {
 const 대시보드이름 = '대시보드';
 const 계산이름 = '_data';
 const 기록이름 = 'events';
@@ -138,12 +146,8 @@ const 잴수없음 = [
   '고객 획득 단계별 전환(CAC): 광고 집행 전이라 비어 있어요. 유입 경로(src)별 방문까지만 볼 수 있어요.'
 ];
 
-function onOpen() {
-  SpreadsheetApp.getUi().createMenu('QFlowz').addItem('대시보드 새로 만들기', '대시보드만들기').addToUi();
-}
-
 /* ---------- 대시보드 만들기 ---------- */
-function 대시보드만들기() {
+function 만들기() {
   const 문서 = SpreadsheetApp.getActiveSpreadsheet();
 
   // events 탭이 아직 없으면 제목 줄만 있는 탭을 만든다(첫 기록이 오기 전에도 대시보드를 열어 볼 수 있게)
@@ -486,3 +490,6 @@ function 이전입력(옛, 입력라벨) {
   });
   return 맵;
 }
+
+return { 만들기 };
+})();
