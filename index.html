@@ -238,6 +238,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .adcard img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none}
 .adslide:focus-visible{outline:none}
 .adslide:focus-visible .adcard{outline:2px solid var(--accent);outline-offset:-2px}
+/* 공유 카드: 보낼 글과 링크를 그대로 보여 줘, 복사가 막힌 브라우저에서도 길게 눌러 복사할 수 있게 한다 */
+.sharebox{margin:0;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;background:var(--muted-soft);font-size:13px;line-height:1.5;overflow-wrap:anywhere;-webkit-user-select:text;user-select:text}
+.sharebox .url{display:block;color:var(--sub)}
 
 /* ===== 입력 폼 ===== */
 .field{display:flex;flex-direction:column;gap:4px}
@@ -390,11 +393,11 @@ const CONFIG = {
   },
   // 개인정보 처리방침 시트의 문구. contact(문의처)는 비워 두면 그 항목을 숨긴다
   privacy: {
-    effective: '2026-11-04',
+    effective: '2026-11-06',
     contact: '',
     intro: '수업 시연용 앱이고 모든 거래는 가상 데이터예요. 이용 통계 수집에 한해 아래와 같이 처리해요.',
     sections: [
-      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간, 광고 배너가 화면에 보였는지와 어느 배너를 눌렀는지', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)', '혜택 탭의 미구현 기능 질문에서 보내기를 누른 경우, 고른 답(쓸 의향, 최소 희망 보상 구간)', '혜택 탭 샘플 설문에서 어느 구간까지 했는지, 끝냈는지, 걸린 시간(고른 답은 수집하지 않아요)', '접속 주소에 붙은 유입 표시(?src= 값, 어느 경로로 온 접속인지 구분하는 용도)'],
+      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간, 광고 배너가 화면에 보였는지와 어느 배너를 눌렀는지', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)', '혜택 탭의 미구현 기능 질문에서 보내기를 누른 경우, 고른 답(쓸 의향, 최소 희망 보상 구간)', '혜택 탭 샘플 설문에서 어느 구간까지 했는지, 끝냈는지, 걸린 시간(고른 답은 수집하지 않아요)', '접속 주소에 붙은 유입 표시(?src= 값, 어느 경로로 온 접속인지 구분하는 용도. 공유 링크로 왔다면 링크를 보낸 사람의 무작위 공유 코드가 들어 있어요)', '공유하기·링크 복사를 누른 기록(누른 방법과 자리, 내 공유 링크의 무작위 공유 코드. 보낸 글이나 받는 사람은 수집하지 않아요)'],
         ownItems: ['테스트 참여 정보(이름, 학년, 성별, 동아리 소속, 총무 경험)', '무작위로 만든 방문자 코드(참여 정보를 입력할 때 이름과 연결돼요)', '위 이용 기록 전체를 팀의 구글 시트에도 저장'] },
       { title: '수집하지 않는 정보', text: '이름, 연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답은 예외로 통계에 보내요.', ownText: '테스트 참여 정보도 예외로, 팀의 구글 시트로 보내요.',
         ownFull: '연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답과 테스트 참여 정보(이름 포함)는 예외로 팀의 구글 시트로 보내요. 이름과 참여 정보는 Google Analytics로는 보내지 않아요.' },
@@ -564,6 +567,24 @@ const CONFIG = {
       { key:'baemin-isaac-toast', img:'assets/ads/baemin_isaac_toast.jpg', alt:'배민오더 이삭토스트 3천원 할인 광고 배너' },
       { key:'spotify-afterparty', img:'assets/ads/spotify_afterparty.jpg', alt:'스포티파이 참여형 플레이리스트 광고 배너' }
     ]
+  },
+  // 공유(추천 유입): 휴대폰은 OS 공유 창(카카오톡·인스타 DM 등)을 띄우고, 공유 창이 없는 브라우저는 글과 링크를 복사한다. 외부 SDK는 쓰지 않는다.
+  // 링크에는 ?src=share-t-<공유 코드>(총무 화면에서 보냄) / share-m-<공유 코드>(부원 화면에서 보냄)가 붙는다. 공유 코드는 브라우저마다 무작위로 만들고 이름은 넣지 않는다.
+  // url을 비워 두면 지금 열린 주소(쿼리·해시 뺀 것)를 쓴다. 시험 주소에서 열어도 실제 배포 주소를 보내려면 여기에 적는다.
+  // text는 링크 앞에 붙는 소개 글(보내는 사람의 역할별), cards는 버튼이 있는 카드의 제목·설명이다. survey=샘플 설문을 끝낸 화면, perk=혜택 질문에 답을 보낸 뒤, admin=총무 관리 화면
+  share: {
+    url: '',
+    title: 'QFlowz',
+    text: {
+      treasurer: '회비 영수증 모아 단톡에 올리느라 지치셨죠? QFlowz는 계좌 거래마다 결제 근거 카드를 만들어 부원 질문을 줄여 줘요. 2분 시연:',
+      member: '동아리 회비가 어디에 쓰였는지 총무에게 묻지 않고 확인하는 앱이에요. 수업 테스트에 5분만 참여해 주세요:'
+    },
+    cards: {
+      admin: { title: '다른 동아리 총무에게 알리기', desc: '정산이 번거로운 다른 동아리 총무에게 시연 링크를 보내 주세요.' },
+      treasurer: { title: '다른 동아리 총무에게도 보내기', desc: '정산이 번거로운 다른 동아리 총무에게 시연 링크를 보내 주세요.' },
+      member: { title: '친구에게도 보내기', desc: '함께 테스트해 줄 동아리 친구에게 링크를 보내 주세요.' }
+    },
+    note: '링크에는 공유로 왔다는 표시와 무작위 공유 코드만 붙고, 이름은 들어가지 않아요.'
   },
   unitEconomics: {
     metrics: [
@@ -962,11 +983,12 @@ function GA시작(id) {
   } catch (e) {}
 }
 // 주소의 ?src=이름(예: ?src=kakao-a)을 기억해 모든 이벤트에 붙인다. 어느 경로로 모은 표본인지 가르는 용도라 짧은 영문·숫자 이름만 받는다
-const 유입키 = 'finpbl:src';
+// 내가 보낸 공유 링크(공유 코드가 내 것)를 내가 다시 열었을 때는 기억하지 않는다. 자기 링크로 들어온 것이 추천 유입으로 세어지지 않게 한다
+const 유입키 = 'finpbl:src', 공유코드키 = 'finpbl:share';
 function 유입경로() {
   try {
     const q = new URLSearchParams(location.search).get('src');
-    if (q && /^[A-Za-z0-9._-]{1,30}$/.test(q)) localStorage.setItem(유입키, q);
+    if (q && /^[A-Za-z0-9._-]{1,30}$/.test(q) && !내공유링크(q)) localStorage.setItem(유입키, q);
     return localStorage.getItem(유입키) || '';
   } catch (e) { return ''; }
 }
@@ -978,6 +1000,91 @@ function track(name, params) {
     if (GA켜짐) gtag('event', name, p);   // 참여 정보는 GA로 보내지 않는다
     if (자체켜짐) 자체기록(name, p);
   } catch (e) {}
+}
+
+/* ---------- 공유(추천 유입) ----------
+   휴대폰은 OS 공유 창(카카오톡·인스타 DM 등)을 띄우고, 공유 창이 없는 브라우저(대부분의 PC)는 소개 글과 링크를 복사한다. 외부 SDK·외부 요청은 쓰지 않는다.
+   링크에는 ?src=share-<역할>-<공유 코드>를 붙인다. 역할은 누른 화면(t=총무, m=부원)이고, 공유 코드는 이 브라우저에서 처음 쓸 때 무작위로 만든 6자다(방문자 코드와 별개, 이름은 넣지 않는다).
+   받은 사람이 링크로 들어오면 유입경로()가 이 값을 기억해 그 사람의 모든 기록에 src로 붙는다. 그래서 공유(share_click) → 유입(GA4의 app_src) → 참여 정보 입력(시트의 profile 행)을
+   링크 종류별·공유 코드별로 셀 수 있다. 수집이 꺼진 브라우저는 코드 없이 share-t / share-m 만 붙인다(보낸 사람의 기록이 없으니 코드를 이을 곳도 없다).
+   share_click: act=native(공유 창을 엶)/copy(복사), target=보낸 링크의 src 값, form=share:<자리>(survey·perk·admin), screen=누른 화면 */
+function 공유코드(만들기) {
+  try {
+    let c = localStorage.getItem(공유코드키) || '';
+    if (!/^[a-z0-9]{6}$/.test(c) && 만들기) {
+      c = 무작위코드().replace(/[^A-Za-z0-9]/g, '').toLowerCase().slice(-6);
+      localStorage.setItem(공유코드키, c);
+    }
+    return /^[a-z0-9]{6}$/.test(c) ? c : '';
+  } catch (e) { return ''; }
+}
+function 내공유링크(src) {
+  const c = 공유코드(false);
+  return !!c && /^share-[tm]-/.test(src) && src.slice(8) === c;
+}
+function 공유값() {
+  const 코드 = 통계켜짐 ? 공유코드(true) : '';
+  return 'share-' + (역할() === 'treasurer' ? 't' : 'm') + (코드 ? '-' + 코드 : '');
+}
+function 공유링크() {
+  const u = new URL(CONFIG.share.url || location.href, location.href);
+  u.search = ''; u.hash = '';
+  u.searchParams.set('src', 공유값());
+  return u.href;
+}
+function 공유글() { return CONFIG.share.text[역할() === 'treasurer' ? 'treasurer' : 'member']; }
+// 자리: survey(샘플 설문을 끝낸 화면) · perk(혜택 질문에 답을 보낸 뒤) · admin(총무 관리 화면). 강조면 버튼을 주 버튼 색으로 그린다
+function 공유카드(자리, 강조) {
+  const S = CONFIG.share, 카드 = S.cards[자리 === 'admin' ? 'admin' : 역할() === 'treasurer' ? 'treasurer' : 'member'];
+  const 창 = typeof navigator.share === 'function', 색 = 강조 ? 'btn primary' : 'btn';
+  const 버튼 = 창
+    ? `<div class="grid2"><button type="button" class="${색}" id="share-${자리}-native" data-act="share" data-place="${자리}">공유하기</button>
+        <button type="button" class="btn" id="share-${자리}-copy" data-act="sharecopy" data-place="${자리}">링크 복사</button></div>`
+    : `<button type="button" class="${색} block" id="share-${자리}-copy" data-act="sharecopy" data-place="${자리}">링크 복사</button>`;
+  return `<section class="card stack" aria-label="${esc(카드.title)}">
+      <h3>${esc(카드.title)}</h3>
+      <p class="small sub">${esc(카드.desc)}</p>
+      <p class="sharebox" id="share-${자리}-text">${esc(공유글())}<span class="url">${esc(공유링크())}</span></p>
+      ${버튼}
+      <p class="hint">${esc(S.note)}</p>
+    </section>`;
+}
+function 공유하기(btn, 복사만) {
+  const 링크 = 공유링크(), 글 = 공유글(), 자리 = btn.dataset.place || '';
+  const 기록 = 방법 => track('share_click', { app_act: 방법, app_target: new URL(링크).searchParams.get('src'), app_form: 'share:' + 자리, app_screen: 통계화면 });
+  if (!복사만 && typeof navigator.share === 'function') {
+    // 누른 순간에 남긴다. 공유 창에서 앱을 고르면 이 화면이 뒤로 가므로, 끝난 뒤에 남기면 기록이 빠질 수 있다. 실제로 보냈는지는 받은 사람의 유입으로 본다
+    기록('native');
+    navigator.share({ title: CONFIG.share.title, text: 글, url: 링크 }).catch(err => {
+      if (err && err.name === 'AbortError') return;   // 공유 창을 그냥 닫음
+      글링크복사(글, 링크);                             // 공유 창을 띄우지 못하면 복사로 대신한다
+    });
+    return;
+  }
+  기록('copy');
+  글링크복사(글, 링크);
+}
+function 글링크복사(글, 링크) {
+  const 내용 = 글 + '\n' + 링크;
+  const 됨 = () => 토스트('글과 링크를 복사했어요');
+  const 안됨 = () => 토스트('복사하지 못했어요. 위 글을 길게 눌러 복사해 주세요');
+  // 클립보드 API가 없거나 막힌 브라우저(주소가 https가 아닌 경우 등)는 예전 방식(execCommand)으로 복사한다
+  const 예전방식 = () => {
+    const 앞 = document.activeElement;
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = 내용; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, 내용.length);   // iOS 사파리는 select()만으로는 고르지 않는다
+      const ok = document.execCommand('copy');
+      ta.remove();
+      if (ok) 됨(); else 안됨();
+    } catch (e) { 안됨(); }
+    if (앞 && 앞.focus) 앞.focus({ preventScroll: true });
+  };
+  try {
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(내용).then(됨, 예전방식);
+    else 예전방식();
+  } catch (e) { 예전방식(); }
 }
 
 /* ---------- 직접 수집(구글 시트) ----------
@@ -1168,7 +1275,7 @@ function 참여정보카드() {
 }
 // 필수 모드에서 '수집 안 함' 대신 쓰는 동의 철회: 이 브라우저의 참여 정보·방문자 코드를 지우고 입력 창으로 돌아간다
 function 참여철회() {
-  try { [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { [유입키, 방문자키, 참여정보키, 공유코드키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   보관함비우기();   // 아직 못 보낸 기록도 보내지 않고 지운다
   try { 방문자 = 무작위코드(); localStorage.setItem(방문자키, 방문자); } catch (e) {}
   if (현재.sheet) 시트닫기();
@@ -1237,7 +1344,7 @@ function 통계안내확인() {
   통계띠그리기();
 }
 function 통계거부() {
-  try { localStorage.setItem(통계제외키, '1'); [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { localStorage.setItem(통계제외키, '1'); [유입키, 방문자키, 참여정보키, 공유코드키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   window['ga-disable-' + CONFIG.analytics.gaId] = true;  // 이미 불러온 gtag.js도 이후 어떤 전송도 하지 않게 막는다
   보관함비우기();
   통계켜짐 = false; GA켜짐 = false; 자체켜짐 = false;
@@ -1274,7 +1381,8 @@ function 처리방침본문() {
 function 통계클릭(t) {
   if (!통계켜짐) return;
   // 수집을 끄는 클릭, 보내기 전에 답을 고르는 클릭, 설문 쪽 이동 클릭(구간 기록이 따로 있다)은 보내지 않는다
-  if (['statsoff', 'perkpick', 'perksend', 'snext', 'sprev'].includes(t.dataset.act)) return;
+  // 공유 버튼은 누른 방법(공유 창/복사)을 알아야 해서 share_click 으로 따로 남긴다(공유하기())
+  if (['statsoff', 'perkpick', 'perksend', 'snext', 'sprev', 'share', 'sharecopy'].includes(t.dataset.act)) return;
   try {
     const d = t.dataset, f = 통계대상[d.act];
     // 광고 배너 클릭은 노출(ad_view)과 짝이 되도록 따로 남긴다(배너별 클릭률 = ad_click ÷ ad_view). 2026-11-06 전에는 ui_click(act=ad)로 남았다
@@ -1809,9 +1917,11 @@ function 혜택답보내기() {
   if (pq.a.withdraw) p.app_withdraw = pq.a.withdraw;
   track('perk_answer', p);
   try { localStorage.setItem(혜택완료키, JSON.stringify(혜택완료목록().concat(pq.key))); } catch (e) {}
-  state.__perkq = null;
-  토스트('답을 받았어요. 고마워요');
-  시트닫기();
+  // 바로 닫지 않고 고맙다는 화면에 공유 카드를 보여 준다(답을 마친 때가 공유를 가장 많이 누르는 때다)
+  state.__perkq = { key: pq.key, a: {}, sent: true };
+  시트그리기();
+  const 제목 = document.getElementById('pq-thanks');
+  if (제목) 제목.focus({ preventScroll: true });
 }
 
 /* 샘플 설문: 혜택 탭 '용돈 미션'의 설문 카드를 누르면 열린다(리서치 회사가 맡기는 설문 일감의 예시).
@@ -1916,6 +2026,7 @@ function 총무관리화면() {
         <button type="submit" class="btn" id="rule-btn">기준 공개</button>
       </form>
     </section>
+    ${공유카드('admin', true)}
     <section class="card stack" aria-label="등록된 가상 거래">
       <h3>계좌 거래 ${state.app.txs.length}건</h3>
       <p class="small sub">등록된 지출은 투명성을 위해 삭제할 수 없어요. 정정이 필요하면 공개 Q&A에 설명을 남겨 주세요.</p>
@@ -2038,6 +2149,10 @@ function 시트내용(name) {
     const pq = state.__perkq, 찾음 = pq && 혜택항목찾기(pq.key);
     if (!찾음) return null;
     const { s, it } = 찾음, a = pq.a;
+    if (pq.sent) return { title: esc(it.title), body: `
+      <div class="card stack"><h3 id="pq-thanks" tabindex="-1">답을 받았어요. 고마워요</h3><p class="small sub">고른 답은 기능을 만들지 정하는 데만 써요.</p></div>
+      ${공유카드('perk', true)}
+      <button type="button" class="btn block" id="pq-close" data-act="closesheet">닫기</button>` };
     const rq = it.reward || s.reward;
     const 칩 = (q, 질문, 목록) => `<div class="chips wrap" role="group" aria-label="${esc(질문)}">${목록.map(([v, l]) =>
       `<button type="button" class="chip" id="pq-${q}-${v}" data-act="perkpick" data-q="${q}" data-v="${v}" aria-pressed="${a[q] === String(v)}">${esc(l)}</button>`).join('')}</div>`;
@@ -2066,6 +2181,7 @@ function 시트내용(name) {
         <div class="card stack"><h3>${esc(대상아님 ? S.outTitle : S.doneTitle)}</h3><p class="small">${esc(대상아님 ? S.outText : S.doneText)}</p>
           ${대상아님 ? '' : `<dl class="kv"><dt>걸린 시간</dt><dd>${시간(sv.secs)}</dd><dt>보상</dt><dd>샘플이라 지급하지 않아요</dd></dl>`}</div>
         ${의향가능 ? `<button type="button" class="btn primary block" id="sv-intent" data-act="surveyintent" data-key="${esc(S.key)}">이런 설문 일감이 나오면 쓸지 답하기</button>` : ''}
+        ${공유카드('survey', !의향가능)}
         <button type="button" class="btn block" id="sv-close" data-act="closesheet">닫기</button>` };
     }
     const secs = S.sections, sec = secs[sv.p], 시작번호 = secs.slice(0, sv.p).reduce((n, s) => n + s.qs.length, 0);
@@ -2255,6 +2371,8 @@ document.addEventListener('click', ev => {
     case 'statsoff': 통계거부(); break;
     case 'statson': 통계허용(); break;
     case 'perk': 혜택질문열기(t); break;
+    case 'share': 공유하기(t, false); break;
+    case 'sharecopy': 공유하기(t, true); break;
     case 'perkpick': 혜택답고르기(t.dataset.q, t.dataset.v); break;
     case 'perksend': 혜택답보내기(); break;
     case 'snext': 설문이동(1); break;
