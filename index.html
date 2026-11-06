@@ -238,6 +238,20 @@ button,input,select,textarea{font:inherit;color:inherit}
 .adcard img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none}
 .adslide:focus-visible{outline:none}
 .adslide:focus-visible .adcard{outline:2px solid var(--accent);outline-offset:-2px}
+/* 공유 카드: 보낼 글과 링크를 그대로 보여 줘, 복사가 막힌 브라우저에서도 길게 눌러 복사할 수 있게 한다 */
+.sharebox{margin:0;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;background:var(--muted-soft);font-size:13px;line-height:1.5;overflow-wrap:anywhere;-webkit-user-select:text;user-select:text}
+.sharebox .url{display:block;color:var(--sub)}
+
+/* ===== 개인화(과업 ④): 총무 할 일 / 부원 내 차례 / 확인 재알림 ===== */
+.todo{display:flex;flex-direction:column;gap:6px}
+.todo-row{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:44px;text-align:left;cursor:pointer;
+  border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);padding:6px 10px;font:inherit}
+.todo-row:active{transform:scale(.99)}
+.mine-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.nudge{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:var(--radius);
+  background:var(--card);box-shadow:var(--shadow);padding:12px}
+.nudge p{margin:0}
+details.card>summary{cursor:pointer}
 
 /* ===== 입력 폼 ===== */
 .field{display:flex;flex-direction:column;gap:4px}
@@ -390,15 +404,15 @@ const CONFIG = {
   },
   // 개인정보 처리방침 시트의 문구. contact(문의처)는 비워 두면 그 항목을 숨긴다
   privacy: {
-    effective: '2026-11-04',
+    effective: '2026-11-06',
     contact: '',
     intro: '수업 시연용 앱이고 모든 거래는 가상 데이터예요. 이용 통계 수집에 한해 아래와 같이 처리해요.',
     sections: [
-      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간, 광고 배너가 화면에 보였는지와 어느 배너를 눌렀는지', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)', '혜택 탭의 미구현 기능 질문에서 보내기를 누른 경우, 고른 답(쓸 의향, 최소 희망 보상 구간)', '혜택 탭 샘플 설문에서 어느 구간까지 했는지, 끝냈는지, 걸린 시간(고른 답은 수집하지 않아요)', '접속 주소에 붙은 유입 표시(?src= 값, 어느 경로로 온 접속인지 구분하는 용도)'],
+      { title: '수집하는 정보', items: ['화면 이동, 버튼 클릭, 화면에 머문 시간, 광고 배너가 화면에 보였는지와 어느 배너를 눌렀는지', '접속 환경(브라우저·기기 종류·대략적인 지역)과 Google Analytics의 쿠키 식별자', '구글 계정에 로그인한 경우 구글이 추정한 연령대·성별(Google 신호)', '혜택 탭의 미구현 기능 질문에서 보내기를 누른 경우, 고른 답(쓸 의향, 최소 희망 보상 구간)', '혜택 탭 샘플 설문에서 어느 구간까지 했는지, 끝냈는지, 걸린 시간(고른 답은 수집하지 않아요)', '접속 주소에 붙은 유입 표시(?src= 값, 어느 경로로 온 접속인지 구분하는 용도. 공유 링크로 왔다면 링크를 보낸 사람의 무작위 공유 코드가 들어 있어요)', '확인 재알림이 화면에 보였는지와 눌렀는지, 그리고 방문자에게 배정된 알림 문구 종류(일반 문구 또는 맞춤 문구)', '공유하기·링크 복사를 누른 기록(누른 방법과 자리, 내 공유 링크의 무작위 공유 코드. 보낸 글이나 받는 사람은 수집하지 않아요)'],
         ownItems: ['테스트 참여 정보(이름, 학년, 성별, 동아리 소속, 총무 경험)', '무작위로 만든 방문자 코드(참여 정보를 입력할 때 이름과 연결돼요)', '위 이용 기록 전체를 팀의 구글 시트에도 저장'] },
-      { title: '수집하지 않는 정보', text: '이름, 연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답은 예외로 통계에 보내요.', ownText: '테스트 참여 정보도 예외로, 팀의 구글 시트로 보내요.',
-        ownFull: '연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답과 테스트 참여 정보(이름 포함)는 예외로 팀의 구글 시트로 보내요. 이름과 참여 정보는 Google Analytics로는 보내지 않아요.' },
-      { title: '이용 목적', text: '수업 보고서와 서비스 개선을 위한 이용 현황 집계예요. 광고 개인화에는 쓰지 않도록 설정했어요. 혜택 탭 질문은 아직 만들지 않은 기능을 쓸 사람이 있는지 가늠하는 수요 조사에만 써요. 샘플 설문의 진행 기록은 설문형 일감을 끝까지 하는 사람의 비율과 걸리는 시간을 가늠하는 데만 써요.', ownText: '이름과 참여 정보는 테스트 참여자를 구분하고 같은 사람의 중복 응답을 가리며, 어떤 사람들인지 표본을 설명하는 데에만 써요.' },
+      { title: '수집하지 않는 정보', text: '이름, 연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 참석한 행사로 고른 값, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답은 예외로 통계에 보내요.', ownText: '테스트 참여 정보도 예외로, 팀의 구글 시트로 보내요.',
+        ownFull: '연락처, 계좌·카드 정보, 질문·답변 본문, 총무 PIN, 의견 선택 내용, 참석한 행사로 고른 값, 샘플 설문에 고른 답은 수집하지 않아요. 이 앱에서 입력한 값은 이 브라우저(localStorage)에만 저장되고 서버로 보내지 않아요. 다만 혜택 탭 질문에서 보내기를 누른 답과 테스트 참여 정보(이름 포함)는 예외로 팀의 구글 시트로 보내요. 이름과 참여 정보는 Google Analytics로는 보내지 않아요.' },
+      { title: '이용 목적', text: '수업 보고서와 서비스 개선을 위한 이용 현황 집계예요. 광고 개인화에는 쓰지 않도록 설정했어요. 확인 재알림은 일반 문구와 맞춤 문구 중 어느 쪽이 더 많이 열리는지 비교하는 데만 써요. 혜택 탭 질문은 아직 만들지 않은 기능을 쓸 사람이 있는지 가늠하는 수요 조사에만 써요. 샘플 설문의 진행 기록은 설문형 일감을 끝까지 하는 사람의 비율과 걸리는 시간을 가늠하는 데만 써요.', ownText: '이름과 참여 정보는 테스트 참여자를 구분하고 같은 사람의 중복 응답을 가리며, 어떤 사람들인지 표본을 설명하는 데에만 써요.' },
       { title: '처리 위탁과 국외 이전', text: '통계 처리는 Google LLC(Google Analytics)에 맡기며, 데이터는 미국 등 해외 서버에서 처리될 수 있어요.', ownText: '직접 수집한 기록은 팀이 만든 구글 스프레드시트(Google LLC)에 저장돼요.' },
       { title: '보관 기간', text: '이용자·이벤트 단위 원본 데이터는 Google Analytics에서 최대 14개월(설정에 따라 더 짧을 수 있어요) 보관한 뒤 자동 삭제되고, 이후에는 합산된 통계만 남아요.', ownText: '팀의 구글 시트에 저장된 기록과 참여 정보는 이번 학기 수업이 끝나는 대로 삭제해요.' },
       { title: '수집 거부', text: '아래 버튼으로 이 브라우저의 수집을 바로 끌 수 있어요. 브라우저의 쿠키 차단이나 Google Analytics 차단 확장 프로그램을 써도 수집되지 않아요.', ownText: '수집을 끄면 참여 정보를 입력하지 않아도 앱을 쓸 수 있어요.',
@@ -407,6 +421,16 @@ const CONFIG = {
   },
   demoPin: '1234',               // 시연용 PIN이며 실제 보안 기능이 아니다
   rules: { periodDays: 7, threshold: 0.15, members: 30 }, // 15%·7일은 팀 설계 가정, 30명은 가상 행사 참여 부원 수(이의 비율의 분모)
+  // 개인화(과업 ④) 확인 재알림. 푸시가 아니라 접속했을 때 거래 내역 맨 위에 뜨는 배너이고, 거래당 한 번만 보이며 끌 수 있다.
+  // 문구 A/B: general은 거래 정보가 없는 고정 문구, claude는 Claude로 미리 써 둔 문구에 규칙으로 값(거래명·금액·남은 시간·참석 여부)을 채운다.
+  // 앱이 Claude를 부르는 것이 아니다(팀 API 키는 앱에 넣지 않는다). 두 문구 모두 '참여는 선택'이라고 알리고 재촉하는 표현은 쓰지 않는다
+  nudge: {
+    dueHours: 24,
+    copy: {
+      general: { title: '확인 기간이 곧 끝나요', body: '아직 확인하지 않은 지출이 있어요. 참여는 선택이에요.' },
+      claude: { title: '{item}{more}, 확인 기간이 {left} 남았어요', body: '{attend}{amount} 지출이에요. 사유와 영수증을 보고 의견을 남길 수 있어요. 참여는 선택이에요.' }
+    }
+  },
   interviews: [
     { id:'A1', title:'활동이 적은데도 회비를 내야 하는 부원', pain:'지출 근거를 확인할 수 없어 낸 회비만 보이고 그만큼의 가치를 판단하기 어렵다.', ui:'회비 사용 내역과 지출 사유를 한 화면에서 확인' },
     { id:'A2', title:'회비가 활동에 비해 많다고 느끼는 부원', pain:'건의가 반영되는지 확인할 수 없고, 관계가 불편해질까 걱정한다.', ui:'총무에게 직접 연락하지 않고 지출별 의견과 답변 확인' },
@@ -437,7 +461,7 @@ const CONFIG = {
   categories: ['행사','간식','물품','대관','홍보','기타'],
   // 가상 거래: 실제 은행 계좌·실명·카드번호 없음. mockResult는 미리 정해 둔 모의 결과(null이면 미대조)
   seedTxs: [
-    { id:'TX-001', date:'2026-09-05', time:'19:20', item:'개강총회 식비', category:'행사', amount:384000,
+    { id:'TX-001', event:true, date:'2026-09-05', time:'19:20', item:'개강총회 식비', category:'행사', amount:384000,
       reason:'개강총회 참석 부원 식사비(참석 인원 기준 단체 주문)', merchant:'(가상) 능동로 한식당', address:'서울 광진구 능동로 일대 · 가상 주소',
       receiptNo:'R-260905-01', receiptDate:'2026-09-05', receiptAmount:384000, memo:'참석 명단은 개인정보라 공개하지 않고 인원 수만 기재', mockResult:'match' },
     { id:'TX-002', date:'2026-09-12', time:'14:05', item:'신입 모집 포스터 인쇄', category:'홍보', amount:42000,
@@ -446,13 +470,13 @@ const CONFIG = {
     { id:'TX-003', date:'2026-09-18', time:'17:42', item:'동아리방 간식', category:'간식', amount:58600,
       reason:'정기 모임용 음료·간식 구매', merchant:'(가상) 학교 앞 편의점', address:'서울 광진구 화양동 일대 · 가상 주소',
       receiptNo:'R-260918-03', receiptDate:'2026-09-18', receiptAmount:65800, memo:'영수증 금액과 거래 금액 차이 확인 필요(시연용 불일치 예시)', mockResult:'mismatch' },
-    { id:'TX-004', date:'2026-09-26', time:'10:15', item:'MT 숙소 대관', category:'대관', amount:520000,
+    { id:'TX-004', event:true, date:'2026-09-26', time:'10:15', item:'MT 숙소 대관', category:'대관', amount:520000,
       reason:'가을 MT 숙소 1박 대관료', merchant:'(가상) 가평 펜션', address:'경기 가평군 일대 · 가상 주소',
       receiptNo:'R-260925-11', receiptDate:'2026-09-25', receiptAmount:520000, memo:'금액은 같지만 영수증 날짜가 하루 다름(시연용 확인 필요 예시)', mockResult:'need' },
     { id:'TX-005', date:'2026-10-02', time:'16:30', item:'동아리방 공용 물품', category:'물품', amount:31500,
       reason:'멀티탭·정리함 구매', merchant:'(가상) 생활용품점', address:'서울 광진구 일대 · 가상 주소',
       receiptNo:'', receiptDate:'', receiptAmount:0, memo:'영수증 미첨부(시연용 판독 불가 예시)', mockResult:'need' },
-    { id:'TX-006', date:'2026-10-10', time:'11:00', item:'종강총회 장소 예약금', category:'행사', amount:100000,
+    { id:'TX-006', event:true, date:'2026-10-10', time:'11:00', item:'종강총회 장소 예약금', category:'행사', amount:100000,
       reason:'종강총회 장소 사전 예약금', merchant:'(가상) 어린이대공원역 파티룸', address:'서울 광진구 능동 일대 · 가상 주소',
       receiptNo:'R-261010-02', receiptDate:'2026-10-10', receiptAmount:100000, memo:'아직 대조 전이에요. [모의 대조 실행]으로 확인해 보세요', mockResult:null }
   ],
@@ -564,6 +588,24 @@ const CONFIG = {
       { key:'baemin-isaac-toast', img:'assets/ads/baemin_isaac_toast.jpg', alt:'배민오더 이삭토스트 3천원 할인 광고 배너' },
       { key:'spotify-afterparty', img:'assets/ads/spotify_afterparty.jpg', alt:'스포티파이 참여형 플레이리스트 광고 배너' }
     ]
+  },
+  // 공유(추천 유입): 휴대폰은 OS 공유 창(카카오톡·인스타 DM 등)을 띄우고, 공유 창이 없는 브라우저는 글과 링크를 복사한다. 외부 SDK는 쓰지 않는다.
+  // 링크에는 ?src=share-t-<공유 코드>(총무 화면에서 보냄) / share-m-<공유 코드>(부원 화면에서 보냄)가 붙는다. 공유 코드는 브라우저마다 무작위로 만들고 이름은 넣지 않는다.
+  // url을 비워 두면 지금 열린 주소(쿼리·해시 뺀 것)를 쓴다. 시험 주소에서 열어도 실제 배포 주소를 보내려면 여기에 적는다.
+  // text는 링크 앞에 붙는 소개 글(보내는 사람의 역할별), cards는 버튼이 있는 카드의 제목·설명이다. survey=샘플 설문을 끝낸 화면, perk=혜택 질문에 답을 보낸 뒤, admin=총무 관리 화면
+  share: {
+    url: '',
+    title: 'QFlowz',
+    text: {
+      treasurer: '회비 영수증 모아 단톡에 올리느라 지치셨죠? QFlowz는 계좌 거래마다 결제 근거 카드를 만들어 부원 질문을 줄여 줘요. 2분 시연:',
+      member: '동아리 회비가 어디에 쓰였는지 총무에게 묻지 않고 확인하는 앱이에요. 수업 테스트에 5분만 참여해 주세요:'
+    },
+    cards: {
+      admin: { title: '다른 동아리 총무에게 알리기', desc: '정산이 번거로운 다른 동아리 총무에게 시연 링크를 보내 주세요.' },
+      treasurer: { title: '다른 동아리 총무에게도 보내기', desc: '정산이 번거로운 다른 동아리 총무에게 시연 링크를 보내 주세요.' },
+      member: { title: '친구에게도 보내기', desc: '함께 테스트해 줄 동아리 친구에게 링크를 보내 주세요.' }
+    },
+    note: '링크에는 공유로 왔다는 표시와 무작위 공유 코드만 붙고, 이름은 들어가지 않아요.'
   },
   unitEconomics: {
     metrics: [
@@ -678,7 +720,13 @@ function 기본상태만들기() {
       ue: {},
       lastSaved: null,
       dataVer: 3,
-      nextQ: 3
+      nextQ: 3,
+      // 개인화(과업 ④). 모두 이 브라우저에만 저장하고 서버로 보내지 않는다(재알림이 보인 횟수·눌린 횟수만 이용 통계로 간다)
+      attended: {},                            // 부원이 직접 고른 참석 행사 (거래 ID → true)
+      attendAsked: false,                      // '참석한 행사 고르기' 카드를 한 번 처리했는지(고르거나 건너뜀)
+      firstOpenAt: new Date().toISOString(),   // 시드 거래의 7일 확인 기간을 세는 시작점(처음 연 시각)
+      clockSkewMs: 0,                          // 시연용 시계: 재알림 계산에만 더한다
+      nudge: { off: false, viewed: {}, done: {} }   // 재알림 끄기 / 화면에 보인 거래 / 닫거나 눌러서 끝난 거래
     }
   };
 }
@@ -775,12 +823,64 @@ function 집계(txId) {
   const nores = Math.max(0, CONFIG.rules.members - total);
   return { ok, ask, total, ratio, nores, code: ratio >= CONFIG.rules.threshold ? 'explain' : 'done' };
 }
-function 확인기간(tx) {
-  const s = new Date(tx.date + 'T00:00:00');
-  if (isNaN(s)) return { start: tx.date, end: '-' };
-  const e = new Date(s.getTime() + CONFIG.rules.periodDays * 86400000);
-  return { start: 날짜표시(s), end: 날짜표시(e) };
+// 확인 기간은 '총무가 근거를 올린 때부터 7일'이다. 시드 거래는 근거가 이미 붙어 있으므로 처음 연 시각(firstOpenAt)부터 센다
+function 확인시작(tx) {
+  const t = new Date(tx.reasonAt || state.app.firstOpenAt).getTime();
+  return isNaN(t) ? Date.now() : t;
 }
+function 확인마감(tx) { return 확인시작(tx) + CONFIG.rules.periodDays * 86400000; }
+function 확인기간(tx) {
+  return { start: 날짜표시(new Date(확인시작(tx))), end: 날짜표시(new Date(확인마감(tx))) };
+}
+
+/* ---------- 개인화(과업 ④): 역할·참석 행사·내 응답 이력을 쓰는 규칙 기반. 학습형 추천이 아니다 ---------- */
+function 지금() { return Date.now() + (Number(state.app.clockSkewMs) || 0); }   // 시연용 시계(설정에서 마감 하루 전으로 옮길 수 있다)
+function 행사인가(tx) { return !!(tx.event || tx.category === '행사'); }
+function 참석정함() { return Object.keys(state.app.attended).some(k => state.app.attended[k]); }
+function 내차례인가(tx) { return 참석정함() && 행사인가(tx) && !!state.app.attended[tx.id]; }
+function 내확인대기(tx) { return !!tx.reason && !state.app.myVotes[tx.id]; }   // 근거는 올라왔는데 내가 아직 응답하지 않은 거래
+// 총무 할 일: 근거 대기 · 불일치 · 설명 필요(이의 비율 기준 초과) · 미답변 질문
+function 할일(tx) {
+  const 목록 = [];
+  if (!tx.reason) 목록.push('wait');
+  else {
+    if (결과코드(tx) === 'mismatch') 목록.push('mismatch');
+    if (집계(tx.id).code === 'explain') 목록.push('explain');
+  }
+  if (state.app.qna.some(q => q.txId === tx.id && !q.a)) 목록.push('qna');
+  return 목록;
+}
+// 확인 재알림 대상: 부원이 켜 두었고, 내가 응답하지 않았고(참석 행사를 골랐다면 그 행사만), 마감이 24시간 안으로 남았고, 아직 닫거나 누르지 않은 거래.
+// 마감이 가까운 순, 같으면 참석한 행사 먼저
+function 재알림대상들() {
+  if (역할() !== 'member' || state.app.nudge.off) return [];
+  const 한계 = CONFIG.nudge.dueHours * 3600000, 기준 = 지금();
+  return state.app.txs
+    .filter(t => 내확인대기(t) && (!참석정함() || 내차례인가(t)) && !state.app.nudge.done[t.id] && 확인마감(t) - 기준 > 0 && 확인마감(t) - 기준 <= 한계)
+    .sort((a, b) => 확인마감(a) - 확인마감(b) || (내차례인가(b) ? 1 : 0) - (내차례인가(a) ? 1 : 0) || a.id.localeCompare(b.id));
+}
+function 재알림끝내기() {
+  const 시각 = new Date().toISOString();
+  재알림대상들().forEach(t => { state.app.nudge.done[t.id] = 시각; });
+}
+// 문구 A/B 배정: 방문자(브라우저)마다 처음 한 번 무작위로 정해 계속 쓴다. 진행자가 접속 주소에 ?nudge=general 또는 ?nudge=claude 를 붙이면 그 값으로 고정한다
+const 재알림종류키 = 'finpbl:nudgevar';
+let 재알림종류값 = '';
+function 재알림종류() {
+  if (재알림종류값) return 재알림종류값;
+  let v = '';
+  try {
+    const q = new URLSearchParams(location.search).get('nudge');
+    if (q === 'general' || q === 'claude') { v = q; localStorage.setItem(재알림종류키, v); }
+    else v = localStorage.getItem(재알림종류키) || '';
+  } catch (e) {}
+  if (v !== 'general' && v !== 'claude') {
+    v = Math.random() < 0.5 ? 'general' : 'claude';
+    try { localStorage.setItem(재알림종류키, v); } catch (e) {}
+  }
+  return (재알림종류값 = v);
+}
+function 문구채우기(text, 값) { return String(text).replace(/\{(\w+)\}/g, (m, k) => (k in 값 ? 값[k] : m)); }
 function 항목명(t) { return t && t.item ? t.item : (t ? (t.merchant || '') + ' (근거 대기)' : ''); }
 function 찾기(id) { return state.app.txs.find(t => t.id === id) || null; }
 function 선택거래() { return 찾기(state.app.selectedTx); }
@@ -930,7 +1030,8 @@ const 통계제외키 = 'finpbl:notrack';
 const 통계안내키 = 'finpbl:stats-notice';
 let 통계켜짐 = false, GA켜짐 = false, 통계화면 = '', 통계역할 = '', 통계시각 = 0, 통계누적 = 0, 화면번호 = 0, 광고관찰 = null, 광고타이머 = 0, 광고보임 = false, 광고쪽 = 0, 광고순서 = null, 광고손시각 = 0;
 const 광고기록 = new Set();   // '화면번호:배너키' — 같은 화면에서 배너마다 노출을 한 번만 세려는 것
-const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role, perk: d => d.key, surveyintent: d => d.key, ad: d => d.key };
+const 통계대상 = { pick: d => d.id, sheetpick: d => d.id, admevi: d => d.id, admopen: d => d.id, go: d => d.page, sheet: d => d.sheet, filter: d => d.k + '=' + d.v, demo: d => d.role, perk: d => d.key, surveyintent: d => d.key, ad: d => d.key,
+  todo: d => d.kind, attenddone: () => String(Object.keys(state.app.attended).filter(k => state.app.attended[k]).length), nudgeclose: () => 'nudge-' + 재알림종류(), nudgeoff: () => 'nudge-' + 재알림종류(), clockskip: () => 'nudge-' + 재알림종류() };
 function 통계제외() {
   try {
     const q = new URLSearchParams(location.search).get('notrack');
@@ -962,11 +1063,12 @@ function GA시작(id) {
   } catch (e) {}
 }
 // 주소의 ?src=이름(예: ?src=kakao-a)을 기억해 모든 이벤트에 붙인다. 어느 경로로 모은 표본인지 가르는 용도라 짧은 영문·숫자 이름만 받는다
-const 유입키 = 'finpbl:src';
+// 내가 보낸 공유 링크(공유 코드가 내 것)를 내가 다시 열었을 때는 기억하지 않는다. 자기 링크로 들어온 것이 추천 유입으로 세어지지 않게 한다
+const 유입키 = 'finpbl:src', 공유코드키 = 'finpbl:share';
 function 유입경로() {
   try {
     const q = new URLSearchParams(location.search).get('src');
-    if (q && /^[A-Za-z0-9._-]{1,30}$/.test(q)) localStorage.setItem(유입키, q);
+    if (q && /^[A-Za-z0-9._-]{1,30}$/.test(q) && !내공유링크(q)) localStorage.setItem(유입키, q);
     return localStorage.getItem(유입키) || '';
   } catch (e) { return ''; }
 }
@@ -978,6 +1080,91 @@ function track(name, params) {
     if (GA켜짐) gtag('event', name, p);   // 참여 정보는 GA로 보내지 않는다
     if (자체켜짐) 자체기록(name, p);
   } catch (e) {}
+}
+
+/* ---------- 공유(추천 유입) ----------
+   휴대폰은 OS 공유 창(카카오톡·인스타 DM 등)을 띄우고, 공유 창이 없는 브라우저(대부분의 PC)는 소개 글과 링크를 복사한다. 외부 SDK·외부 요청은 쓰지 않는다.
+   링크에는 ?src=share-<역할>-<공유 코드>를 붙인다. 역할은 누른 화면(t=총무, m=부원)이고, 공유 코드는 이 브라우저에서 처음 쓸 때 무작위로 만든 6자다(방문자 코드와 별개, 이름은 넣지 않는다).
+   받은 사람이 링크로 들어오면 유입경로()가 이 값을 기억해 그 사람의 모든 기록에 src로 붙는다. 그래서 공유(share_click) → 유입(GA4의 app_src) → 참여 정보 입력(시트의 profile 행)을
+   링크 종류별·공유 코드별로 셀 수 있다. 수집이 꺼진 브라우저는 코드 없이 share-t / share-m 만 붙인다(보낸 사람의 기록이 없으니 코드를 이을 곳도 없다).
+   share_click: act=native(공유 창을 엶)/copy(복사), target=보낸 링크의 src 값, form=share:<자리>(survey·perk·admin), screen=누른 화면 */
+function 공유코드(만들기) {
+  try {
+    let c = localStorage.getItem(공유코드키) || '';
+    if (!/^[a-z0-9]{6}$/.test(c) && 만들기) {
+      c = 무작위코드().replace(/[^A-Za-z0-9]/g, '').toLowerCase().slice(-6);
+      localStorage.setItem(공유코드키, c);
+    }
+    return /^[a-z0-9]{6}$/.test(c) ? c : '';
+  } catch (e) { return ''; }
+}
+function 내공유링크(src) {
+  const c = 공유코드(false);
+  return !!c && /^share-[tm]-/.test(src) && src.slice(8) === c;
+}
+function 공유값() {
+  const 코드 = 통계켜짐 ? 공유코드(true) : '';
+  return 'share-' + (역할() === 'treasurer' ? 't' : 'm') + (코드 ? '-' + 코드 : '');
+}
+function 공유링크() {
+  const u = new URL(CONFIG.share.url || location.href, location.href);
+  u.search = ''; u.hash = '';
+  u.searchParams.set('src', 공유값());
+  return u.href;
+}
+function 공유글() { return CONFIG.share.text[역할() === 'treasurer' ? 'treasurer' : 'member']; }
+// 자리: survey(샘플 설문을 끝낸 화면) · perk(혜택 질문에 답을 보낸 뒤) · admin(총무 관리 화면). 강조면 버튼을 주 버튼 색으로 그린다
+function 공유카드(자리, 강조) {
+  const S = CONFIG.share, 카드 = S.cards[자리 === 'admin' ? 'admin' : 역할() === 'treasurer' ? 'treasurer' : 'member'];
+  const 창 = typeof navigator.share === 'function', 색 = 강조 ? 'btn primary' : 'btn';
+  const 버튼 = 창
+    ? `<div class="grid2"><button type="button" class="${색}" id="share-${자리}-native" data-act="share" data-place="${자리}">공유하기</button>
+        <button type="button" class="btn" id="share-${자리}-copy" data-act="sharecopy" data-place="${자리}">링크 복사</button></div>`
+    : `<button type="button" class="${색} block" id="share-${자리}-copy" data-act="sharecopy" data-place="${자리}">링크 복사</button>`;
+  return `<section class="card stack" aria-label="${esc(카드.title)}">
+      <h3>${esc(카드.title)}</h3>
+      <p class="small sub">${esc(카드.desc)}</p>
+      <p class="sharebox" id="share-${자리}-text">${esc(공유글())}<span class="url">${esc(공유링크())}</span></p>
+      ${버튼}
+      <p class="hint">${esc(S.note)}</p>
+    </section>`;
+}
+function 공유하기(btn, 복사만) {
+  const 링크 = 공유링크(), 글 = 공유글(), 자리 = btn.dataset.place || '';
+  const 기록 = 방법 => track('share_click', { app_act: 방법, app_target: new URL(링크).searchParams.get('src'), app_form: 'share:' + 자리, app_screen: 통계화면 });
+  if (!복사만 && typeof navigator.share === 'function') {
+    // 누른 순간에 남긴다. 공유 창에서 앱을 고르면 이 화면이 뒤로 가므로, 끝난 뒤에 남기면 기록이 빠질 수 있다. 실제로 보냈는지는 받은 사람의 유입으로 본다
+    기록('native');
+    navigator.share({ title: CONFIG.share.title, text: 글, url: 링크 }).catch(err => {
+      if (err && err.name === 'AbortError') return;   // 공유 창을 그냥 닫음
+      글링크복사(글, 링크);                             // 공유 창을 띄우지 못하면 복사로 대신한다
+    });
+    return;
+  }
+  기록('copy');
+  글링크복사(글, 링크);
+}
+function 글링크복사(글, 링크) {
+  const 내용 = 글 + '\n' + 링크;
+  const 됨 = () => 토스트('글과 링크를 복사했어요');
+  const 안됨 = () => 토스트('복사하지 못했어요. 위 글을 길게 눌러 복사해 주세요');
+  // 클립보드 API가 없거나 막힌 브라우저(주소가 https가 아닌 경우 등)는 예전 방식(execCommand)으로 복사한다
+  const 예전방식 = () => {
+    const 앞 = document.activeElement;
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = 내용; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, 내용.length);   // iOS 사파리는 select()만으로는 고르지 않는다
+      const ok = document.execCommand('copy');
+      ta.remove();
+      if (ok) 됨(); else 안됨();
+    } catch (e) { 안됨(); }
+    if (앞 && 앞.focus) 앞.focus({ preventScroll: true });
+  };
+  try {
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(내용).then(됨, 예전방식);
+    else 예전방식();
+  } catch (e) { 예전방식(); }
 }
 
 /* ---------- 직접 수집(구글 시트) ----------
@@ -1168,7 +1355,7 @@ function 참여정보카드() {
 }
 // 필수 모드에서 '수집 안 함' 대신 쓰는 동의 철회: 이 브라우저의 참여 정보·방문자 코드를 지우고 입력 창으로 돌아간다
 function 참여철회() {
-  try { [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { [유입키, 방문자키, 참여정보키, 공유코드키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   보관함비우기();   // 아직 못 보낸 기록도 보내지 않고 지운다
   try { 방문자 = 무작위코드(); localStorage.setItem(방문자키, 방문자); } catch (e) {}
   if (현재.sheet) 시트닫기();
@@ -1237,7 +1424,7 @@ function 통계안내확인() {
   통계띠그리기();
 }
 function 통계거부() {
-  try { localStorage.setItem(통계제외키, '1'); [유입키, 방문자키, 참여정보키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { localStorage.setItem(통계제외키, '1'); [유입키, 방문자키, 참여정보키, 공유코드키].forEach(k => localStorage.removeItem(k)); } catch (e) {}
   window['ga-disable-' + CONFIG.analytics.gaId] = true;  // 이미 불러온 gtag.js도 이후 어떤 전송도 하지 않게 막는다
   보관함비우기();
   통계켜짐 = false; GA켜짐 = false; 자체켜짐 = false;
@@ -1274,7 +1461,9 @@ function 처리방침본문() {
 function 통계클릭(t) {
   if (!통계켜짐) return;
   // 수집을 끄는 클릭, 보내기 전에 답을 고르는 클릭, 설문 쪽 이동 클릭(구간 기록이 따로 있다)은 보내지 않는다
-  if (['statsoff', 'perkpick', 'perksend', 'snext', 'sprev'].includes(t.dataset.act)) return;
+  // 재알림을 눌러 근거를 연 것(nudgego)은 nudge_click 으로 따로 남기므로 여기서 ui_click 으로 또 세지 않는다
+  // 공유 버튼은 누른 방법(공유 창/복사)을 알아야 해서 share_click 으로 따로 남긴다(공유하기())
+  if (['statsoff', 'perkpick', 'perksend', 'snext', 'sprev', 'nudgego', 'share', 'sharecopy'].includes(t.dataset.act)) return;
   try {
     const d = t.dataset, f = 통계대상[d.act];
     // 광고 배너 클릭은 노출(ad_view)과 짝이 되도록 따로 남긴다(배너별 클릭률 = ad_click ÷ ad_view). 2026-11-06 전에는 ui_click(act=ad)로 남았다
@@ -1373,6 +1562,7 @@ function 그리기() {
   }
   패널그리기();
   광고노출확인();
+  재알림노출확인();
 }
 
 function 앱화면() {
@@ -1451,25 +1641,113 @@ function 거래카드(tx, 선택) {
     <span class="top"><span>${esc(tx.id)} · ${esc(tx.date)}</span><span>${esc(tx.category)}</span></span>
     <span class="mid"><span class="item">${tx.item ? esc(tx.item) : esc(tx.merchant || '') + ' (근거 대기)'}</span><span class="won">${원(tx.amount)}</span></span>
     <span class="why">사유: ${tx.reason ? esc(tx.reason) : '미기재'}</span>
-    <span class="row" style="margin-top:6px">${대조배지(결과코드(tx))}${tx.reason ? 상태배지(집계(tx.id).code, 집계(tx.id).total) : `<span class="badge b-wait">${아이콘('clock')}총무 근거 대기</span>`}${선택 ? `<span class="badge b-pending">${아이콘('check')}선택됨</span>` : ''}</span>
+    <span class="row" style="margin-top:6px">${대조배지(결과코드(tx))}${tx.reason ? 상태배지(집계(tx.id).code, 집계(tx.id).total) : `<span class="badge b-wait">${아이콘('clock')}총무 근거 대기</span>`}${선택 ? `<span class="badge b-pending">${아이콘('check')}선택됨</span>` : ''}${개인배지(tx)}</span>
   </button>`;
+}
+// 부원에게만 붙는 개인 배지: 내가 고른 참석 행사인지, 내가 아직 응답하지 않았는지
+function 개인배지(tx) {
+  if (역할() !== 'member') return '';
+  return (내차례인가(tx) ? `<span class="badge b-pending">${아이콘('user')}참석한 행사</span>` : '')
+    + (내확인대기(tx) ? `<span class="badge b-wait">${아이콘('clock')}내 확인 대기</span>` : '');
+}
+// 총무 '할 일' 카드: 처리할 항목을 한곳에 모아 누르면 그 거래의 해당 화면으로 간다
+function 할일카드() {
+  const 이름 = { wait: () => `<span class="badge b-wait">${아이콘('clock')}근거 대기</span>`, mismatch: () => 대조배지('mismatch'),
+    explain: t => 상태배지('explain', 집계(t.id).total), qna: () => `<span class="badge b-wait">${아이콘('message')}질문 답변 대기</span>` };
+  const 순서 = ['wait', 'mismatch', 'explain', 'qna'];
+  const 항목 = state.app.txs.flatMap(t => 할일(t).map(kind => ({ t, kind })))
+    .sort((a, b) => 순서.indexOf(a.kind) - 순서.indexOf(b.kind));
+  return `<section class="card stack" aria-label="총무 할 일">
+    <div class="title-row"><h3>할 일 ${항목.length}건</h3><span class="small sub">총무에게만 보여요</span></div>
+    ${항목.length ? `<div class="todo">${항목.map(({ t, kind }) => `<button type="button" class="todo-row" id="todo-${kind}-${esc(t.id)}" data-act="todo" data-kind="${kind}" data-id="${esc(t.id)}">
+        <span class="row">${이름[kind](t)}<span class="small">${esc(t.id)} · ${esc(항목명(t))}</span></span>${아이콘('next')}</button>`).join('')}</div>`
+      : '<p class="small sub">지금 처리할 일이 없어요.</p>'}
+  </section>`;
+}
+// 부원 '참석한 행사 고르기' 카드: 한 번 고르거나 건너뛰면 사라지고, 고른 값은 이 브라우저에만 저장한다
+function 참석고르기카드() {
+  if (역할() !== 'member' || state.app.attendAsked) return '';
+  const 행사 = state.app.txs.filter(행사인가);
+  if (!행사.length) return '';
+  return `<section class="card stack" aria-label="참석한 행사 고르기">
+    <h3>참석한 행사를 골라 주세요 <span class="small sub">(선택)</span></h3>
+    <p class="small sub">고르면 그 행사의 지출이 맨 위 '내 차례'에 모여요. 고른 내용은 이 브라우저에만 저장되고 서버로 보내지 않아요.</p>
+    <div>${행사.map(t => `<label class="check" for="att-${esc(t.id)}"><input type="checkbox" id="att-${esc(t.id)}" data-act="attendchk" data-id="${esc(t.id)}" ${state.app.attended[t.id] ? 'checked' : ''}>
+      <span>${esc(항목명(t))}<small>${esc(t.date)} · ${원(t.amount)}</small></span></label>`).join('')}</div>
+    <div class="grid2"><button type="button" class="btn primary" id="att-done" data-act="attenddone">이대로 저장</button>
+      <button type="button" class="btn" id="att-skip" data-act="attendskip">건너뛰기</button></div>
+  </section>`;
+}
+// 확인 재알림 배너. 문구는 방문자에게 배정된 종류(general/claude)를 따른다. 재촉하는 표현 없이 참여는 선택이라고 알린다
+function 재알림띠() {
+  const 대상 = 재알림대상들();
+  if (!대상.length) return '';
+  const 첫째 = 대상[0], 남은시간 = Math.max(1, Math.ceil((확인마감(첫째) - 지금()) / 3600000));
+  const c = CONFIG.nudge.copy[재알림종류()];
+  const 값 = { item: 항목명(첫째), amount: 원(첫째.amount), left: `${남은시간}시간`, attend: 내차례인가(첫째) ? '참석하신 행사의 ' : '', more: 대상.length > 1 ? ` 외 ${대상.length - 1}건` : '' };
+  return `<section class="nudge" id="nudge" aria-label="확인 재알림" data-tx="${esc(첫째.id)}">
+    <div class="row">${아이콘('clock')}<b>${esc(문구채우기(c.title, 값))}</b></div>
+    <p class="small">${esc(문구채우기(c.body, 값))}</p>
+    <div class="row"><button type="button" class="btn primary" id="nudge-go" data-act="nudgego" data-id="${esc(첫째.id)}">근거 보기</button>
+      <button type="button" class="btn" id="nudge-close" data-act="nudgeclose">닫기</button>
+      <button type="button" class="linkbtn" id="nudge-off" data-act="nudgeoff">다시 알리지 않기</button></div>
+  </section>`;
+}
+// 재알림이 화면에 절반 이상 보일 때 한 번만 센다(nudge_view). 열람률 = nudge_click ÷ nudge_view, 문구 종류별
+let 재알림관찰 = null;
+function 재알림노출확인() {
+  if (재알림관찰) { 재알림관찰.disconnect(); 재알림관찰 = null; }
+  const el = document.getElementById('nudge');
+  if (!el) return;
+  const id = el.dataset.tx;
+  if (state.app.nudge.viewed[id]) return;
+  const 센다 = () => {
+    if (state.app.nudge.viewed[id]) return;
+    state.app.nudge.viewed[id] = new Date().toISOString();
+    저장(true);
+    track('nudge_view', { app_target: 'nudge-' + 재알림종류(), app_tx: id, app_screen: 통계화면 });
+  };
+  if ('IntersectionObserver' in window) {
+    재알림관찰 = new IntersectionObserver(목록 => { if (목록.some(e => e.isIntersecting && e.intersectionRatio >= 0.5 && !document.hidden)) { 센다(); 재알림관찰.disconnect(); 재알림관찰 = null; } }, { threshold: [0.5] });
+    재알림관찰.observe(el);
+  } else 센다();
+}
+function 거래목록(list) {
+  const 카드들 = l => l.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('');
+  if (!list.length) return '<div class="stack"><div class="card empty"><p>조건에 맞는 거래가 없어요.</p></div></div>';
+  // 개인화는 숨기지 않고 위로 올린다: 참석한 행사 지출을 '내 차례'에 모으고, 나머지는 접어 두되 모두 볼 수 있다
+  if (역할() === 'member' && 참석정함()) {
+    const 내 = list.filter(내차례인가), 나머지 = list.filter(t => !내차례인가(t));
+    return `<section class="stack" aria-label="내 차례">
+        <div class="mine-head"><h3>내 차례</h3><button type="button" class="linkbtn" id="att-edit" data-act="attendedit">참석 행사 바꾸기</button></div>
+        <p class="small sub">내가 참석한 행사의 지출이에요. 다른 지출도 아래에서 모두 볼 수 있어요.</p>
+        ${내.length ? 카드들(내) : '<p class="small sub">지금 조건에는 참석한 행사 지출이 없어요.</p>'}
+      </section>
+      ${나머지.length ? `<details class="card" id="others" ${state.__othersOpen ? 'open' : ''}><summary><b>그 밖의 지출 ${나머지.length}건</b></summary><div class="stack" style="margin-top:8px">${카드들(나머지)}</div></details>` : ''}`;
+  }
+  return `<div class="stack">${카드들(list)}</div>`;
 }
 function 거래내역화면() {
   const f = state.app.filters;
   const all = state.app.txs;
-  // 홈 화면 단순화: 대조 상태 필터는 없애고 카테고리 필터만 적용(예전 저장본의 상태 필터 값이 남아 있어도 목록이 숨지 않게)
-  const list = all.filter(t => f.category === 'all' || t.category === f.category);
+  const 총무 = 역할() === 'treasurer';
+  const 할일만 = 총무 && f.task === '1';
+  // 홈 화면 단순화: 대조 상태 필터는 없애고 카테고리 필터만 적용(예전 저장본의 상태 필터 값이 남아 있어도 목록이 숨지 않게). 총무는 '할 일만' 칩을 더할 수 있다
+  const list = all.filter(t => (f.category === 'all' || t.category === f.category) && (!할일만 || 할일(t).length));
   const 합계 = all.reduce((a, t) => a + Number(t.amount || 0), 0);
   const cats = ['all', ...CONFIG.categories.filter(c => all.some(t => t.category === c))];
+  const 할일칩 = 총무 ? `<button type="button" class="chip" id="fc-task" data-act="filter" data-k="task" data-v="${할일만 ? '0' : '1'}" aria-pressed="${할일만}">할 일만</button>` : '';
   const 카테고리칩 = cats.map(c => `<button type="button" class="chip" id="fc-${c}" data-act="filter" data-k="category" data-v="${c}" aria-pressed="${f.category === c}">${c === 'all' ? '모든 카테고리' : c}</button>`).join('');
   return `<div class="title-row"><h2>거래 내역</h2><span class="small sub">동아리 명의 계좌 · 가상</span></div>
+    ${재알림띠()}
     <div class="card"><div class="metrics">
       <div class="metric"><b>${all.length}건</b><span>공개된 지출</span></div>
       <div class="metric"><b>${원(합계)}</b><span>지출 합계</span></div>
     </div></div>
-    <div class="stack" role="group" aria-label="카테고리 필터"><div class="chips">${카테고리칩}</div></div>
+    ${총무 ? 할일카드() : 참석고르기카드()}
+    <div class="stack" role="group" aria-label="카테고리 필터"><div class="chips">${할일칩}${카테고리칩}</div></div>
     <p class="small sub">카드를 누르면 거래가 선택되고, 결제 근거부터 최종 상태까지 그 거래 기준으로 보여 줘요.</p>
-    <div class="stack">${list.length ? list.map(t => 거래카드(t, t.id === state.app.selectedTx)).join('') : '<div class="card empty"><p>조건에 맞는 거래가 없어요.</p></div>'}</div>
+    ${거래목록(list)}
     ${광고띠()}
     <button type="button" class="btn block" id="open-rules" data-act="sheet" data-sheet="rules">회비 운영 기준 보기 (${state.app.feeRules.length ? state.app.feeRules.length + '개 공개' : '미공개'})</button>
     <p class="notice">거래는 동아리 명의(고유번호증) 계좌의 거래내역에서만 들어와요. 총무는 금액·일시·가맹점을 고칠 수 없고 사유와 영수증만 붙여요.</p>
@@ -1809,9 +2087,11 @@ function 혜택답보내기() {
   if (pq.a.withdraw) p.app_withdraw = pq.a.withdraw;
   track('perk_answer', p);
   try { localStorage.setItem(혜택완료키, JSON.stringify(혜택완료목록().concat(pq.key))); } catch (e) {}
-  state.__perkq = null;
-  토스트('답을 받았어요. 고마워요');
-  시트닫기();
+  // 바로 닫지 않고 고맙다는 화면에 공유 카드를 보여 준다(답을 마친 때가 공유를 가장 많이 누르는 때다)
+  state.__perkq = { key: pq.key, a: {}, sent: true };
+  시트그리기();
+  const 제목 = document.getElementById('pq-thanks');
+  if (제목) 제목.focus({ preventScroll: true });
 }
 
 /* 샘플 설문: 혜택 탭 '용돈 미션'의 설문 카드를 누르면 열린다(리서치 회사가 맡기는 설문 일감의 예시).
@@ -1916,6 +2196,7 @@ function 총무관리화면() {
         <button type="submit" class="btn" id="rule-btn">기준 공개</button>
       </form>
     </section>
+    ${공유카드('admin', true)}
     <section class="card stack" aria-label="등록된 가상 거래">
       <h3>계좌 거래 ${state.app.txs.length}건</h3>
       <p class="small sub">등록된 지출은 투명성을 위해 삭제할 수 없어요. 정정이 필요하면 공개 Q&A에 설명을 남겨 주세요.</p>
@@ -1977,6 +2258,10 @@ function 시트내용(name) {
       <div class="grid2"><button type="button" class="btn" id="set-save" data-act="savenow">지금 저장</button>
       <button type="button" class="btn" id="set-restore" data-act="restore">저장 데이터 복원</button></div>
       <label class="check" for="set-mvp"><input type="checkbox" id="set-mvp" data-act="mvpchk" ${state.mvpMode ? 'checked' : ''}><span>MVP 설명 모드<small>모든 화면 맨 위에 설계 해설 카드를 보여 줘요</small></span></label>
+      ${역할() === 'member' ? `<label class="check" for="set-nudge"><input type="checkbox" id="set-nudge" data-act="nudgechk" ${state.app.nudge.off ? '' : 'checked'}><span>확인 재알림 받기<small>확인 기간이 하루쯤 남았는데 응답하지 않은 지출이 있으면 한 번만 알려 줘요. 언제든 끌 수 있어요</small></span></label>
+      <div class="stack"><button type="button" class="btn block" id="set-skew" data-act="clockskip">시연용: 마감 하루 전으로 시간 건너뛰기</button>
+      ${state.app.clockSkewMs ? `<button type="button" class="btn block ghost" id="set-skew-reset" data-act="clockreset">시연 시계 원래대로 (지금 +${Math.round(state.app.clockSkewMs / 3600000)}시간)</button>` : ''}
+      <p class="small sub">재알림을 테스트하려고 이 앱 안의 시계만 옮겨요. 실제 날짜는 바뀌지 않아요.</p></div>` : ''}
       <button type="button" class="btn block" id="set-logs" data-act="sheet" data-sheet="logs">활동 로그</button>
       <button type="button" class="btn block" id="set-mvpsheet" data-act="sheet" data-sheet="mvp">MVP 해설·단위경제</button>
       <button type="button" class="btn block" id="set-check" data-act="sheet" data-sheet="checklist">다크패턴 점검표</button>
@@ -2038,6 +2323,10 @@ function 시트내용(name) {
     const pq = state.__perkq, 찾음 = pq && 혜택항목찾기(pq.key);
     if (!찾음) return null;
     const { s, it } = 찾음, a = pq.a;
+    if (pq.sent) return { title: esc(it.title), body: `
+      <div class="card stack"><h3 id="pq-thanks" tabindex="-1">답을 받았어요. 고마워요</h3><p class="small sub">고른 답은 기능을 만들지 정하는 데만 써요.</p></div>
+      ${공유카드('perk', true)}
+      <button type="button" class="btn block" id="pq-close" data-act="closesheet">닫기</button>` };
     const rq = it.reward || s.reward;
     const 칩 = (q, 질문, 목록) => `<div class="chips wrap" role="group" aria-label="${esc(질문)}">${목록.map(([v, l]) =>
       `<button type="button" class="chip" id="pq-${q}-${v}" data-act="perkpick" data-q="${q}" data-v="${v}" aria-pressed="${a[q] === String(v)}">${esc(l)}</button>`).join('')}</div>`;
@@ -2066,6 +2355,7 @@ function 시트내용(name) {
         <div class="card stack"><h3>${esc(대상아님 ? S.outTitle : S.doneTitle)}</h3><p class="small">${esc(대상아님 ? S.outText : S.doneText)}</p>
           ${대상아님 ? '' : `<dl class="kv"><dt>걸린 시간</dt><dd>${시간(sv.secs)}</dd><dt>보상</dt><dd>샘플이라 지급하지 않아요</dd></dl>`}</div>
         ${의향가능 ? `<button type="button" class="btn primary block" id="sv-intent" data-act="surveyintent" data-key="${esc(S.key)}">이런 설문 일감이 나오면 쓸지 답하기</button>` : ''}
+        ${공유카드('survey', !의향가능)}
         <button type="button" class="btn block" id="sv-close" data-act="closesheet">닫기</button>` };
     }
     const secs = S.sections, sec = secs[sv.p], 시작번호 = secs.slice(0, sv.p).reduce((n, s) => n + s.qs.length, 0);
@@ -2237,7 +2527,7 @@ document.addEventListener('click', ev => {
   const t = ev.target.closest('[data-act]');
   if (!t || t.disabled) return;
   const act = t.dataset.act;
-  if (act === 'mvpchk' || act === 'check') return; // 체크박스는 change 이벤트에서 처리
+  if (act === 'mvpchk' || act === 'check' || act === 'attendchk' || act === 'nudgechk') return; // 체크박스는 change 이벤트에서 처리
   통계클릭(t);
   switch (act) {
     case 'go': if (t.dataset.page === 'admin' && !총무인가()) { 총무전용확인(); break; } 탭이동(t.dataset.page); break;
@@ -2255,6 +2545,8 @@ document.addEventListener('click', ev => {
     case 'statsoff': 통계거부(); break;
     case 'statson': 통계허용(); break;
     case 'perk': 혜택질문열기(t); break;
+    case 'share': 공유하기(t, false); break;
+    case 'sharecopy': 공유하기(t, true); break;
     case 'perkpick': 혜택답고르기(t.dataset.q, t.dataset.v); break;
     case 'perksend': 혜택답보내기(); break;
     case 'snext': 설문이동(1); break;
@@ -2334,6 +2626,44 @@ document.addEventListener('click', ev => {
       이동({ area: 't', page: 'compare', tx: t.dataset.id });
       break;
     }
+    // ---- 개인화(과업 ④) ----
+    case 'todo': {   // 총무 할 일 카드의 한 줄: 그 거래의 해당 화면으로
+      if (!총무전용확인()) break;
+      const id = t.dataset.id, kind = t.dataset.kind;
+      state.app.selectedTx = id;
+      if (kind === 'wait') {
+        state.app.eviTarget = id; state.__photoPreview = null; state.__eviErr = null; 저장(true);
+        이동({ area: 't', page: 'admin', tx: id });
+        setTimeout(() => { const f = document.querySelector('form[data-form=evidence]'); if (f) f.scrollIntoView({ block: 'start' }); }, 120);
+      } else {
+        저장(true);
+        이동({ area: 't', page: kind === 'mismatch' ? 'compare' : kind === 'explain' ? 'status' : 'qna', tx: id });
+      }
+      break;
+    }
+    case 'attenddone': state.app.attendAsked = true; 로그('참석 행사 저장'); 저장(true); 그리기(); break;
+    case 'attendskip': state.app.attendAsked = true; 로그('참석 행사 고르기 건너뜀'); 저장(true); 그리기(); break;
+    case 'attendedit': state.app.attendAsked = false; 저장(true); 그리기(); break;
+    case 'nudgego': {   // 재알림에서 근거 보기: 눌림을 남기고, 지금 떠 있는 재알림은 끝낸다
+      track('nudge_click', { app_target: 'nudge-' + 재알림종류(), app_tx: t.dataset.id, app_screen: 통계화면 });
+      재알림끝내기();
+      state.app.selectedTx = t.dataset.id;
+      로그('재알림에서 결제 근거 열기', t.dataset.id);
+      저장(true);
+      이동({ area: 'm', page: 'evidence', tx: t.dataset.id });
+      break;
+    }
+    case 'nudgeclose': 재알림끝내기(); 로그('재알림 닫기'); 저장(true); 그리기(); break;
+    case 'nudgeoff': 재알림끝내기(); state.app.nudge.off = true; 로그('재알림 끄기'); 저장(true); 그리기(); 토스트('재알림을 껐어요. 설정에서 다시 켤 수 있어요'); break;
+    case 'clockskip': {   // 시연용: 가장 빨리 끝나는 확인 기간이 23시간 남은 때로 시계를 옮긴다(실제 날짜는 바뀌지 않는다)
+      const 열린 = state.app.txs.filter(x => 내확인대기(x) && (!참석정함() || 내차례인가(x)) && !state.app.nudge.done[x.id] && 확인마감(x) > 지금());
+      if (!열린.length) { 토스트('재알림을 보여 줄 거래가 없어요'); break; }
+      state.app.clockSkewMs = (Math.min(...열린.map(확인마감)) - 23 * 3600000) - Date.now();
+      로그('시연용 시계: 마감 하루 전으로 이동'); 저장(true); 그리기();
+      토스트('시연 시계를 마감 하루 전으로 옮겼어요. 설정을 닫으면 거래 내역에 알림이 보여요');
+      break;
+    }
+    case 'clockreset': state.app.clockSkewMs = 0; 로그('시연용 시계 원래대로'); 저장(true); 그리기(); 토스트('시연 시계를 원래대로 돌렸어요'); break;
   }
 });
 
@@ -2341,6 +2671,8 @@ document.addEventListener('change', ev => {
   const t = ev.target;
   if (t.dataset.act === 'mvpchk') { state.mvpMode = t.checked; 로그('MVP 설명 모드 ' + (state.mvpMode ? '켬' : '끔')); 저장(); 그리기(); }
   if (t.dataset.act === 'check') { state.app.checklist[t.dataset.id] = t.checked; 저장(); 시트그리기(); }
+  if (t.dataset.act === 'attendchk') { state.app.attended[t.dataset.id] = t.checked; 저장(true); }   // 다시 그리지 않아 체크박스의 포커스를 유지한다
+  if (t.dataset.act === 'nudgechk') { state.app.nudge.off = !t.checked; 로그('재알림 ' + (t.checked ? '켬' : '끔')); 저장(true); 그리기(); }
   if (t.dataset.sq && t.tagName !== 'TEXTAREA') 설문답저장(t);
   if (t.dataset.draft) 초안저장(t);
   if (t.dataset.act === 'evitarget') { state.app.eviTarget = t.value; state.__photoPreview = null; state.__eviErr = null; 저장(true); 그리기(); }
@@ -2462,6 +2794,7 @@ document.addEventListener('submit', ev => {
     if (v.receiptAmount && (!/^\d+$/.test(v.receiptAmount) || Number(v.receiptAmount) <= 0)) e.receiptAmount = '0원보다 큰 숫자로 입력하거나 비워 두세요.';
     if (Object.keys(e).length) { state.__eviErr = e; state.app.drafts.evi = v; 그리기(); 토스트('입력값을 확인해 주세요'); return; }
     state.__eviErr = null;
+    if (!tx.reason) tx.reasonAt = new Date().toISOString();   // 근거가 처음 붙은 때부터 7일 확인 기간을 센다
     Object.assign(tx, { item: v.item, category: v.category, reason: v.reason, receiptNo: v.receiptNo, receiptDate: v.receiptDate, receiptAmount: Number(v.receiptAmount || 0), result: null,
       memo: tx.source === 'csv' ? '계좌 거래내역에서 가져온 거래에 총무가 사유·영수증을 붙임' : tx.memo });
     if (state.__photoPreview) { tx.photo = state.__photoPreview; state.__photoPreview = null; }
@@ -2509,6 +2842,7 @@ function 거래추가(f) {
   state.__txErr = null;
   const tx = { id: 다음거래ID(), date: v.date, time: v.time, item: v.item, category: v.category, amount: Number(v.amount), reason: v.reason,
     merchant: v.merchant, address: v.address, receiptNo: v.receiptNo, receiptDate: v.receiptDate, receiptAmount: Number(v.receiptAmount || 0), memo: v.memo, result: null };
+  if (tx.reason) tx.reasonAt = new Date().toISOString();   // 사유가 함께 올라온 거래는 지금부터 7일 확인 기간을 센다
   state.app.txs.push(tx);
   state.app.votes[tx.id] = { ok: 0, ask: 0 };
   state.app.selectedTx = tx.id;
@@ -2569,12 +2903,14 @@ document.addEventListener('keydown', ev => {
 })();
 
 window.addEventListener('hashchange', 라우트적용);
+// '그 밖의 지출' 접힘 상태를 기억해, 거래를 눌러 다시 그려도 접히지 않게 한다(toggle 은 버블링하지 않아 캡처 단계에서 받는다)
+document.addEventListener('toggle', ev => { const d = ev.target; if (d && d.id === 'others') state.__othersOpen = d.open; }, true);
 
 /* ---------- 이용 통계: 화면에 머문 시간(탭이 보이는 동안만 센다) ---------- */
 document.addEventListener('visibilitychange', () => {
   if (!통계켜짐) return;
   if (document.hidden) { 화면시간보내기(); 방문시간보내기(); 자체보내기(true); }
-  else { if (통계화면) 통계시각 = Date.now(); 광고노출기록(); 다음전송(); }   // 가려져 있던 동안 화면에 있던 배너는 다시 보이는 때 센다
+  else { if (통계화면) 통계시각 = Date.now(); 광고노출기록(); 재알림노출확인(); 다음전송(); }   // 가려져 있던 동안 화면에 있던 배너는 다시 보이는 때 센다
 });
 window.addEventListener('pagehide', () => { 화면시간보내기(); 방문시간보내기(); 자체보내기(true); });
 window.addEventListener('online', () => { clearTimeout(재시도타이머); 재시도타이머 = 0; 다음전송(); });   // 인터넷이 다시 연결되면 기다리지 않고 보낸다
