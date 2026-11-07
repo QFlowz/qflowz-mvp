@@ -28,8 +28,9 @@
  */
 const 시트이름 = 'events';
 const 열 = ['t', 'vid', 'sid', 'ev', 'dev', 'role', 'src', 'screen', 'act', 'target', 'intent', 'reward', 'withdraw', 'secs', 'form', 'tx', 'grade', 'gender', 'org', 'exp', 'name'];
-// nudge_view·nudge_click(확인 재알림)과 share_click(공유하기·링크 복사)은 2026-11-06에 더했다. 이 줄을 고친 뒤에는 '배포 관리 > 수정 > 새 버전'으로 다시 배포해야 시트에 들어온다
-const 허용이벤트 = ['page_view', 'ui_click', 'screen_time', 'form_submit', 'opinion_submit', 'opinion_cancel', 'question_submit', 'answer_submit', 'perk_answer', 'ad_view', 'ad_click', 'nudge_view', 'nudge_click', 'share_click', 'session_time', 'profile'];
+// nudge_view·nudge_click(확인 재알림)과 share_click(공유하기·링크 복사)은 2026-11-06에, noti_view·noti_click(Q&A 알림: 종 숫자로 보여 준 알림 / 알림 한 줄을 누름)은 2026-11-07에 더했다.
+// 이 줄을 고친 뒤에는 '배포 관리 > 수정 > 새 버전'으로 다시 배포해야 시트에 들어온다(그 전에는 수집기가 이 행들만 버리고, GA4에는 남는다)
+const 허용이벤트 = ['page_view', 'ui_click', 'screen_time', 'form_submit', 'opinion_submit', 'opinion_cancel', 'question_submit', 'answer_submit', 'perk_answer', 'ad_view', 'ad_click', 'nudge_view', 'nudge_click', 'share_click', 'noti_view', 'noti_click', 'session_time', 'profile'];
 const 최대행 = 50;
 const 최대길이 = 60;
 const 대기ms = 30000;
